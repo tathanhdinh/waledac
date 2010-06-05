@@ -16,10 +16,17 @@
 
 #include "BotnetStaticConfiguration.h"
 #include "Spammer.h"
+#include "Repeater.h"
 #include "Protecter.h"
+
+#include <boost/random.hpp>
 
 namespace waledac
 {
+
+boost::uniform_int<> dist(0, 499);
+boost::mt19937 gen;
+boost::variate_generator<boost::mt19937, boost::uniform_int<> > die(gen, dist);
 
 boost::shared_ptr<BotnetStaticConfiguration> hardcoded_config;
 static std::vector< boost::shared_ptr<Bot> > static_rlist(500);
@@ -28,7 +35,8 @@ static std::vector< boost::shared_ptr<Bot> > static_plist(10);
 BotnetStaticConfiguration::BotnetStaticConfiguration()
 {
 	for (unsigned int i = 0; i < static_rlist.size(); ++i) {
-		static_rlist[i].reset(new Spammer());
+		//static_rlist[i].reset(new Spammer());
+		static_rlist[i].reset(new Repeater());
 	}
 	
 	for (unsigned int i = 0; i < static_plist.size(); ++i) {
@@ -36,17 +44,6 @@ BotnetStaticConfiguration::BotnetStaticConfiguration()
 	}
 }
 
-
-/*std::vector< boost::shared_ptr< Bot > > BotnetStaticConfiguration::plist()
-{
-	return static_plist;
-}
-
-
-std::vector< boost::shared_ptr< Bot > > BotnetStaticConfiguration::rlist()
-{
-	return static_rlist;
-}*/
 
 std::vector< boost::shared_ptr<Bot> > hardcoded_rlist()
 {
@@ -57,6 +54,15 @@ std::vector< boost::shared_ptr<Bot> > hardcoded_rlist()
 std::vector< boost::shared_ptr<Bot> > hardcoded_plist()
 {
 	return static_plist;
+}
+
+boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> > bot_list)
+{
+	unsigned int random_index = die();
+	std::cout << "random_index : " << random_index << std::endl;
+	std::cout << bot_list[random_index]->id() << std::endl;
+	
+	return bot_list[random_index];
 }
 
 }

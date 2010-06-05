@@ -33,13 +33,13 @@ private:
 	
 public :
 	BotnetStaticConfiguration();
-	/*std::vector< boost::shared_ptr<Bot> > rlist();
-	std::vector< boost::shared_ptr<Bot> > plist();*/
 };
 
 extern boost::shared_ptr<BotnetStaticConfiguration> hardcoded_config;
 extern std::vector< boost::shared_ptr<Bot> > hardcoded_rlist();
 extern std::vector< boost::shared_ptr<Bot> > hardcoded_plist();
+
+extern boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> > bot_list);
 
 }
 

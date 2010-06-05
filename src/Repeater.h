@@ -33,7 +33,7 @@ public:
 	Repeater();
 	void update_rlist();
 	void update_plist();
-	std::vector<boost::shared_ptr<Bot> > extract_rlist();
+	std::vector<boost::shared_ptr<Bot> > sub_rlist();
 	
 	void run();
 };

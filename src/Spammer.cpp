@@ -26,21 +26,6 @@ namespace waledac
 {
 
 /*
- * get random repeater from repeater list
- */
-static boost::shared_ptr<Bot> spammer_random_repeater(std::vector< boost::shared_ptr<Bot> >& rlist)
-{
-	unsigned int rlist_size = rlist.size();
-	boost::uniform_int<> dist(0, rlist_size);
-	boost::mt19937 gen;
-	boost::variate_generator<boost::mt19937, boost::uniform_int<> > die(gen, dist);
-	
-	unsigned int random_index = die();
-	
-	return rlist[random_index];
-}
-
-/*
  * merge existing rlist with a new rlist
  */
 static std::vector<boost::shared_ptr<Bot> > spammer_merge_rlist(std::vector<boost::shared_ptr<Bot> > &existing_rlist, 
@@ -67,12 +52,13 @@ Spammer::Spammer() : Bot()
  */
 void Spammer::update_rlist()
 {
-	// get random repeater
-	boost::shared_ptr<Repeater> repeater_target;
-	repeater_target.reset(dynamic_cast<Repeater*>(spammer_random_repeater(m_rlist).get()));
+	// get random repeater from rlist
+	boost::shared_ptr<Bot> repeater_target;
+	repeater_target = random_bot(m_rlist);
 	
-	// get updating rlist from this spammer
-	std::vector<boost::shared_ptr<Bot> > new_rlist = repeater_target->extract_rlist();
+	// get subset of rlist from this repeater
+	std::vector<boost::shared_ptr<Bot> > new_rlist;
+	new_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
 	
 	// merge new rlist and existing rlist
 	m_rlist = spammer_merge_rlist(m_rlist, new_rlist);

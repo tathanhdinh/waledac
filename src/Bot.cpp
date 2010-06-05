@@ -31,9 +31,7 @@ Bot::Bot()
 	// generate random bot id
 	uuid bot_uuid;
 	bot_uuid.make(UUID_MAKE_V4);
-	m_id = bot_uuid.string();
-	
-	//std::cout << "new bot with id : " << m_id << std::endl;
+	m_id = bot_uuid.string();	
 }
 
 

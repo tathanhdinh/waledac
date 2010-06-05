@@ -19,26 +19,17 @@
 
 #include <boost/smart_ptr.hpp>
 #include <boost/random.hpp>
+#include <algorithm>
 
 namespace waledac
 {
 
-static boost::shared_ptr<Bot> repeater_random_repeater(std::vector<boost::shared_ptr<Bot> >&  rlist)
-{
-	unsigned int rlist_size = rlist.size();
-	boost::uniform_int<> dist(0, rlist_size);
-	boost::mt19937 gen;
-	boost::variate_generator<boost::mt19937, boost::uniform_int<> > die(gen, dist);
-	
-	unsigned int random_index = die();
-	
-	return rlist[random_index];
-}
 
-
-std::vector<boost::shared_ptr<Bot> > repeater_merge_rlist(std::vector<boost::shared_ptr<Bot> > &existing_rlist, 
-														  std::vector<boost::shared_ptr<Bot> > &new_rlist)
+std::vector<boost::shared_ptr<Bot> > repeater_merge_rlist(
+									std::vector<boost::shared_ptr<Bot> > &existing_rlist, 
+									std::vector<boost::shared_ptr<Bot> > &new_rlist)
 {
+	// not yet implemented
 	return existing_rlist;
 }
 
@@ -49,17 +40,21 @@ std::vector<boost::shared_ptr<Bot> > repeater_merge_rlist(std::vector<boost::sha
 Repeater::Repeater()
 {
 	// initialiser rlist 
-	//m_rlist = BotnetStaticConfiguration::rlist();
+	m_rlist = hardcoded_rlist();
+	std::cout << "new repeater with id : " << Bot::id() << std::endl;
 }
 
 
 /*
  * extract 100 repeater from rlist
  */
-std::vector< boost::shared_ptr< Bot > > Repeater::extract_rlist()
+std::vector< boost::shared_ptr< Bot > > Repeater::sub_rlist()
 {
-	// not yet implemented
-	return m_rlist;
+	std::cout << "sub_rlist" << std::endl;
+	std::vector< boost::shared_ptr<Bot> > sublist(100);
+	//std::cout << "rlist_size : " << m_rlist.size() << std::endl;
+	//std::copy(m_rlist.begin(), m_rlist.begin() + 99, sublist.begin());
+	return sublist;
 }
 
 
@@ -70,14 +65,14 @@ std::vector< boost::shared_ptr< Bot > > Repeater::extract_rlist()
 void Repeater::update_rlist()
 {
 	// get random repeater
-	boost::shared_ptr<Repeater> repeater_target;
-	repeater_target.reset(dynamic_cast<Repeater*>(repeater_random_repeater(m_rlist).get()));
+	boost::shared_ptr<Bot> repeater_target;
+	repeater_target = random_bot(m_rlist);
 	
 	// get updating rlist from this spammer
-	std::vector<boost::shared_ptr<Bot> > new_rlist = repeater_target->extract_rlist();
+	//std::vector<boost::shared_ptr<Bot> > new_rlist = repeater_target->sub_rlist();
 	
 	// merge new rlist and existing rlist
-	m_rlist = repeater_merge_rlist(m_rlist, new_rlist);
+	//m_rlist = repeater_merge_rlist(m_rlist, new_rlist);
 	
 	return;
 }
