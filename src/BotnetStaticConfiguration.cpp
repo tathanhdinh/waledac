@@ -18,30 +18,40 @@
 #include "Spammer.h"
 #include "Repeater.h"
 #include "Protecter.h"
+#include "ServerCC.h"
 
 #include <boost/random.hpp>
 
 namespace waledac
 {
 
-boost::uniform_int<> dist(0, 499);
+boost::uniform_int<> dist(std::numeric_limits<int>::min(), 
+						  std::numeric_limits<int>::max());
 boost::mt19937 gen;
 boost::variate_generator<boost::mt19937, boost::uniform_int<> > die(gen, dist);
 
 boost::shared_ptr<BotnetStaticConfiguration> hardcoded_config;
-static std::vector< boost::shared_ptr<Bot> > static_rlist(500);
-static std::vector< boost::shared_ptr<Bot> > static_plist(10);
-	
-BotnetStaticConfiguration::BotnetStaticConfiguration()
+static std::vector< boost::shared_ptr<Bot> > static_rlist;
+static std::vector< boost::shared_ptr<Bot> > static_plist;
+static boost::shared_ptr<Bot> static_server;
+
+/*
+ * Initialise botnet static configuration
+ */
+BotnetStaticConfiguration::BotnetStaticConfiguration(unsigned int rlist_size, 
+													 unsigned int plist_size)
 {
+	static_rlist.resize(rlist_size);
 	for (unsigned int i = 0; i < static_rlist.size(); ++i) {
-		//static_rlist[i].reset(new Spammer());
 		static_rlist[i].reset(new Repeater());
 	}
 	
+	static_plist.resize(plist_size);
 	for (unsigned int i = 0; i < static_plist.size(); ++i) {
-		//static_plist[i].reset(new Protecter());
+		static_plist[i].reset(new Protecter());
 	}
+	
+	static_server.reset(new ServerCC());
 }
 
 
@@ -56,12 +66,17 @@ std::vector< boost::shared_ptr<Bot> > hardcoded_plist()
 	return static_plist;
 }
 
-boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> > bot_list)
+
+boost::shared_ptr<Bot> servercc()
 {
-	unsigned int random_index = die();
-	std::cout << "random_index : " << random_index << std::endl;
-	std::cout << bot_list[random_index]->id() << std::endl;
-	
+	return static_server;
+}
+
+boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& bot_list)
+{
+	unsigned int random_index = die() % bot_list.size();
+	//std::cout << "random_index : " << random_index << std::endl;
+	//std::cout << bot_list[random_index]->id() << std::endl;	
 	return bot_list[random_index];
 }
 

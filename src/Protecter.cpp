@@ -16,3 +16,54 @@
 
 #include "Protecter.h"
 
+#include <iostream>
+
+namespace waledac
+{
+
+/*
+ * protecter constructor
+ */
+Protecter::Protecter() : Bot()
+{
+	//std::cout << "new protecter with id : " << Bot::id() << std::endl;
+}
+
+
+/*
+ * life of protecter
+ */
+void Protecter::execute()
+{
+	while (true) {
+		// wait for request from repeater
+		sleep(5);
+	}
+	return;
+}
+
+
+/*
+ * start protecter thread
+ */
+void Protecter::start()
+{
+	std::cout << "start protecter with id : " << Bot::id() << std::endl;
+	m_protecter_thread.reset(new boost::thread(boost::bind(&Protecter::execute, 
+														   *this)));
+	return;
+}
+
+
+/*
+ * wait until protecter thread stop
+ */
+void Protecter::wait()
+{
+	m_protecter_thread->join();
+	return;
+}
+
+
+
+}

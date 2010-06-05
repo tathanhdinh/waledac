@@ -19,10 +19,22 @@
 
 #include "Bot.h"
 
+#include <boost/smart_ptr.hpp>
+#include <boost/thread.hpp>
+
 namespace waledac {
 
 class Protecter : public Bot
 {
+private:
+	boost::shared_ptr<boost::thread> m_protecter_thread;
+	
+public:
+	Protecter();
+	
+	virtual void execute();
+	virtual void start();
+	virtual void wait();
 };
 
 }

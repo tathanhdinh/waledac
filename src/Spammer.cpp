@@ -28,8 +28,9 @@ namespace waledac
 /*
  * merge existing rlist with a new rlist
  */
-static std::vector<boost::shared_ptr<Bot> > spammer_merge_rlist(std::vector<boost::shared_ptr<Bot> > &existing_rlist, 
-																std::vector<boost::shared_ptr<Bot> > &new_rlist)
+static std::vector< boost::shared_ptr<Bot> > 
+spammer_merge_rlist(std::vector< boost::shared_ptr<Bot> > &existing_rlist, 
+					std::vector< boost::shared_ptr<Bot> > &new_rlist)
 {
 	// not yet implemented
 	return existing_rlist;
@@ -41,9 +42,8 @@ static std::vector<boost::shared_ptr<Bot> > spammer_merge_rlist(std::vector<boos
  */
 Spammer::Spammer() : Bot()
 {
-	// initialiser rlist
+	// initialise rlist
 	m_rlist = hardcoded_rlist();
-	std::cout << "new spammer with id : " << Bot::id() << std::endl;
 }
 
 
@@ -52,9 +52,12 @@ Spammer::Spammer() : Bot()
  */
 void Spammer::update_rlist()
 {
-	// get random repeater from rlist
+	// takes a random repeater from rlist
 	boost::shared_ptr<Bot> repeater_target;
 	repeater_target = random_bot(m_rlist);
+	
+	std::cout << "spammer " << Bot::id() << " updates RList from repeater " 
+							<< repeater_target->id() << std::endl;
 	
 	// get subset of rlist from this repeater
 	std::vector<boost::shared_ptr<Bot> > new_rlist;
@@ -84,7 +87,8 @@ void Spammer::execute()
 {
 	while (true) {
 		update_rlist();
-		get_command();;
+		get_command();
+		sleep(5);
 	}
 	
 	return;
@@ -92,17 +96,19 @@ void Spammer::execute()
 
 
 /*
- * start spammer
+ * start spammer thread
  */
 void Spammer::start()
 {
-	m_spammer_thread.reset(new boost::thread(boost::bind(&Spammer::execute, *this)));
+	std::cout << "start spammer with id : " << Bot::id() << std::endl;
+	m_spammer_thread.reset(new boost::thread(boost::bind(&Spammer::execute, 
+														 *this)));
 	return;
 }
 
 
 /*
- * wait until spammer stop
+ * wait until spammer thread stop
  */
 void Spammer::wait()
 {

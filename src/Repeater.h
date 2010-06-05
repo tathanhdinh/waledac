@@ -21,21 +21,27 @@
 
 #include <vector>
 #include <boost/smart_ptr.hpp>
+#include <boost/thread.hpp>
 
 namespace waledac {
 
 class Repeater : public Bot
 {
 private:
-	std::vector<boost::shared_ptr<Bot> > m_rlist;
+	std::vector< boost::shared_ptr<Bot> > m_rlist;
+	std::vector< boost::shared_ptr<Bot> > m_plist;
+	boost::shared_ptr<boost::thread> m_repeater_thread;
 	
 public:
 	Repeater();
 	void update_rlist();
 	void update_plist();
-	std::vector<boost::shared_ptr<Bot> > sub_rlist();
+	std::vector< boost::shared_ptr<Bot> > sub_rlist();
+	std::vector< boost::shared_ptr<Bot> > sub_plist();
 	
-	void run();
+	virtual void execute();
+	virtual void start();
+	virtual void wait();
 };
 
 }
