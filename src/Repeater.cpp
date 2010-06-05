@@ -49,7 +49,7 @@ std::vector<boost::shared_ptr<Bot> > repeater_merge_rlist(std::vector<boost::sha
 Repeater::Repeater()
 {
 	// initialiser rlist 
-	m_rlist = BotnetStaticConfiguration::rlist();
+	//m_rlist = BotnetStaticConfiguration::rlist();
 }
 
 

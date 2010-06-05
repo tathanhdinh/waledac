@@ -27,10 +27,19 @@ namespace waledac
 
 class BotnetStaticConfiguration
 {
+private:
+	std::vector< boost::shared_ptr<Bot> > m_rlist;
+	std::vector< boost::shared_ptr<Bot> > m_plist;
+	
 public :
-	static std::vector< boost::shared_ptr<Bot> > rlist();
-	static std::vector< boost::shared_ptr<Bot> > plist();
+	BotnetStaticConfiguration();
+	/*std::vector< boost::shared_ptr<Bot> > rlist();
+	std::vector< boost::shared_ptr<Bot> > plist();*/
 };
+
+extern boost::shared_ptr<BotnetStaticConfiguration> hardcoded_config;
+extern std::vector< boost::shared_ptr<Bot> > hardcoded_rlist();
+extern std::vector< boost::shared_ptr<Bot> > hardcoded_plist();
 
 }
 

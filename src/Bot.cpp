@@ -17,10 +17,13 @@
 #include "Bot.h"
 
 #include <iostream>
-#include <ossp/uuid++.hh>
+//#include <ossp/uuid++.hh>
+#include <vector>
+#include <uuid++.hh>
+#include <boost/smart_ptr.hpp>
 
 namespace waledac {
-
+	
 enum { BOT_COMPROMISED = 1, BOT_NON_COMPROMISED = 0 };
 	
 Bot::Bot()
@@ -29,6 +32,8 @@ Bot::Bot()
 	uuid bot_uuid;
 	bot_uuid.make(UUID_MAKE_V4);
 	m_id = bot_uuid.string();
+	
+	//std::cout << "new bot with id : " << m_id << std::endl;
 }
 
 
@@ -47,10 +52,8 @@ const std::string& Bot::id()
 bool Bot::is_compromised()
 {
 	bool compromised = false;
-	
 	if (m_status == BOT_COMPROMISED)
 		compromised = true;
-	
 	return compromised;
 }
 
@@ -60,8 +63,7 @@ bool Bot::is_compromised()
  */
 void Bot::compromise()
 {
-	m_status = BOT_NON_COMPROMISED;
-	
+	m_status = BOT_COMPROMISED;
 	return;
 }
 

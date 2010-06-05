@@ -57,7 +57,8 @@ static std::vector<boost::shared_ptr<Bot> > spammer_merge_rlist(std::vector<boos
 Spammer::Spammer() : Bot()
 {
 	// initialiser rlist
-	m_rlist = BotnetStaticConfiguration::rlist();
+	m_rlist = hardcoded_rlist();
+	std::cout << "new spammer with id : " << Bot::id() << std::endl;
 }
 
 
@@ -95,12 +96,10 @@ void Spammer::get_command()
  */
 void Spammer::execute()
 {
-	std::cout << "spammer execute" << std::endl;
-	std::cout << Bot::id() << std::endl;
-	/*while (true) {
+	while (true) {
 		update_rlist();
 		get_command();;
-	}*/
+	}
 	
 	return;
 }
@@ -124,7 +123,5 @@ void Spammer::wait()
 	m_spammer_thread->join();
 	return;
 }
-
-
 
 }

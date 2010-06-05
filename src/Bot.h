@@ -18,8 +18,6 @@
 #define BOT_H
 
 #include <string>
-#include <boost/smart_ptr.hpp>
-#include <boost/thread.hpp>
 
 namespace waledac 
 {
@@ -38,7 +36,7 @@ public :
 	
 	virtual void execute() = 0;
 	virtual void start() = 0;
-	virtual void wait() = 0;
+ 	virtual void wait() = 0;
 };
 
 }

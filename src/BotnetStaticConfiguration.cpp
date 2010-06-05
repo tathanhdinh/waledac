@@ -15,23 +15,48 @@
 */
 
 #include "BotnetStaticConfiguration.h"
+#include "Spammer.h"
+#include "Protecter.h"
 
 namespace waledac
 {
 
+boost::shared_ptr<BotnetStaticConfiguration> hardcoded_config;
+static std::vector< boost::shared_ptr<Bot> > static_rlist(500);
+static std::vector< boost::shared_ptr<Bot> > static_plist(10);
 	
-std::vector< boost::shared_ptr< Bot > > BotnetStaticConfiguration::plist()
+BotnetStaticConfiguration::BotnetStaticConfiguration()
 {
-	std::vector<boost::shared_ptr<Bot> > static_plist;
+	for (unsigned int i = 0; i < static_rlist.size(); ++i) {
+		static_rlist[i].reset(new Spammer());
+	}
 	
+	for (unsigned int i = 0; i < static_plist.size(); ++i) {
+		//static_plist[i].reset(new Protecter());
+	}
+}
+
+
+/*std::vector< boost::shared_ptr< Bot > > BotnetStaticConfiguration::plist()
+{
 	return static_plist;
 }
 
+
 std::vector< boost::shared_ptr< Bot > > BotnetStaticConfiguration::rlist()
 {
-	std::vector<boost::shared_ptr<Bot> > static_rlist;
-
 	return static_rlist;
+}*/
+
+std::vector< boost::shared_ptr<Bot> > hardcoded_rlist()
+{
+	return static_rlist;
+}
+
+
+std::vector< boost::shared_ptr<Bot> > hardcoded_plist()
+{
+	return static_plist;
 }
 
 }
