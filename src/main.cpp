@@ -15,9 +15,18 @@ int main(int argc, char **argv) {
 	boost::program_options::options_description desc("Options");
 	desc.add_options()
 	("help,h", "Display help")
-	("rlist,r",  boost::program_options::value<unsigned int>(&rlist_size), "RList size")
-	("plist,p", boost::program_options::value<unsigned int>(&plist_size), "PList size")
-	("spam,s", boost::program_options::value<unsigned int>(&spammers_number), "Spammers number");
+	
+	("rlist,r", 
+	 boost::program_options::value<unsigned int>(&rlist_size)->default_value(20), 
+	 "RList size")
+	 
+	("plist,p", 
+	 boost::program_options::value<unsigned int>(&plist_size)->default_value(7), 
+	 "PList size")
+	
+	("spam,s", 
+	 boost::program_options::value<unsigned int>(&spammers_number)->default_value(20), 
+	 "Spammers number");
 	
 	boost::program_options::variables_map vars_map;
 	boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), 

@@ -19,13 +19,14 @@
 
 #include <boost/smart_ptr.hpp>
 #include <boost/random.hpp>
+#include <boost/format.hpp>
 #include <algorithm>
 
 namespace waledac
 {
 
 
-std::vector<boost::shared_ptr<Bot> > repeater_merge_rlist(
+std::vector< boost::shared_ptr< Bot > > repeater_merge_rlist(
 									std::vector<boost::shared_ptr<Bot> > &existing_rlist, 
 									std::vector<boost::shared_ptr<Bot> > &new_rlist)
 {
@@ -41,20 +42,26 @@ Repeater::Repeater() : Bot()
 {
 	m_rlist.clear();
 	m_plist.clear();
-	//m_plist.clear();
 }
 
 
 /*
- * extract a subset of repeaters from rlist
+ * extract a random subset of repeaters from rlist
  */
 std::vector< boost::shared_ptr< Bot > > Repeater::sub_rlist()
 {
-	//std::cout << "sub_rlist" << std::endl;
-	std::vector< boost::shared_ptr<Bot> > sublist(100);
-	//std::cout << "rlist_size : " << m_rlist.size() << std::endl;
-	//std::copy(m_rlist.begin(), m_rlist.begin() + 99, sublist.begin());
-	return sublist;
+	// create a random permutation of RList
+	std::vector< boost::shared_ptr< Bot > > tmp_list = m_rlist;
+	std::random_shuffle(tmp_list.begin(), tmp_list.end());
+	
+	// and insert itself to this permutation
+	tmp_list.insert(tmp_list.begin(), Bot::shared_from_this());
+	
+	// extract sublist from this permutation
+	std::vector< boost::shared_ptr< Bot > > sub_list(tmp_list.size() / 5);
+	std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size() - 1, sub_list.begin());
+	
+	return sub_list;
 }
 
 
@@ -66,8 +73,6 @@ std::vector< boost::shared_ptr< Bot > > Repeater::sub_plist()
 	std::vector< boost::shared_ptr<Bot> > sublist(100);
 	return sublist;
 }
-
-
 
 
 /*
@@ -83,8 +88,9 @@ void Repeater::update_rlist()
 	boost::shared_ptr<Bot> repeater_target;
 	repeater_target = random_bot(m_rlist);
 	
-	std::cout << "repeater " << Bot::id() << " updates RList from repeater " 
-							<< repeater_target->id() << std::endl;
+	std::cout << "\033[01;31m" 
+				<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
+				% "repeater" % Bot::id() % "updates RList from repeater" % repeater_target->id();
 	
 	// get subset of rlist from this repeater
 	std::vector<boost::shared_ptr<Bot> > new_rlist;
@@ -110,8 +116,9 @@ void Repeater::update_plist()
 	boost::shared_ptr<Bot> repeater_target;
 	repeater_target = random_bot(m_plist);
 	
-	std::cout << "repeater " << Bot::id() << " updates PList from repeater " 
-							<< repeater_target->id() << std::endl;
+	std::cout << "\033[01;34m" 
+				<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
+				% "repeater" % Bot::id() % "updates PList from repeater" % repeater_target->id();
 	
 	// get subset of plist from this repeater
 	std::vector<boost::shared_ptr<Bot> > new_plist;

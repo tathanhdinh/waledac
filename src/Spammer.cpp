@@ -21,6 +21,7 @@
 #include <iostream>
 #include <boost/smart_ptr.hpp>
 #include <boost/random.hpp>
+#include <boost/format.hpp>
 
 namespace waledac
 {
@@ -56,9 +57,10 @@ void Spammer::update_rlist()
 	boost::shared_ptr<Bot> repeater_target;
 	repeater_target = random_bot(m_rlist);
 	
-	std::cout << "spammer " << Bot::id() << " updates RList from repeater " 
-							<< repeater_target->id() << std::endl;
-	
+	std::cout << "\033[22;32m" 
+				<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
+				% "spammer" % Bot::id() % "updates RList from repeater" % repeater_target->id();
+				
 	// get subset of rlist from this repeater
 	std::vector<boost::shared_ptr<Bot> > new_rlist;
 	new_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
@@ -75,7 +77,13 @@ void Spammer::update_rlist()
  */
 void Spammer::get_command()
 {
-	// not yet implemented
+	// takes a random repeater from rlist
+	boost::shared_ptr<Bot> repeater_proxy;
+	repeater_proxy = random_bot(m_rlist);
+	
+	std::cout << "\033[01;36m" 
+				<< boost::format("%1$'-'8s %2$'-'36s %3$'-'28s %4$'-'36s\n") 
+				% "spammer" % Bot::id() % "get command through repeater" % repeater_proxy->id();
 	return;
 }
 

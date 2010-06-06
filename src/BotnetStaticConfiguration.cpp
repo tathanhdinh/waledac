@@ -72,11 +72,10 @@ boost::shared_ptr<Bot> servercc()
 	return static_server;
 }
 
+
 boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& bot_list)
 {
 	unsigned int random_index = die() % bot_list.size();
-	//std::cout << "random_index : " << random_index << std::endl;
-	//std::cout << bot_list[random_index]->id() << std::endl;	
 	return bot_list[random_index];
 }
 

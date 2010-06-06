@@ -18,11 +18,13 @@
 #define BOT_H
 
 #include <string>
+//#include <boost/enable_shared_from_this.hpp>
+#include <boost/smart_ptr.hpp>
 
 namespace waledac 
 {
 
-class Bot
+class Bot : public boost::enable_shared_from_this< Bot >
 {
 private :
 	std::string m_id;
