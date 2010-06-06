@@ -27,21 +27,17 @@ namespace waledac
 
 class BotnetConfig
 {
-//private:
-	//std::vector< boost::shared_ptr<Bot> > m_rlist;
-	//std::vector< boost::shared_ptr<Bot> > m_plist;
-	
 public :
 	BotnetConfig(unsigned int rlist_size, unsigned int plist_size);
 };
 
-extern boost::shared_ptr<BotnetConfig> botnet_config;
+//extern boost::shared_ptr<BotnetConfig> static_botnet_config;
+
 extern std::vector< boost::shared_ptr<Bot> > hardcoded_rlist();
 extern std::vector< boost::shared_ptr<Bot> > hardcoded_plist();
-extern boost::shared_ptr<Bot> servercc();
 
-extern boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& 
-										bot_list);
+extern boost::shared_ptr<Bot> servercc();
+										
 extern void insert_attackers(std::vector< boost::shared_ptr< Bot > >& attackers);
 
 }

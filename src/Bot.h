@@ -18,6 +18,7 @@
 #define BOT_H
 
 #include <string>
+#include <vector>
 #include <boost/smart_ptr.hpp>
 
 namespace waledac 
@@ -39,6 +40,10 @@ public :
 	virtual void start() = 0;
  	virtual void wait() = 0;
 };
+
+extern boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& 
+										bot_list);
+
 
 }
 

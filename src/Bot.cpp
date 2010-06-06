@@ -17,13 +17,16 @@
 #include "Bot.h"
 
 #include <iostream>
-//#include <ossp/uuid++.hh>
 #include <vector>
+
+//#include <ossp/uuid++.hh>
 #include <uuid++.hh>
+
 #include <boost/smart_ptr.hpp>
+#include <boost/random.hpp>
 
 namespace waledac {
-	
+
 enum { BOT_COMPROMISED = 1, BOT_NON_COMPROMISED = 0 };
 	
 Bot::Bot()
@@ -63,6 +66,20 @@ void Bot::compromise()
 {
 	m_status = BOT_COMPROMISED;
 	return;
+}
+
+
+/*
+ * take a random bot from an existing list
+ */
+boost::uniform_int<> dist(std::numeric_limits<int>::min(), 
+						  std::numeric_limits<int>::max());
+boost::mt19937 gen;
+boost::variate_generator<boost::mt19937, boost::uniform_int<> > die(gen, dist);
+boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& bot_list)
+{
+	unsigned int random_index = die() % bot_list.size();
+	return bot_list[random_index];
 }
 
 }

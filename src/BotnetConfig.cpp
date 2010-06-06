@@ -20,17 +20,10 @@
 #include "Protecter.h"
 #include "ServerCC.h"
 
-#include <boost/random.hpp>
-
 namespace waledac
 {
 
-boost::uniform_int<> dist(std::numeric_limits<int>::min(), 
-						  std::numeric_limits<int>::max());
-boost::mt19937 gen;
-boost::variate_generator<boost::mt19937, boost::uniform_int<> > die(gen, dist);
-
-boost::shared_ptr<BotnetConfig> botnet_config;
+//static boost::shared_ptr<BotnetConfig> static_botnet_config;
 static std::vector< boost::shared_ptr<Bot> > static_rlist;
 static std::vector< boost::shared_ptr<Bot> > static_plist;
 static boost::shared_ptr<Bot> static_server;
@@ -55,28 +48,52 @@ BotnetConfig::BotnetConfig(unsigned int rlist_size,
 }
 
 
+/*
+ * get hardcoded RList
+ */
 std::vector< boost::shared_ptr<Bot> > hardcoded_rlist()
 {
 	return static_rlist;
 }
 
 
+/*
+ * get hardcoded PList
+ */
 std::vector< boost::shared_ptr<Bot> > hardcoded_plist()
 {
 	return static_plist;
 }
 
 
+/*
+ * get C&C server
+ */
 boost::shared_ptr<Bot> servercc()
 {
 	return static_server;
 }
 
 
-boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& bot_list)
+/*
+ * insert attackers into RList
+ */
+void insert_attackers(std::vector< boost::shared_ptr< Bot > >& attackers)
+{
+	for (unsigned int i = 0; i < attackers.size(); ++i) {
+		static_rlist.push_back(attackers[i]);
+	}
+	return;
+}
+
+
+
+
+
+/*boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& bot_list)
 {
 	unsigned int random_index = die() % bot_list.size();
 	return bot_list[random_index];
-}
+}*/
 
 }

@@ -13,6 +13,7 @@ int main(int argc, char **argv) {
 	unsigned int plist_size;
 	unsigned int spammers_number;
 	unsigned int attackers_number;
+	boost::shared_ptr< waledac::BotnetConfig > botnet;
 	
 	boost::program_options::options_description desc("Options");
 	desc.add_options()
@@ -45,11 +46,20 @@ int main(int argc, char **argv) {
 	else {
 		std::cout << "Waldac botnet simulation" << std::endl;
 		
-		std::cout << "Initialise hardcoded parameters" << std::endl;
+		std::cout << "Botnet parameters" << std::endl;
 		std::cout << "RList : " << rlist_size << " repeaters" << std::endl;
 		std::cout << "PList : " << plist_size << " protecters" << std::endl;
-		waledac::hardcoded_config.reset(new 
-					waledac::BotnetConfig(rlist_size, plist_size));
+		botnet.reset(new waledac::BotnetConfig(rlist_size, plist_size));
+		
+		std::vector< boost::shared_ptr<waledac::Bot> > attackers(attackers_number);
+		for (unsigned int i = 0; i < attackers.size(); ++i) {
+			(attackers[i]).reset(new waledac::Attacker());
+			//attackers[i]->start();
+		}
+		waledac::insert_attackers(attackers);
+		
+		/*waledac::static_botnet_config.reset(new 
+					waledac::BotnetConfig(rlist_size, plist_size));*/
 		
 		std::cout << "Start all repeaters ..." << std::endl;
 		std::vector< boost::shared_ptr<waledac::Bot> > repeaters = 
@@ -77,9 +87,8 @@ int main(int argc, char **argv) {
 		}
 		
 		std::cout << "Start all attackers ..." << std::endl;
-		std::vector< boost::shared_ptr<waledac::Attacker> > attackers(attackers_number);
 		for (unsigned int i = 0; i < attackers.size(); ++i) {
-			(attackers[i]).reset(new waledac::Attacker());
+			//(attackers[i]).reset(new waledac::Attacker());
 			attackers[i]->start();
 		}
 		
