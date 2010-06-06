@@ -15,7 +15,7 @@
 */
 
 #include "Repeater.h"
-#include "BotnetStaticConfiguration.h"
+#include "BotnetConfig.h"
 
 #include <boost/smart_ptr.hpp>
 #include <boost/random.hpp>
@@ -26,7 +26,7 @@ namespace waledac
 {
 
 
-std::vector< boost::shared_ptr< Bot > > repeater_merge_rlist(
+std::vector< boost::shared_ptr< Bot > > repeater_merge_list(
 									std::vector< boost::shared_ptr< Bot > > &existing_rlist, 
 									std::vector< boost::shared_ptr< Bot > > &received_rlist)
 {
@@ -61,9 +61,8 @@ std::vector< boost::shared_ptr< Bot > > Repeater::sub_rlist()
 	
 	// and insert itself to this permutation
 	tmp_list.insert(tmp_list.begin(), Bot::shared_from_this());
-	//std::cout << tmp_list[0]->id() << " " << this->id() << std::endl;
 	
-	// extract sublist from this permutation
+	// extract a sublist from this permutation
 	std::vector< boost::shared_ptr< Bot > > sub_list(tmp_list.size() / 5);
 	std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), sub_list.begin());
 	
@@ -72,12 +71,23 @@ std::vector< boost::shared_ptr< Bot > > Repeater::sub_rlist()
 
 
 /*
- * extract a subset of repeaters from rlist
+ * extract a subset of protecter from plist
  */
 std::vector< boost::shared_ptr< Bot > > Repeater::sub_plist()
 {
-	std::vector< boost::shared_ptr<Bot> > sublist(100);
-	return sublist;
+	if (m_plist.empty()) {
+		m_plist = hardcoded_plist();
+	}
+	
+	// create a random permutation of PList
+	std::vector< boost::shared_ptr< Bot > > tmp_list = m_plist;
+	std::random_shuffle(tmp_list.begin(), tmp_list.end());
+	
+	// extract a sublist from this permutation
+	std::vector< boost::shared_ptr< Bot > > sub_list(tmp_list.size() / 5);
+	std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), sub_list.begin());
+		
+	return sub_list;
 }
 
 
@@ -103,7 +113,7 @@ void Repeater::update_rlist()
 	received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
 	
 	// merge new rlist and existing rlist
-	m_rlist = repeater_merge_rlist(m_rlist, received_rlist);
+	m_rlist = repeater_merge_list(m_rlist, received_rlist);
 	
 	return;
 }
@@ -119,21 +129,31 @@ void Repeater::update_plist()
 	}
 	
 	// takes a random repeater from rlist
-	boost::shared_ptr<Bot> repeater_target;
-	repeater_target = random_bot(m_plist);
+	boost::shared_ptr< Bot > repeater_target;
+	repeater_target = random_bot(m_rlist);
 	
 	std::cout << "\033[01;34m" 
 				<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
 				% "repeater" % Bot::id() % "updates PList from repeater" % repeater_target->id();
 	
 	// get subset of plist from this repeater
-	std::vector<boost::shared_ptr<Bot> > new_plist;
-	new_plist = dynamic_cast<Repeater*>(repeater_target.get())->sub_plist();
+	std::vector< boost::shared_ptr< Bot > > received_plist;
+	received_plist = dynamic_cast<Repeater*>(repeater_target.get())->sub_plist();
 	
-	// merge new rlist and existing rlist
-	//m_plist = repeater_merge_rlist(m_plist, new_plist);
+	// merge new plist and existing plist
+	m_plist = repeater_merge_list(m_plist, received_plist);
 	
 	return;
+}
+
+
+/*
+ * get command from C&C server
+ */
+std::string Repeater::get_control_command()
+{
+	std::string command("blahblah");
+	return command;
 }
 
 

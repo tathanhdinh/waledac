@@ -1,6 +1,7 @@
-#include "BotnetStaticConfiguration.h"
+#include "BotnetConfig.h"
 #include "Spammer.h"
 #include "Repeater.h"
+#include "Attacker.h"
 
 #include <iostream>
 #include <vector>
@@ -11,6 +12,7 @@ int main(int argc, char **argv) {
 	unsigned int rlist_size;
 	unsigned int plist_size;
 	unsigned int spammers_number;
+	unsigned int attackers_number;
 	
 	boost::program_options::options_description desc("Options");
 	desc.add_options()
@@ -26,7 +28,11 @@ int main(int argc, char **argv) {
 	
 	("spam,s", 
 	 boost::program_options::value<unsigned int>(&spammers_number)->default_value(20), 
-	 "Spammers number");
+	 "Spammers number")
+	 
+	 ("attack,a", 
+	  boost::program_options::value<unsigned int>(&attackers_number)->default_value(1), 
+	  "Attackers numbers");
 	
 	boost::program_options::variables_map vars_map;
 	boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), 
@@ -43,7 +49,7 @@ int main(int argc, char **argv) {
 		std::cout << "RList : " << rlist_size << " repeaters" << std::endl;
 		std::cout << "PList : " << plist_size << " protecters" << std::endl;
 		waledac::hardcoded_config.reset(new 
-					waledac::BotnetStaticConfiguration(rlist_size, plist_size));
+					waledac::BotnetConfig(rlist_size, plist_size));
 		
 		std::cout << "Start all repeaters ..." << std::endl;
 		std::vector< boost::shared_ptr<waledac::Bot> > repeaters = 
@@ -63,13 +69,19 @@ int main(int argc, char **argv) {
 		boost::shared_ptr<waledac::Bot> server = waledac::servercc();
 		server->start();
 		
-		std::cout << "Botnet startup with 5 spammers" << std::endl;
-		std::vector<boost::shared_ptr<waledac::Spammer> > spammers(5);
+		std::cout << "Start all spammers ..." << std::endl;
+		std::vector< boost::shared_ptr<waledac::Spammer> > spammers(spammers_number);
 		for (unsigned int i = 0; i < spammers.size(); ++i) {
 			(spammers[i]).reset(new waledac::Spammer());
 			(spammers[i])->start();
 		}
 		
+		std::cout << "Start all attackers ..." << std::endl;
+		std::vector< boost::shared_ptr<waledac::Attacker> > attackers(attackers_number);
+		for (unsigned int i = 0; i < attackers.size(); ++i) {
+			(attackers[i]).reset(new waledac::Attacker());
+			attackers[i]->start();
+		}
 		
 		std::cout << "Botnet running ..." << std::endl;
 		/*for (unsigned int i = 0; i < spammers.size(); ++i) {

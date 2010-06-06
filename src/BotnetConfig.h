@@ -14,39 +14,36 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef REPEATER_H
-#define REPEATER_H
+#ifndef BOTNETSTATICCONFIGURATION_H
+#define BOTNETSTATICCONFIGURATION_H
 
 #include "Bot.h"
 
-#include <vector>
-#include <string>
 #include <boost/smart_ptr.hpp>
-#include <boost/thread.hpp>
+#include <vector>
 
-namespace waledac {
-
-class Repeater : public Bot
+namespace waledac
 {
-private:
-	std::vector< boost::shared_ptr<Bot> > m_rlist;
-	std::vector< boost::shared_ptr<Bot> > m_plist;
-	boost::shared_ptr<boost::thread> m_repeater_thread;
+
+class BotnetConfig
+{
+//private:
+	//std::vector< boost::shared_ptr<Bot> > m_rlist;
+	//std::vector< boost::shared_ptr<Bot> > m_plist;
 	
-public:
-	Repeater();
-	virtual void update_rlist();
-	virtual void update_plist();
-	virtual std::vector< boost::shared_ptr<Bot> > sub_rlist();
-	virtual std::vector< boost::shared_ptr<Bot> > sub_plist();
-	
-	virtual std::string get_control_command();
-	
-	virtual void execute();
-	virtual void start();
-	virtual void wait();
+public :
+	BotnetConfig(unsigned int rlist_size, unsigned int plist_size);
 };
+
+extern boost::shared_ptr<BotnetConfig> botnet_config;
+extern std::vector< boost::shared_ptr<Bot> > hardcoded_rlist();
+extern std::vector< boost::shared_ptr<Bot> > hardcoded_plist();
+extern boost::shared_ptr<Bot> servercc();
+
+extern boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& 
+										bot_list);
+extern void insert_attackers(std::vector< boost::shared_ptr< Bot > >& attackers);
 
 }
 
-#endif // REPEATER_H
+#endif // BOTNETSTATICCONFIGURATION_H
