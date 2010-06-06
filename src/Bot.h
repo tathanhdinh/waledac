@@ -18,7 +18,6 @@
 #define BOT_H
 
 #include <string>
-//#include <boost/enable_shared_from_this.hpp>
 #include <boost/smart_ptr.hpp>
 
 namespace waledac 

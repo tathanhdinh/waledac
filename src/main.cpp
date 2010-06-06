@@ -42,7 +42,8 @@ int main(int argc, char **argv) {
 		std::cout << "Initialise hardcoded parameters" << std::endl;
 		std::cout << "RList : " << rlist_size << " repeaters" << std::endl;
 		std::cout << "PList : " << plist_size << " protecters" << std::endl;
-		waledac::hardcoded_config.reset(new waledac::BotnetStaticConfiguration(5, 3));
+		waledac::hardcoded_config.reset(new 
+					waledac::BotnetStaticConfiguration(rlist_size, plist_size));
 		
 		std::cout << "Start all repeaters ..." << std::endl;
 		std::vector< boost::shared_ptr<waledac::Bot> > repeaters = 

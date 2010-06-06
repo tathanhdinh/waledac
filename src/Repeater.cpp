@@ -27,11 +27,12 @@ namespace waledac
 
 
 std::vector< boost::shared_ptr< Bot > > repeater_merge_rlist(
-									std::vector<boost::shared_ptr<Bot> > &existing_rlist, 
-									std::vector<boost::shared_ptr<Bot> > &new_rlist)
+									std::vector< boost::shared_ptr< Bot > > &existing_rlist, 
+									std::vector< boost::shared_ptr< Bot > > &received_rlist)
 {
-	// not yet implemented
-	return existing_rlist;
+	std::vector< boost::shared_ptr< Bot > > merged_list = existing_rlist;
+	std::copy(received_rlist.begin(), received_rlist.end(), merged_list.begin());
+	return merged_list;
 }
 
 
@@ -50,16 +51,21 @@ Repeater::Repeater() : Bot()
  */
 std::vector< boost::shared_ptr< Bot > > Repeater::sub_rlist()
 {
+	if (m_rlist.empty()) {
+		m_rlist = hardcoded_rlist();
+	}
+	
 	// create a random permutation of RList
 	std::vector< boost::shared_ptr< Bot > > tmp_list = m_rlist;
 	std::random_shuffle(tmp_list.begin(), tmp_list.end());
 	
 	// and insert itself to this permutation
 	tmp_list.insert(tmp_list.begin(), Bot::shared_from_this());
+	//std::cout << tmp_list[0]->id() << " " << this->id() << std::endl;
 	
 	// extract sublist from this permutation
 	std::vector< boost::shared_ptr< Bot > > sub_list(tmp_list.size() / 5);
-	std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size() - 1, sub_list.begin());
+	std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), sub_list.begin());
 	
 	return sub_list;
 }
@@ -93,11 +99,11 @@ void Repeater::update_rlist()
 				% "repeater" % Bot::id() % "updates RList from repeater" % repeater_target->id();
 	
 	// get subset of rlist from this repeater
-	std::vector<boost::shared_ptr<Bot> > new_rlist;
-	new_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
+	std::vector< boost::shared_ptr<Bot> > received_rlist;
+	received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
 	
 	// merge new rlist and existing rlist
-	m_rlist = repeater_merge_rlist(m_rlist, new_rlist);
+	m_rlist = repeater_merge_rlist(m_rlist, received_rlist);
 	
 	return;
 }
@@ -125,7 +131,7 @@ void Repeater::update_plist()
 	new_plist = dynamic_cast<Repeater*>(repeater_target.get())->sub_plist();
 	
 	// merge new rlist and existing rlist
-	m_plist = repeater_merge_rlist(m_plist, new_plist);
+	//m_plist = repeater_merge_rlist(m_plist, new_plist);
 	
 	return;
 }
