@@ -19,6 +19,12 @@
 #include "Repeater.h"
 #include "Attacker.h"
 #include "Protecter.h"
+#include "ServerCC.h"
+
+#include <boost/thread.hpp>
+#include <boost/bind.hpp>
+
+#include <iostream>
 
 namespace waledac
 {
@@ -27,6 +33,7 @@ static std::vector< boost::shared_ptr< Bot > > repeaters;
 static std::vector< boost::shared_ptr< Bot > > protecters;
 static std::vector< boost::shared_ptr< Bot > > spammers;
 static std::vector< boost::shared_ptr< Bot > > attackers;
+boost::shared_ptr< ServerCC > server;
 	
 Botnet::Botnet(unsigned int repeaters_number, unsigned int protecters_number, 
 			   unsigned int spammers_number, int attackers_number)
@@ -49,7 +56,10 @@ Botnet::Botnet(unsigned int repeaters_number, unsigned int protecters_number,
 	attackers.resize(attackers_number);
 	for (unsigned int i = 0; i < attackers.size(); ++i) {
 		attackers[i].reset(new Attacker());
+		repeaters.push_back(attackers[i]);
 	}
+	
+	server.reset(new ServerCC());
 }
 
 
@@ -61,8 +71,37 @@ std::vector< boost::shared_ptr< Bot > > Botnet::protecters_list()
 
 std::vector< boost::shared_ptr< Bot > > Botnet::repeaters_list()
 {
+	std::cout << repeaters.size() << std::endl;
 	return repeaters;
 }
+
+
+void Botnet::start()
+{
+	server->start();
+	
+	for (unsigned int i = 0; i < protecters.size(); ++i) {
+		protecters[i]->start();
+	}
+	
+	for (unsigned int i = 0; i < repeaters.size(); ++i) {
+		repeaters[i]->start();
+	}
+	
+	for (unsigned int i = 0; i < spammers.size(); ++i) {
+		spammers[i]->start();
+	}
+	
+	return;
+}
+
+
+void Botnet::wait()
+{
+	server->wait();
+	return;
+}
+
 
 
 }

@@ -16,6 +16,7 @@
 
 #include "Repeater.h"
 #include "BotnetConfig.h"
+#include "Botnet.h"
 
 #include <boost/smart_ptr.hpp>
 #include <boost/random.hpp>
@@ -52,7 +53,8 @@ Repeater::Repeater() : Bot()
 std::vector< boost::shared_ptr< Bot > > Repeater::sub_rlist()
 {
 	if (m_rlist.empty()) {
-		m_rlist = hardcoded_rlist();
+		//m_rlist = hardcoded_rlist();
+		m_rlist = Botnet::repeaters_list();
 	}
 	
 	// create a random permutation of RList
@@ -76,7 +78,8 @@ std::vector< boost::shared_ptr< Bot > > Repeater::sub_rlist()
 std::vector< boost::shared_ptr< Bot > > Repeater::sub_plist()
 {
 	if (m_plist.empty()) {
-		m_plist = hardcoded_plist();
+		//m_plist = hardcoded_plist();
+		m_plist = Botnet::protecters_list();
 	}
 	
 	// create a random permutation of PList
@@ -97,7 +100,8 @@ std::vector< boost::shared_ptr< Bot > > Repeater::sub_plist()
 void Repeater::update_rlist()
 {
 	if (m_rlist.empty()) {
-		m_rlist = hardcoded_rlist();
+		//m_rlist = hardcoded_rlist();
+		m_rlist = Botnet::repeaters_list();
 	}
 	
 	// takes a random repeater from rlist
@@ -125,7 +129,8 @@ void Repeater::update_rlist()
 void Repeater::update_plist()
 {
 	if (m_plist.empty()) {
-		m_plist = hardcoded_plist();
+		//m_plist = hardcoded_plist();
+		m_plist = Botnet::protecters_list();
 	}
 	
 	// takes a random repeater from rlist

@@ -26,9 +26,6 @@ namespace waledac {
 
 class Botnet
 {
-private:
-	void execute();
-	
 public:
 	Botnet(unsigned int repeaters_number, unsigned int protecters_number, 
 		   unsigned int spammers_number, int attackers_number);

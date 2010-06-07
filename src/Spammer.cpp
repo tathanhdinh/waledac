@@ -17,6 +17,7 @@
 #include "Spammer.h"
 #include "Repeater.h"
 #include "BotnetConfig.h"
+#include "Botnet.h"
 
 #include <iostream>
 #include <boost/smart_ptr.hpp>
@@ -44,7 +45,8 @@ spammer_merge_rlist(std::vector< boost::shared_ptr<Bot> > &existing_rlist,
 Spammer::Spammer() : Bot()
 {
 	// initialise rlist
-	m_rlist = hardcoded_rlist();
+	//m_rlist = hardcoded_rlist();
+	m_rlist = Botnet::repeaters_list();
 }
 
 

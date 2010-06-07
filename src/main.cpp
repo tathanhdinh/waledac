@@ -1,4 +1,5 @@
 #include "BotnetConfig.h"
+#include "Botnet.h"
 #include "Spammer.h"
 #include "Repeater.h"
 #include "Attacker.h"
@@ -13,7 +14,9 @@ int main(int argc, char **argv) {
 	unsigned int plist_size;
 	unsigned int spammers_number;
 	unsigned int attackers_number;
-	boost::shared_ptr< waledac::BotnetConfig > botnet;
+	
+	boost::shared_ptr< waledac::BotnetConfig > botnet_config;
+	boost::shared_ptr< waledac::Botnet > new_botnet;
 	
 	boost::program_options::options_description desc("Options");
 	desc.add_options()
@@ -45,22 +48,23 @@ int main(int argc, char **argv) {
 	}
 	else {
 		std::cout << "Waldac botnet simulation" << std::endl;
+		new_botnet.reset(new waledac::Botnet(rlist_size, plist_size, 
+											 spammers_number, attackers_number));
+		new_botnet->start();
+		new_botnet->wait();
 		
-		std::cout << "Botnet parameters" << std::endl;
+		
+		/*std::cout << "Botnet parameters" << std::endl;
 		std::cout << "RList : " << rlist_size << " repeaters" << std::endl;
 		std::cout << "PList : " << plist_size << " protecters" << std::endl;
-		botnet.reset(new waledac::BotnetConfig(rlist_size, plist_size));
+		botnet_config.reset(new waledac::BotnetConfig(rlist_size, plist_size));
 		
 		std::vector< boost::shared_ptr<waledac::Bot> > attackers(attackers_number);
 		for (unsigned int i = 0; i < attackers.size(); ++i) {
 			(attackers[i]).reset(new waledac::Attacker());
-			//attackers[i]->start();
 		}
 		waledac::insert_attackers(attackers);
-		
-		/*waledac::static_botnet_config.reset(new 
-					waledac::BotnetConfig(rlist_size, plist_size));*/
-		
+				
 		std::cout << "Start all repeaters ..." << std::endl;
 		std::vector< boost::shared_ptr<waledac::Bot> > repeaters = 
 														waledac::hardcoded_rlist();
@@ -88,24 +92,11 @@ int main(int argc, char **argv) {
 		
 		std::cout << "Start all attackers ..." << std::endl;
 		for (unsigned int i = 0; i < attackers.size(); ++i) {
-			//(attackers[i]).reset(new waledac::Attacker());
 			attackers[i]->start();
 		}
 		
 		std::cout << "Botnet running ..." << std::endl;
-		/*for (unsigned int i = 0; i < spammers.size(); ++i) {
-			spammers[i]->wait();
-		}
-		
-		for (unsigned int i = 0; i < repeaters.size(); ++i) {
-			repeaters[i]->wait();
-		}
-		
-		for (unsigned int i = 0; i < protecters.size(); ++i) {
-			protecters[i]->wait();
-		}*/
-		
-		server->wait();
+		server->wait();*/
 	}
 	
     return 0;

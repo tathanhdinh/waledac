@@ -26,7 +26,6 @@ namespace waledac
  */
 Protecter::Protecter() : Bot()
 {
-	//std::cout << "new protecter with id : " << Bot::id() << std::endl;
 }
 
 
@@ -63,7 +62,6 @@ void Protecter::wait()
 	m_protecter_thread->join();
 	return;
 }
-
 
 
 }

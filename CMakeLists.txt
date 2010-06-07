@@ -8,7 +8,7 @@ set(CMAKE_BUILD_TYPE Release)
 
 set(waledac_botnet_src
 	src/Bot.cpp src/Spammer.cpp src/Repeater.cpp src/Protecter.cpp
-	src/ServerCC.cpp src/BotnetConfig.cpp src/Attacker.cpp
+	src/ServerCC.cpp src/BotnetConfig.cpp src/Attacker.cpp src/Botnet.cpp
 	src/main.cpp
 )
 
