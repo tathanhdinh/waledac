@@ -14,5 +14,32 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include "Servercc.h"
+#ifndef ATTACKER_H
+#define ATTACKER_H
 
+#include "Repeater.h"
+
+namespace waledac {
+
+class Attacker : public Repeater
+{
+private:
+	boost::shared_ptr< boost::thread > m_attacker_thread;
+	
+public:
+	Attacker();
+	virtual void update_rlist();
+	virtual void update_plist();
+	virtual std::vector< boost::shared_ptr<Bot> > sub_rlist();
+	virtual std::vector< boost::shared_ptr<Bot> > sub_plist();
+	
+	virtual std::string get_control_command();
+	
+	virtual void execute();
+	virtual void start();
+	virtual void wait();
+};
+
+}
+
+#endif // ATTACKER_H

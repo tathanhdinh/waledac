@@ -14,17 +14,55 @@
    Boston, MA 02110-1301, USA.
 */
 
-#ifndef SERVERCC_H
-#define SERVERCC_H
+#include "ServerCC.h"
 
-#include "Bot.h"
+#include <iostream>
 
-namespace waledac {
-
-class ServerCC : public Bot
+namespace waledac
 {
-};
 
+/*
+ * ServerCC constructor
+ * Remark : It should be implemented as singleton class
+ */
+ServerCC::ServerCC() : Bot()
+{
 }
 
-#endif // SERVERCC_H
+
+/*
+ * life of ServerCC
+ */
+void ServerCC::execute()
+{
+	while (true) {
+		// wait for request from protecter
+		sleep(5);
+	}
+	return;
+}
+
+
+/*
+ * start serverCC thread
+ */
+void ServerCC::start()
+{
+	std::cout << "start servercc with id : " << Bot::id() << std::endl;
+	m_servercc_thread.reset(new boost::thread(boost::bind(&ServerCC::execute, 
+														  *this)));
+	return;
+}
+
+
+/*
+ * wait until serverSS stop
+ */
+void ServerCC::wait()
+{
+	m_servercc_thread->join();
+	return;
+}
+
+
+}
