@@ -29,7 +29,7 @@ class Spammer : public Bot
 {
 private:
 	std::vector< boost::shared_ptr<Bot> > m_rlist;
-	boost::shared_ptr<boost::thread> m_spammer_thread;
+	boost::shared_ptr< boost::thread > m_spammer_thread;
 	
 public:
 	Spammer();
