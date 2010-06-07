@@ -36,6 +36,8 @@ public:
 	void update_rlist();
 	void get_command();
 	
+	std::vector< boost::shared_ptr<Bot> > rlist();
+	
 	virtual void execute();
 	virtual void start();
 	virtual void wait();

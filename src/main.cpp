@@ -4,6 +4,8 @@
 #include "Repeater.h"
 #include "Attacker.h"
 
+#include "vtkBotnetGraph.h"
+
 #include <iostream>
 #include <vector>
 

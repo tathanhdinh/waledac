@@ -99,6 +99,12 @@ void Spammer::get_command()
 }
 
 
+std::vector< boost::shared_ptr< Bot > > Spammer::rlist()
+{
+	return m_rlist;
+}
+
+
 /*
  * life of spammer
  */
