@@ -71,7 +71,7 @@ std::vector< boost::shared_ptr< Bot > > Botnet::protecters_list()
 
 std::vector< boost::shared_ptr< Bot > > Botnet::repeaters_list()
 {
-	std::cout << repeaters.size() << std::endl;
+	//std::cout << repeaters.size() << std::endl;
 	return repeaters;
 }
 
