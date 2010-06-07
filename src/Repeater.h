@@ -40,7 +40,7 @@ public:
 	virtual std::vector< boost::shared_ptr<Bot> > sub_rlist();
 	virtual std::vector< boost::shared_ptr<Bot> > sub_plist();
 	
-	virtual std::string get_control_command();
+	virtual unsigned int get_control_command();
 	
 	virtual void execute();
 	virtual void start();

@@ -35,6 +35,8 @@ public:
 	
 	static std::vector< boost::shared_ptr< Bot > > repeaters_list();
 	static std::vector< boost::shared_ptr< Bot > > protecters_list();
+	static std::vector< boost::shared_ptr< Bot > > spammers_list();
+	static std::vector< boost::shared_ptr< Bot > > attackers_list();
 };
 
 }

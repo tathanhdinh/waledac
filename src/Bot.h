@@ -24,6 +24,8 @@
 namespace waledac 
 {
 
+enum { COMMAND_FROM_REPEATER = 0, COMMAND_FROM_ATTACKER = 1 };
+	
 class Bot : public boost::enable_shared_from_this< Bot >
 {
 private :

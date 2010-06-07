@@ -18,6 +18,7 @@
 #include "Repeater.h"
 #include "BotnetConfig.h"
 #include "Botnet.h"
+#include "Bot.h"
 
 #include <iostream>
 #include <boost/smart_ptr.hpp>
@@ -46,7 +47,7 @@ Spammer::Spammer() : Bot()
 {
 	// initialise rlist
 	//m_rlist = hardcoded_rlist();
-	m_rlist = Botnet::repeaters_list();
+	//m_rlist = Botnet::repeaters_list();
 }
 
 
@@ -86,7 +87,14 @@ void Spammer::get_command()
 	std::cout << "\033[01;36m" 
 				<< boost::format("%1$'-'8s %2$'-'36s %3$'-'28s %4$'-'36s\n") 
 				% "spammer" % Bot::id() % "get command through repeater" % repeater_proxy->id();
-	dynamic_cast<Repeater*>(repeater_proxy.get())->get_control_command();
+				
+	unsigned int received_command = dynamic_cast<Repeater*>
+										(repeater_proxy.get())->get_control_command();
+	if (received_command == COMMAND_FROM_ATTACKER) {
+		Bot::compromise();
+		std::cout << "spammer is compromised" << std::endl;
+	}
+	
 	return;
 }
 
@@ -96,6 +104,8 @@ void Spammer::get_command()
  */
 void Spammer::execute()
 {
+	m_rlist = Botnet::repeaters_list();
+	
 	while (true) {
 		update_rlist();
 		get_command();

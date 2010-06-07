@@ -35,6 +35,8 @@ Bot::Bot()
 	uuid bot_uuid;
 	bot_uuid.make(UUID_MAKE_V4);
 	m_id = bot_uuid.string();	
+	
+	m_status = BOT_NON_COMPROMISED;
 }
 
 
@@ -60,13 +62,13 @@ bool Bot::is_compromised()
 
 
 /*
- * bot is compromised
+ *
  */
 void Bot::compromise()
 {
 	m_status = BOT_COMPROMISED;
-	return;
 }
+
 
 
 /*

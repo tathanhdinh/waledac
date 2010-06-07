@@ -51,6 +51,7 @@ int main(int argc, char **argv) {
 		new_botnet.reset(new waledac::Botnet(rlist_size, plist_size, 
 											 spammers_number, attackers_number));
 		new_botnet->start();
+		
 		new_botnet->wait();
 		
 		

