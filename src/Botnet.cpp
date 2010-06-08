@@ -25,6 +25,7 @@
 #include <boost/bind.hpp>
 
 #include <iostream>
+#include <boost/thread/pthread/mutex.hpp>
 
 namespace waledac
 {

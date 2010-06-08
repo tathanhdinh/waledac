@@ -46,6 +46,9 @@ public :
 extern boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& 
 										bot_list);
 
+std::vector< boost::shared_ptr< Bot > > merge_list(
+						std::vector< boost::shared_ptr< Bot > > &existing_rlist, 
+						std::vector< boost::shared_ptr< Bot > > &received_rlist);
 
 }
 

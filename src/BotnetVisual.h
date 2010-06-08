@@ -14,55 +14,23 @@
    Boston, MA 02110-1301, USA.
 */
 
-#include "ServerCC.h"
+#ifndef BOTNETVISUAL_H
+#define BOTNETVISUAL_H
 
-#include <iostream>
+#include "Botnet.h"
 
-namespace waledac
+namespace waledac {
+
+class BotnetVisual
 {
+public:
+	BotnetVisual(Botnet* botnet);
+	
+	/*void execute();
+	void start();
+	void run();*/
+};
 
-/*
- * ServerCC constructor
- * Remark : It should be implemented as singleton class
- */
-ServerCC::ServerCC() : Bot()
-{
 }
 
-
-/*
- * life of ServerCC
- */
-void ServerCC::execute()
-{
-	while (true) {
-		// wait for request from protecter
-		sleep(5);
-	}
-	return;
-}
-
-
-/*
- * start serverCC thread
- */
-void ServerCC::start()
-{
-	std::cout << "start servercc with id : " << Bot::id() << std::endl;
-	m_servercc_thread.reset(new boost::thread(boost::bind(&ServerCC::execute, 
-														  *this)));
-	return;
-}
-
-
-/*
- * wait until serverSS stop
- */
-void ServerCC::wait()
-{
-	m_servercc_thread->join();
-	return;
-}
-
-
-}
+#endif // BOTNETVISUAL_H

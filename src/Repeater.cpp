@@ -31,9 +31,10 @@ std::vector< boost::shared_ptr< Bot > > repeater_merge_list(
 									std::vector< boost::shared_ptr< Bot > > &existing_rlist, 
 									std::vector< boost::shared_ptr< Bot > > &received_rlist)
 {
-	std::vector< boost::shared_ptr< Bot > > merged_list = existing_rlist;
+	/*std::vector< boost::shared_ptr< Bot > > merged_list = existing_rlist;
 	std::copy(received_rlist.begin(), received_rlist.end(), merged_list.begin());
-	return merged_list;
+	return merged_list;*/
+	return merge_list(existing_rlist, received_rlist);
 }
 
 

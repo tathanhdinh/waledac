@@ -84,5 +84,26 @@ boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& bot_lis
 	return bot_list[random_index];
 }
 
+
+/*
+ * merge randomly two lists
+ */
+std::vector< boost::shared_ptr< Bot > > merge_list(std::vector< boost::shared_ptr< Bot > >& listA, 
+												   std::vector< boost::shared_ptr< Bot > >& listB)
+{
+	std::vector< boost::shared_ptr<Bot> >  total_list = listA;
+	for (unsigned int i = 0; i < listB.size(); ++i) {
+		total_list.push_back(listB[i]);
+	}
+	std::random_shuffle(total_list.begin(), total_list.end());
+	
+	std::vector< boost::shared_ptr<Bot> > merged_list(listA.size());
+	std::copy(total_list.begin(), total_list.begin() + merged_list.size(), 
+			  merged_list.begin());
+	
+	return merged_list;
+}
+
+
 }
 

@@ -35,8 +35,17 @@ static std::vector< boost::shared_ptr<Bot> >
 spammer_merge_rlist(std::vector< boost::shared_ptr<Bot> > &existing_rlist, 
 					std::vector< boost::shared_ptr<Bot> > &new_rlist)
 {
-	// not yet implemented
-	return existing_rlist;
+	/*std::vector< boost::shared_ptr<Bot> >  total_list = existing_rlist;
+	for (unsigned int i = 0; i < new_rlist.size(); ++i) {
+		total_list.push_back(new_rlist[i]);
+	}
+	std::random_shuffle(total_list.begin(), total_list.end());
+	
+	std::vector< boost::shared_ptr<Bot> > merged_list(existing_rlist.size());
+	std::copy(total_list.begin(), total_list.begin() + merged_list.size(), merged_list.begin());
+	
+	return merged_list;*/
+	return merge_list(existing_rlist, new_rlist);
 }
 
 
