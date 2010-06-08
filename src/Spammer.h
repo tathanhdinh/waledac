@@ -34,7 +34,7 @@ private:
 public:
 	Spammer();
 	void update_rlist();
-	void get_command();
+	void request_command();
 	
 	std::vector< boost::shared_ptr<Bot> > rlist();
 	

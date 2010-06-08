@@ -24,7 +24,7 @@
 namespace waledac 
 {
 
-enum { COMMAND_FROM_REPEATER = 0, COMMAND_FROM_ATTACKER = 1 };
+enum command_code { COMMAND_FROM_REPEATER = 0, COMMAND_FROM_ATTACKER = 1 };
 	
 class Bot : public boost::enable_shared_from_this< Bot >
 {
@@ -45,6 +45,8 @@ public :
 
 extern boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& 
 										bot_list);
+										
+unsigned int random_number(unsigned int max);
 
 std::vector< boost::shared_ptr< Bot > > merge_list(
 						std::vector< boost::shared_ptr< Bot > > &existing_rlist, 

@@ -85,6 +85,14 @@ boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& bot_lis
 }
 
 
+unsigned int random_number(unsigned int max)
+{
+	unsigned int random_value = die() % (max + 1);;
+	std::cout << "random value " << random_value << std::endl;
+	return random_value;
+}
+
+
 /*
  * merge randomly two lists
  */

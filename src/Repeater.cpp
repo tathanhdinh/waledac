@@ -15,7 +15,6 @@
 */
 
 #include "Repeater.h"
-#include "BotnetConfig.h"
 #include "Botnet.h"
 
 #include <boost/smart_ptr.hpp>
@@ -31,9 +30,6 @@ std::vector< boost::shared_ptr< Bot > > repeater_merge_list(
 									std::vector< boost::shared_ptr< Bot > > &existing_rlist, 
 									std::vector< boost::shared_ptr< Bot > > &received_rlist)
 {
-	/*std::vector< boost::shared_ptr< Bot > > merged_list = existing_rlist;
-	std::copy(received_rlist.begin(), received_rlist.end(), merged_list.begin());
-	return merged_list;*/
 	return merge_list(existing_rlist, received_rlist);
 }
 
@@ -44,7 +40,7 @@ std::vector< boost::shared_ptr< Bot > > repeater_merge_list(
 Repeater::Repeater() : Bot()
 {
 	m_rlist.clear();
-	m_plist.clear();
+	m_plist.clear();	
 }
 
 
@@ -53,21 +49,26 @@ Repeater::Repeater() : Bot()
  */
 std::vector< boost::shared_ptr< Bot > > Repeater::sub_rlist()
 {
-	/*if (m_rlist.empty()) {
-		//m_rlist = hardcoded_rlist();
-		m_rlist = Botnet::repeaters_list();
-	}*/
+	const unsigned int max_try = 10;
+	std::vector< boost::shared_ptr< Bot > > sub_list;
 	
-	// create a random permutation of RList
-	std::vector< boost::shared_ptr< Bot > > tmp_list = m_rlist;
-	std::random_shuffle(tmp_list.begin(), tmp_list.end());
-	
-	// and insert itself to this permutation
-	tmp_list.insert(tmp_list.begin(), Bot::shared_from_this());
-	
-	// extract a sublist from this permutation
-	std::vector< boost::shared_ptr< Bot > > sub_list(tmp_list.size() / 5);
-	std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), sub_list.begin());
+	// take a dice
+	if (random_number(max_try) != 0) {
+		// create a random permutation of RList
+		std::vector< boost::shared_ptr< Bot > > tmp_list = m_rlist;
+		std::random_shuffle(tmp_list.begin(), tmp_list.end());
+		
+		// and insert itself to this permutation
+		tmp_list.insert(tmp_list.begin(), Bot::shared_from_this());
+		
+		// extract a sublist from this permutation
+		sub_list.resize(tmp_list.size() / 5);
+		std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), 
+				  sub_list.begin());
+	}
+	else {
+		sub_list.clear(); // send a empty sublist
+	}
 	
 	return sub_list;
 }
@@ -78,18 +79,23 @@ std::vector< boost::shared_ptr< Bot > > Repeater::sub_rlist()
  */
 std::vector< boost::shared_ptr< Bot > > Repeater::sub_plist()
 {
-	/*if (m_plist.empty()) {
-		//m_plist = hardcoded_plist();
-		m_plist = Botnet::protecters_list();
-	}*/
+	const unsigned int max_try = 10;
+	std::vector< boost::shared_ptr< Bot > > sub_list;
 	
-	// create a random permutation of PList
-	std::vector< boost::shared_ptr< Bot > > tmp_list = m_plist;
-	std::random_shuffle(tmp_list.begin(), tmp_list.end());
-	
-	// extract a sublist from this permutation
-	std::vector< boost::shared_ptr< Bot > > sub_list(tmp_list.size() / 5);
-	std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), sub_list.begin());
+	// take a dice
+	if (random_number(max_try) != 0) {
+		// create a random permutation of PList
+		std::vector< boost::shared_ptr< Bot > > tmp_list = m_plist;
+		std::random_shuffle(tmp_list.begin(), tmp_list.end());
+		
+		// extract a sublist from this permutation
+		sub_list.resize(tmp_list.size() / 5);
+		std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), 
+				  sub_list.begin());
+	}
+	else {
+		sub_list.clear(); // send a empty sublist
+	}
 		
 	return sub_list;
 }
@@ -99,12 +105,7 @@ std::vector< boost::shared_ptr< Bot > > Repeater::sub_plist()
  * update rlist from other repeaters
  */
 void Repeater::update_rlist()
-{
-	/*if (m_rlist.empty()) {
-		//m_rlist = hardcoded_rlist();
-		m_rlist = Botnet::repeaters_list();
-	}*/
-	
+{	
 	// takes a random repeater from rlist
 	boost::shared_ptr<Bot> repeater_target;
 	repeater_target = random_bot(m_rlist);
@@ -128,12 +129,7 @@ void Repeater::update_rlist()
  * update plist from other repeaters
  */
 void Repeater::update_plist()
-{
-	/*if (m_plist.empty()) {
-		//m_plist = hardcoded_plist();
-		m_plist = Botnet::protecters_list();
-	}*/
-	
+{	
 	// takes a random repeater from rlist
 	boost::shared_ptr< Bot > repeater_target;
 	repeater_target = random_bot(m_rlist);
@@ -156,7 +152,7 @@ void Repeater::update_plist()
 /*
  * get command from C&C server
  */
-unsigned int Repeater::get_control_command()
+command_code Repeater::request_command()
 {
 	return COMMAND_FROM_REPEATER;
 }

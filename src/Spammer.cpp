@@ -16,7 +16,6 @@
 
 #include "Spammer.h"
 #include "Repeater.h"
-#include "BotnetConfig.h"
 #include "Botnet.h"
 #include "Bot.h"
 
@@ -35,16 +34,6 @@ static std::vector< boost::shared_ptr<Bot> >
 spammer_merge_rlist(std::vector< boost::shared_ptr<Bot> > &existing_rlist, 
 					std::vector< boost::shared_ptr<Bot> > &new_rlist)
 {
-	/*std::vector< boost::shared_ptr<Bot> >  total_list = existing_rlist;
-	for (unsigned int i = 0; i < new_rlist.size(); ++i) {
-		total_list.push_back(new_rlist[i]);
-	}
-	std::random_shuffle(total_list.begin(), total_list.end());
-	
-	std::vector< boost::shared_ptr<Bot> > merged_list(existing_rlist.size());
-	std::copy(total_list.begin(), total_list.begin() + merged_list.size(), merged_list.begin());
-	
-	return merged_list;*/
 	return merge_list(existing_rlist, new_rlist);
 }
 
@@ -55,8 +44,7 @@ spammer_merge_rlist(std::vector< boost::shared_ptr<Bot> > &existing_rlist,
 Spammer::Spammer() : Bot()
 {
 	// initialise rlist
-	//m_rlist = hardcoded_rlist();
-	//m_rlist = Botnet::repeaters_list();
+	m_rlist.clear();
 }
 
 
@@ -65,20 +53,28 @@ Spammer::Spammer() : Bot()
  */
 void Spammer::update_rlist()
 {
-	// takes a random repeater from rlist
 	boost::shared_ptr<Bot> repeater_target;
-	repeater_target = random_bot(m_rlist);
+	std::vector<boost::shared_ptr<Bot> > received_rlist;
 	
-	std::cout << "\033[22;32m" 
-				<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
-				% "spammer" % Bot::id() % "updates RList from repeater" % repeater_target->id();
-				
-	// get subset of rlist from this repeater
-	std::vector<boost::shared_ptr<Bot> > new_rlist;
-	new_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
-	
-	// merge new rlist and existing rlist
-	m_rlist = spammer_merge_rlist(m_rlist, new_rlist);
+	// repeat
+	//while (true) {
+		// takes a random repeater from rlist
+		repeater_target = random_bot(m_rlist);
+		
+		std::cout << "\033[22;32m" 
+					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
+					% "spammer" % Bot::id() % "updates RList from repeater" % repeater_target->id();
+					
+		// get subset of rlist from this repeater
+		received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
+		
+		if (received_rlist.size() > 0) { // until received non-empty list
+			// merge new rlist and existing rlist
+			m_rlist = spammer_merge_rlist(m_rlist, received_rlist);
+			//break;
+		}
+	//}
+	std::cout << "received list size : " << received_rlist.size() << std::endl;
 	
 	return;
 }
@@ -87,7 +83,7 @@ void Spammer::update_rlist()
 /*
  * get command from C&C server
  */
-void Spammer::get_command()
+void Spammer::request_command()
 {
 	// takes a random repeater from rlist
 	boost::shared_ptr<Bot> repeater_proxy;
@@ -98,7 +94,7 @@ void Spammer::get_command()
 				% "spammer" % Bot::id() % "get command through repeater" % repeater_proxy->id();
 				
 	unsigned int received_command = dynamic_cast<Repeater*>
-										(repeater_proxy.get())->get_control_command();
+										(repeater_proxy.get())->request_command();
 	if (received_command == COMMAND_FROM_ATTACKER) {
 		Bot::compromise();
 		std::cout << "spammer is compromised" << std::endl;
@@ -123,7 +119,7 @@ void Spammer::execute()
 	
 	while (true) {
 		update_rlist();
-		get_command();
+		request_command();
 		sleep(5);
 	}
 	

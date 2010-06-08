@@ -73,7 +73,7 @@ void Attacker::update_rlist()
 /*
  * get control command from C&C server
  */
-unsigned int Attacker::get_control_command()
+command_code Attacker::request_command()
 {
 	std::cout << "\033[01;33m" << "request from spammer detected" << std::endl;
 	return COMMAND_FROM_ATTACKER;

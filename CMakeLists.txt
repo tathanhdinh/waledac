@@ -13,7 +13,7 @@ link_directories(/usr/local/lib/vtk-5.6/)
 
 set(waledac_botnet_src
 	src/Bot.cpp src/Spammer.cpp src/Repeater.cpp src/Protecter.cpp
-	src/ServerCC.cpp src/BotnetConfig.cpp src/Attacker.cpp src/Botnet.cpp
+	src/ServerCC.cpp src/Attacker.cpp src/Botnet.cpp
 	src/main.cpp
 )
 

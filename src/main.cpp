@@ -1,4 +1,3 @@
-#include "BotnetConfig.h"
 #include "Botnet.h"
 #include "Spammer.h"
 #include "Repeater.h"
@@ -54,7 +53,7 @@ int main(int argc, char **argv) {
 											 spammers_number, attackers_number));
 		new_botnet->start();
 		
-		botnet_visual.reset(new waledac::BotnetVisual(new_botnet.get()));
+		//botnet_visual.reset(new waledac::BotnetVisual(new_botnet.get()));
 		
 		new_botnet->wait();
 	}
