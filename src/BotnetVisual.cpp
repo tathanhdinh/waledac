@@ -83,12 +83,17 @@ BotnetVisual::BotnetVisual(Botnet *botnet)
 		}
 	}
 	
-	vtkTree *tree = vtkTree::New();
-	tree->GetVertexData()->AddArray(vertexColors);
+	/*vtkTree *tree = vtkTree::New();
+	if (!tree->CheckedShallowCopy(botnet_graph)) {
+		std::cout << "sdfsfdsdfsdf" << std::endl;
+	}
+	tree->GetVertexData()->AddArray(vertexColors);*/
+	
 	
 	vtkGraphLayout* layout = vtkGraphLayout::New();
 	vtkConeLayoutStrategy* strategy = vtkConeLayoutStrategy::New();
-	layout->SetInput(tree);
+	//layout->SetInput(tree);
+	layout->SetInput(botnet_graph);
 	layout->SetLayoutStrategy(strategy);
 
 

