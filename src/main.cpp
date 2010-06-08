@@ -57,51 +57,6 @@ int main(int argc, char **argv) {
 		botnet_visual.reset(new waledac::BotnetVisual(new_botnet.get()));
 		
 		new_botnet->wait();
-		
-		
-		/*std::cout << "Botnet parameters" << std::endl;
-		std::cout << "RList : " << rlist_size << " repeaters" << std::endl;
-		std::cout << "PList : " << plist_size << " protecters" << std::endl;
-		botnet_config.reset(new waledac::BotnetConfig(rlist_size, plist_size));
-		
-		std::vector< boost::shared_ptr<waledac::Bot> > attackers(attackers_number);
-		for (unsigned int i = 0; i < attackers.size(); ++i) {
-			(attackers[i]).reset(new waledac::Attacker());
-		}
-		waledac::insert_attackers(attackers);
-				
-		std::cout << "Start all repeaters ..." << std::endl;
-		std::vector< boost::shared_ptr<waledac::Bot> > repeaters = 
-														waledac::hardcoded_rlist();
-		for (unsigned int i = 0; i < repeaters.size(); ++i) {
-			repeaters[i]->start();
-		}
-		
-		std::cout << "Start all protecters ..." << std::endl;
-		std::vector< boost::shared_ptr<waledac::Bot> > protecters = 
-														waledac::hardcoded_plist();
-		for (unsigned int i = 0; i < protecters.size(); ++i) {
-			protecters[i]->start();
-		}
-		
-		std::cout << "Start C&C server ..." << std::endl;
-		boost::shared_ptr<waledac::Bot> server = waledac::servercc();
-		server->start();
-		
-		std::cout << "Start all spammers ..." << std::endl;
-		std::vector< boost::shared_ptr<waledac::Spammer> > spammers(spammers_number);
-		for (unsigned int i = 0; i < spammers.size(); ++i) {
-			(spammers[i]).reset(new waledac::Spammer());
-			(spammers[i])->start();
-		}
-		
-		std::cout << "Start all attackers ..." << std::endl;
-		for (unsigned int i = 0; i < attackers.size(); ++i) {
-			attackers[i]->start();
-		}
-		
-		std::cout << "Botnet running ..." << std::endl;
-		server->wait();*/
 	}
 	
     return 0;
