@@ -53,8 +53,11 @@ void vtkBotnetGraph::update_graph()
 		calc_points(layout);
 	}
 	
+	printf("setpoints\n");
 	this->graph->SetPoints(this->points);
+	printf("AddRepresentationFromInput\n");
 	this->graphLayoutView->AddRepresentationFromInput(this->graph);
+	printf("SetLayoutStrategyToPassThrough\n");
 	this->graphLayoutView->SetLayoutStrategyToPassThrough();
 }
 
@@ -145,6 +148,12 @@ vtkBotnetGraph::vtkBotnetGraph(unsigned int rlist_size, unsigned int plist_size,
 	
 	this->points = vtkPoints::New();
 	
+	this->graphLayoutView = vtkGraphLayoutView::New();
+	this->graphLayoutView->SetVertexColorArrayName("colorvertices");
+	this->graphLayoutView->SetEdgeColorArrayName("coloredges"); 
+	this->graphLayoutView->ColorVerticesOn();
+	this->graphLayoutView->ColorEdgesOn();
+	
 	construct_graph();
 	
 	this->graphLayoutView->ResetCamera();
@@ -158,7 +167,7 @@ void vtkBotnetGraph::delete_graph()
 	this->vertexcolors->Delete();
 	this->edgescolors->Delete();
 	this->theme->Delete();
-	this->graphLayoutView->Delete();
+	//this->graphLayoutView->Delete();
 	
 	this->graph_iscreate = false;
 }
@@ -174,12 +183,6 @@ void vtkBotnetGraph::construct_graph()
  	this->edgescolors->SetName("coloredges");
 	
 	this->graph = vtkMutableUndirectedGraph::New();
-	
-	this->graphLayoutView = vtkGraphLayoutView::New();
-	this->graphLayoutView->SetVertexColorArrayName("colorvertices");
-	this->graphLayoutView->SetEdgeColorArrayName("coloredges"); 
-	this->graphLayoutView->ColorVerticesOn();
-	this->graphLayoutView->ColorEdgesOn();
  
 	this->theme = vtkViewTheme::New();
 	this->theme->SetPointLookupTable(this->lookuptable);
