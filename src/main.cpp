@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 		new_botnet->init();
 		new_botnet->start();
 		
-		//botnet_visual.reset(new waledac::BotnetVisual(new_botnet.get()));
+		botnet_visual.reset(new waledac::BotnetVisual(new_botnet.get()));
 		
 		new_botnet->wait();
 	}

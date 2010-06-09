@@ -162,6 +162,18 @@ command_code Repeater::request_command()
 }
 
 
+std::vector< boost::shared_ptr< Bot > > Repeater::plist()
+{
+	return m_plist;
+}
+
+
+std::vector< boost::shared_ptr< Bot > > Repeater::rlist()
+{
+	return m_rlist;
+}
+
+
 /*
  * initialise rlist and plist of repeater before running
  */
