@@ -182,7 +182,7 @@ std::vector< boost::shared_ptr< Bot > > Repeater::rlist()
 
 
 /*
- *
+ * forward message from spammer to protecter
  */
 response_code Repeater::send_message(message_code message)
 {

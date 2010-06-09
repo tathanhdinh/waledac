@@ -39,7 +39,7 @@ response_code ServerCC::process_message(message_code message)
 	switch (message)
 	{
 		case MESSAGE_GETKEY:
-			response = RESPONSE_OK; // server always 
+			response = RESPONSE_OK; // server always generate key for new spammer
 			break;
 			
 		case MESSAGE_FIRST:
@@ -47,11 +47,15 @@ response_code ServerCC::process_message(message_code message)
 			break;
 			
 		case MESSAGE_NOTIFY:
-			response = RESPONSE_FAILED; // not implemented behaviour
+			response = RESPONSE_FAILED; // not yet implemented behaviour
 			break;
 		
 		case MESSAGE_EMAILS:
-			response = RESPONSE_FAILED; // not implemented behaviour
+			response = RESPONSE_FAILED; // not yet implemented behaviour
+			break;
+			
+		case MESSAGE_TASKREQ:
+			response = RESPONSE_FAILED; // not yet implemented behaviour
 			break;
 			
 		default:
