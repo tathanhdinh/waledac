@@ -32,6 +32,7 @@ private:
 public:
 	Protecter();
 	
+	virtual void init();
 	virtual void execute();
 	virtual void start();
 	virtual void wait();

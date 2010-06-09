@@ -89,6 +89,26 @@ std::vector< boost::shared_ptr< Bot > > Botnet::attackers_list()
 }
 
 
+void Botnet::init()
+{
+	server->init();
+	
+	for (unsigned int i = 0; i < protecters.size(); ++i) {
+		protecters[i]->init();
+	}
+	
+	for (unsigned int i = 0; i < repeaters.size(); ++i) {
+		repeaters[i]->init();
+	}
+	
+	for (unsigned int i = 0; i < spammers.size(); ++i) {
+		spammers[i]->init();
+	}
+	
+	return;
+}
+
+
 void Botnet::start()
 {
 	server->start();

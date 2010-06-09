@@ -30,6 +30,15 @@ Protecter::Protecter() : Bot()
 
 
 /*
+ * 
+ */
+void Protecter::init()
+{
+	return;
+}
+
+
+/*
  * life of protecter
  */
 void Protecter::execute()

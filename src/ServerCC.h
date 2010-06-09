@@ -37,6 +37,7 @@ private:
 public:
 	ServerCC();
 	
+	virtual void init();
 	virtual void execute();
 	virtual void start();
 	virtual void wait();

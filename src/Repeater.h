@@ -43,6 +43,7 @@ public:
 	
 	virtual command_code request_command();
 	
+	virtual void init();
 	virtual void execute();
 	virtual void start();
 	virtual void wait();

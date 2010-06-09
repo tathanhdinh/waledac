@@ -30,6 +30,7 @@ public:
 	Botnet(unsigned int repeaters_number, unsigned int protecters_number, 
 		   unsigned int spammers_number, int attackers_number);
 		   
+	void init();
 	void start();
 	void wait();
 	

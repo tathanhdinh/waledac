@@ -55,26 +55,33 @@ void Spammer::update_rlist()
 {
 	boost::shared_ptr<Bot> repeater_target;
 	std::vector<boost::shared_ptr<Bot> > received_rlist;
+	unsigned int nb_try = 0;
 	
 	// repeat
-	//while (true) {
-		// takes a random repeater from rlist
-		repeater_target = random_bot(m_rlist);
-		
-		std::cout << "\033[22;32m" 
-					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
-					% "spammer" % Bot::id() % "updates RList from repeater" % repeater_target->id();
-					
-		// get subset of rlist from this repeater
-		received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
-		
-		if (received_rlist.size() > 0) { // until received non-empty list
-			// merge new rlist and existing rlist
-			m_rlist = spammer_merge_rlist(m_rlist, received_rlist);
-			//break;
+	if (m_rlist.size() > 0) {
+		while (true) {
+			// takes a random repeater from rlist
+			repeater_target = random_bot(m_rlist);
+			
+			std::cout << "\033[22;32m" 
+						<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
+						% "spammer" % Bot::id() % "updates RList from repeater" % repeater_target->id();
+						
+			// get subset of rlist from this repeater
+			received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
+			
+			if (received_rlist.size() > 0) { // until received non-empty list
+				// merge new rlist and existing rlist
+				m_rlist = spammer_merge_rlist(m_rlist, received_rlist);
+				break;
+			}
+			
+			nb_try++;
+			if (nb_try >= 10) break;
 		}
-	//}
-	std::cout << "received list size : " << received_rlist.size() << std::endl;
+	}
+	
+	//std::cout << "received list size : " << received_rlist.size() << std::endl;
 	
 	return;
 }
@@ -104,6 +111,9 @@ void Spammer::request_command()
 }
 
 
+/*
+ * return rlist
+ */
 std::vector< boost::shared_ptr< Bot > > Spammer::rlist()
 {
 	return m_rlist;
@@ -111,12 +121,20 @@ std::vector< boost::shared_ptr< Bot > > Spammer::rlist()
 
 
 /*
+ * initialise rlist before running
+ */
+void Spammer::init()
+{
+	m_rlist = Botnet::repeaters_list();
+	return;
+}
+
+
+/*
  * life of spammer
  */
 void Spammer::execute()
-{
-	m_rlist = Botnet::repeaters_list();
-	
+{	
 	while (true) {
 		update_rlist();
 		request_command();
