@@ -159,13 +159,20 @@ void Spammer::execute()
 	// "getkey" message
 	send_message(MESSAGE_GETKEY);
 	
+	sleep(7);
+	
 	// "first" message
 	send_message(MESSAGE_FIRST);
 	
 	while (true) {
 		update_rlist();
+		sleep(7);
+		
 		request_command();
-		sleep(5);
+		sleep(7);
+		
+		send_message(MESSAGE_TASKREQ);
+		sleep(7);
 	}
 	
 	return;
