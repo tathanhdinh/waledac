@@ -2,7 +2,6 @@
 #include "Spammer.h"
 #include "Repeater.h"
 #include "Attacker.h"
-#include "BotnetVisual.h"
 #include "vtkBotnetGraph.h"
 
 #include <iostream>
