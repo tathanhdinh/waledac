@@ -3,6 +3,7 @@
 #include "Repeater.h"
 #include "Attacker.h"
 #include "BotnetVisual.h"
+#include "vtkBotnetGraph.h"
 
 #include <iostream>
 #include <vector>
@@ -51,6 +52,8 @@ int main(int argc, char **argv) {
 		new_botnet.reset(new waledac::Botnet(rlist_size, plist_size, 
 											 spammers_number, attackers_number));
 		new_botnet->init();
+		
+		vtkBotnetGraph *botnetgraph = new vtkBotnetGraph;
 		new_botnet->start();
 		
 		//botnet_visual.reset(new waledac::BotnetVisual(new_botnet.get()));
