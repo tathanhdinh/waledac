@@ -162,12 +162,18 @@ command_code Repeater::request_command()
 }
 
 
+/*
+ * return PList
+ */
 std::vector< boost::shared_ptr< Bot > > Repeater::plist()
 {
 	return m_plist;
 }
 
 
+/*
+ * return RList
+ */
 std::vector< boost::shared_ptr< Bot > > Repeater::rlist()
 {
 	return m_rlist;
