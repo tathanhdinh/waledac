@@ -56,7 +56,7 @@ void Protecter::execute()
  */
 void Protecter::start()
 {
-	std::cout << "start protecter with id : " << Bot::id() << std::endl;
+	//std::cout << "start protecter with id : " << Bot::id() << std::endl;
 	m_protecter_thread.reset(new boost::thread(boost::bind(&Protecter::execute, 
 														   *this)));
 	return;
