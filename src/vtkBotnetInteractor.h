@@ -14,8 +14,11 @@ class vtkBotnetInteractor : public vtkInteractorStyleTrackballCamera
    		
    		void setbotnet(vtkBotnetGraph *ptrbotnetgraph);
    		virtual void OnLeftButtonDown();
+   		virtual void OnRightButtonDown();
    		
    		vtkBotnetGraph *ptrbotnetgraph;
+   		
+   		bool first_time;
 };
 
 #endif

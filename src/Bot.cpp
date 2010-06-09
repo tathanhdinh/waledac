@@ -67,6 +67,14 @@ bool Bot::is_compromised()
 void Bot::compromise()
 {
 	m_status = BOT_COMPROMISED;
+	
+	/*
+	printf("test update\n");
+	botnetgraph->update_graph();
+	printf("test fin update\n");	
+	botnetgraph->graphLayoutView->ResetCamera();
+	botnetgraph->graphLayoutView->Render();
+	*/
 }
 
 
