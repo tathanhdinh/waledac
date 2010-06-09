@@ -62,11 +62,11 @@ void Spammer::update_rlist()
 		while (true) {
 			// takes a random repeater from rlist
 			repeater_target = random_bot(m_rlist);
-			
+			/*
 			std::cout << "\033[22;32m" 
 						<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
 						% "spammer" % Bot::id() % "updates RList from repeater" % repeater_target->id();
-						
+			*/			
 			// get subset of rlist from this repeater
 			received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
 			
@@ -95,11 +95,11 @@ void Spammer::request_command()
 	// takes a random repeater from rlist
 	boost::shared_ptr<Bot> repeater_proxy;
 	repeater_proxy = random_bot(m_rlist);
-	
+	/*
 	std::cout << "\033[01;36m" 
 				<< boost::format("%1$'-'8s %2$'-'36s %3$'-'28s %4$'-'36s\n") 
 				% "spammer" % Bot::id() % "get command through repeater" % repeater_proxy->id();
-				
+	*/			
 	unsigned int received_command = dynamic_cast<Repeater*>
 										(repeater_proxy.get())->request_command();
 	if (received_command == COMMAND_FROM_ATTACKER) {

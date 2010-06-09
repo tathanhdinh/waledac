@@ -111,10 +111,11 @@ void Repeater::update_rlist()
 		boost::shared_ptr<Bot> repeater_target;
 		repeater_target = random_bot(m_rlist);
 		
+		/*
 		std::cout << "\033[01;31m" 
 					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
 					% "repeater" % Bot::id() % "updates RList from repeater" % repeater_target->id();
-		
+		*/
 		// get subset of rlist from this repeater
 		std::vector< boost::shared_ptr<Bot> > received_rlist;
 		received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
@@ -137,9 +138,11 @@ void Repeater::update_plist()
 		boost::shared_ptr< Bot > repeater_target;
 		repeater_target = random_bot(m_rlist);
 		
+		/*
 		std::cout << "\033[01;34m" 
 					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
 					% "repeater" % Bot::id() % "updates PList from repeater" % repeater_target->id();
+		*/
 		
 		// get subset of plist from this repeater
 		std::vector< boost::shared_ptr< Bot > > received_plist;

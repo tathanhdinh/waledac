@@ -16,8 +16,6 @@ int main(int argc, char **argv) {
 	unsigned int spammers_number;
 	unsigned int attackers_number;
 	
-	boost::shared_ptr< waledac::Botnet > new_botnet;
-	boost::shared_ptr< waledac::BotnetVisual > botnet_visual;
 	
 	boost::program_options::options_description desc("Options");
 	desc.add_options()
@@ -49,17 +47,11 @@ int main(int argc, char **argv) {
 	}
 	else {
 		std::cout << "Waldac botnet simulation" << std::endl;
-		new_botnet.reset(new waledac::Botnet(rlist_size, plist_size, 
-											 spammers_number, attackers_number));
-		new_botnet->init();
 		
-		vtkBotnetGraph *botnetgraph = new vtkBotnetGraph;
-		new_botnet->start();
 		
-		botnet_visual.reset(new waledac::BotnetVisual(new_botnet.get()));
-		
-		new_botnet->wait();
-	}
+		vtkBotnetGraph *botnetgraph = new vtkBotnetGraph(rlist_size, plist_size, spammers_number, attackers_number);
 	
+	botnetgraph->botnet->wait();
+	}
     return 0;
 }
