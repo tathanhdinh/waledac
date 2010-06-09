@@ -46,6 +46,8 @@ public:
 	std::vector< boost::shared_ptr<Bot> > plist();
 	std::vector< boost::shared_ptr<Bot> > rlist();
 	
+	virtual response_code send_message(message_code message);
+	
 	virtual void init();
 	virtual void execute();
 	virtual void start();

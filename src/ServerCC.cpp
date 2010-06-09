@@ -33,6 +33,43 @@ ServerCC::ServerCC() : Bot()
 /*
  *
  */
+response_code ServerCC::process_message(message_code message)
+{
+	response_code response = RESPONSE_OK;
+	switch (message)
+	{
+		case MESSAGE_GETKEY:
+			response = RESPONSE_OK; // server always generate key for new spammer
+			break;
+			
+		case MESSAGE_FIRST:
+			response = RESPONSE_OK; // server always accepts new spam
+			break;
+			
+		case MESSAGE_NOTIFY:
+			response = RESPONSE_FAILED; // not yet implemented behaviour
+			break;
+		
+		case MESSAGE_EMAILS:
+			response = RESPONSE_FAILED; // not yet implemented behaviour
+			break;
+			
+		case MESSAGE_TASKREQ:
+			response = RESPONSE_FAILED; // not yet implemented behaviour
+			break;
+			
+		default:
+			response = RESPONSE_FAILED;
+			break;
+	}
+	
+	return response;
+}
+
+
+/*
+ * initialiser C&C server
+ */
 void ServerCC::init()
 {
 	return;
@@ -40,7 +77,7 @@ void ServerCC::init()
 
 
 /*
- * life of ServerCC
+ * life of C&C server
  */
 void ServerCC::execute()
 {

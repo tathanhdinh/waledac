@@ -78,6 +78,16 @@ void Bot::compromise()
 }
 
 
+/*
+ *
+ */
+response_code Bot::send_message(message_code message)
+{
+	response_code response = RESPONSE_OK;
+	return response;
+}
+
+
 
 /*
  * take a random bot from an existing list
@@ -93,6 +103,9 @@ boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& bot_lis
 }
 
 
+/*
+ *
+ */
 unsigned int random_number(unsigned int max)
 {
 	unsigned int random_value = die() % (max + 1);;

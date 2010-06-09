@@ -15,6 +15,7 @@
 */
 
 #include "Repeater.h"
+#include "Protecter.h"
 #include "Botnet.h"
 
 #include <boost/smart_ptr.hpp>
@@ -165,15 +166,39 @@ command_code Repeater::request_command()
 }
 
 
+/*
+ * return PList
+ */
 std::vector< boost::shared_ptr< Bot > > Repeater::plist()
 {
 	return m_plist;
 }
 
 
+/*
+ * return RList
+ */
 std::vector< boost::shared_ptr< Bot > > Repeater::rlist()
 {
 	return m_rlist;
+}
+
+
+/*
+ * forward message from spammer to protecter
+ */
+response_code Repeater::send_message(message_code message)
+{
+	response_code response = RESPONSE_FAILED;
+	
+	if (m_plist.size() > 0) {
+		boost::shared_ptr< Protecter > protecter_proxy;
+		protecter_proxy = boost::dynamic_pointer_cast<Protecter>(random_bot(m_plist));
+		
+		response = protecter_proxy->send_message(message);
+	}
+	
+	return response;
 }
 
 

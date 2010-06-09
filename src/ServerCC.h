@@ -37,6 +37,8 @@ private:
 public:
 	ServerCC();
 	
+	response_code process_message(message_code message);
+	
 	virtual void init();
 	virtual void execute();
 	virtual void start();

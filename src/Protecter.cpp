@@ -15,6 +15,8 @@
 */
 
 #include "Protecter.h"
+#include "ServerCC.h"
+#include "Botnet.h"
 
 #include <iostream>
 
@@ -26,6 +28,21 @@ namespace waledac
  */
 Protecter::Protecter() : Bot()
 {
+}
+
+
+/*
+ * send message to C&C server and get response
+ */
+response_code Protecter::send_message(message_code message)
+{
+	boost::shared_ptr<ServerCC> server;
+	server = boost::dynamic_pointer_cast<ServerCC>(Botnet::server());
+	
+	response_code response;
+	response = server->process_message(message);
+	
+	return response;
 }
 
 

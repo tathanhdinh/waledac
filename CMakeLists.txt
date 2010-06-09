@@ -18,7 +18,7 @@ set(waledac_botnet_src
 )
 
 set(waledac_botnet_vtk_src
-	src/BotnetVisual.cpp
+#	src/BotnetVisual.cpp
 )
 
 set(waledac_botnet_libraries
