@@ -156,6 +156,12 @@ void Spammer::init()
  */
 void Spammer::execute()
 {	
+	// "getkey" message
+	send_message(MESSAGE_GETKEY);
+	
+	// "first" message
+	send_message(MESSAGE_FIRST);
+	
 	while (true) {
 		update_rlist();
 		request_command();
