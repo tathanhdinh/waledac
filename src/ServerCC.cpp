@@ -36,6 +36,29 @@ ServerCC::ServerCC() : Bot()
 response_code ServerCC::process_message(message_code message)
 {
 	response_code response = RESPONSE_OK;
+	switch (message)
+	{
+		case MESSAGE_GETKEY:
+			response = RESPONSE_OK; // server always 
+			break;
+			
+		case MESSAGE_FIRST:
+			response = RESPONSE_OK; // server always accepts new spam
+			break;
+			
+		case MESSAGE_NOTIFY:
+			response = RESPONSE_FAILED; // not implemented behaviour
+			break;
+		
+		case MESSAGE_EMAILS:
+			response = RESPONSE_FAILED; // not implemented behaviour
+			break;
+			
+		default:
+			response = RESPONSE_FAILED;
+			break;
+	}
+	
 	return response;
 }
 

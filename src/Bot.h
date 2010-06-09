@@ -43,7 +43,7 @@ enum message_code {
 
 enum response_code {
 	RESPONSE_OK = 0,
-	RESPONSE_FAILED = 1,
+	RESPONSE_FAILED = 1, // not implemented method, ...
 	RESPONSE_GETKEY = 0
 };
 	
