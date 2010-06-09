@@ -31,6 +31,15 @@ ServerCC::ServerCC() : Bot()
 
 
 /*
+ *
+ */
+void ServerCC::init()
+{
+	return;
+}
+
+
+/*
  * life of ServerCC
  */
 void ServerCC::execute()

@@ -38,6 +38,7 @@ public :
 	void compromise();
 	bool is_compromised();
 	
+	virtual void init() = 0;
 	virtual void execute() = 0;
 	virtual void start() = 0;
  	virtual void wait() = 0;

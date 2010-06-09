@@ -31,6 +31,7 @@ private:
 	std::vector< boost::shared_ptr<Bot> > m_rlist;
 	boost::shared_ptr< boost::thread > m_spammer_thread;
 	
+	
 public:
 	Spammer();
 	void update_rlist();
@@ -38,6 +39,7 @@ public:
 	
 	std::vector< boost::shared_ptr<Bot> > rlist();
 	
+	virtual void init();
 	virtual void execute();
 	virtual void start();
 	virtual void wait();

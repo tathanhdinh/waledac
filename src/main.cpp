@@ -15,7 +15,6 @@ int main(int argc, char **argv) {
 	unsigned int spammers_number;
 	unsigned int attackers_number;
 	
-	//boost::shared_ptr< waledac::BotnetConfig > botnet_config;
 	boost::shared_ptr< waledac::Botnet > new_botnet;
 	boost::shared_ptr< waledac::BotnetVisual > botnet_visual;
 	
@@ -51,6 +50,7 @@ int main(int argc, char **argv) {
 		std::cout << "Waldac botnet simulation" << std::endl;
 		new_botnet.reset(new waledac::Botnet(rlist_size, plist_size, 
 											 spammers_number, attackers_number));
+		new_botnet->init();
 		new_botnet->start();
 		
 		//botnet_visual.reset(new waledac::BotnetVisual(new_botnet.get()));
