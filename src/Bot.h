@@ -24,7 +24,28 @@
 namespace waledac 
 {
 
-enum command_code { COMMAND_FROM_REPEATER = 0, COMMAND_FROM_ATTACKER = 1 };
+enum command_code { 
+	COMMAND_FROM_REPEATER = 0, 
+	COMMAND_FROM_ATTACKER = 1 
+};
+
+enum message_code {
+	MESSAGE_GETKEY = 0,
+	MESSAGE_FIRST = 1,
+	MESSAGE_NOTIFY = 2,
+	MESSAGE_EMAILS = 3,
+	MESSAGE_TASKREQ = 4,
+	MESSAGE_WORDS = 5,
+	MESSAGE_TASKREP = 6,
+	MESSAGE_HTTPSTATS = 7,
+	MESSAGE_CREDS = 8
+};
+
+enum response_code {
+	RESPONSE_OK = 0,
+	RESPONSE_FAILED = 1,
+	RESPONSE_GETKEY = 0
+};
 	
 class Bot : public boost::enable_shared_from_this< Bot >
 {
@@ -37,6 +58,8 @@ public :
 	const std::string& id();
 	void compromise();
 	bool is_compromised();
+	
+	virtual response_code send_message(message_code message);
 	
 	virtual void init() = 0;
 	virtual void execute() = 0;

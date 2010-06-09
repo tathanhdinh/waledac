@@ -92,8 +92,9 @@ void Spammer::update_rlist()
  */
 void Spammer::request_command()
 {
-	// takes a random repeater from rlist
 	boost::shared_ptr<Bot> repeater_proxy;
+	
+	// take a random repeater from rlist
 	repeater_proxy = random_bot(m_rlist);
 	
 	std::cout << "\033[01;36m" 
@@ -117,6 +118,26 @@ void Spammer::request_command()
 std::vector< boost::shared_ptr< Bot > > Spammer::rlist()
 {
 	return m_rlist;
+}
+
+
+/*
+ * send a message to repeater and get response
+ */
+response_code Spammer::send_message(message_code message)
+{
+	response_code response = RESPONSE_FAILED;
+	
+	if (m_rlist.size() > 0) {
+		// take a random repeater from RList
+		boost::shared_ptr< Repeater > repeater_proxy;
+		repeater_proxy = boost::dynamic_pointer_cast< Repeater >(random_bot(m_rlist));
+		
+		// get a response
+		response = repeater_proxy->send_message(message);
+	}
+	
+	return response;
 }
 
 
