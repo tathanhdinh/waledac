@@ -132,7 +132,7 @@ void Repeater::update_rlist()
  */
 void Repeater::update_plist()
 {	
-	if (m_rlist.size() > 0) {
+	if (m_plist.size() > 0) {
 		// takes a random repeater from rlist
 		boost::shared_ptr< Bot > repeater_target;
 		repeater_target = random_bot(m_rlist);
@@ -159,6 +159,18 @@ void Repeater::update_plist()
 command_code Repeater::request_command()
 {
 	return COMMAND_FROM_REPEATER;
+}
+
+
+std::vector< boost::shared_ptr< Bot > > Repeater::plist()
+{
+	return m_plist;
+}
+
+
+std::vector< boost::shared_ptr< Bot > > Repeater::rlist()
+{
+	return m_rlist;
 }
 
 

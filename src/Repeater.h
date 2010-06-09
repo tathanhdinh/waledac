@@ -43,6 +43,9 @@ public:
 	
 	virtual command_code request_command();
 	
+	std::vector< boost::shared_ptr<Bot> > plist();
+	std::vector< boost::shared_ptr<Bot> > rlist();
+	
 	virtual void init();
 	virtual void execute();
 	virtual void start();
