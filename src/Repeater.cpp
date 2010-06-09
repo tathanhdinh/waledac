@@ -132,7 +132,7 @@ void Repeater::update_rlist()
  */
 void Repeater::update_plist()
 {	
-	if (m_rlist.size() > 0) {
+	if (m_plist.size() > 0) {
 		// takes a random repeater from rlist
 		boost::shared_ptr< Bot > repeater_target;
 		repeater_target = random_bot(m_rlist);
