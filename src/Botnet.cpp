@@ -34,7 +34,7 @@ static std::vector< boost::shared_ptr< Bot > > repeaters;
 static std::vector< boost::shared_ptr< Bot > > protecters;
 static std::vector< boost::shared_ptr< Bot > > spammers;
 static std::vector< boost::shared_ptr< Bot > > attackers;
-boost::shared_ptr< ServerCC > server;
+boost::shared_ptr< ServerCC > server_cc;
 	
 Botnet::Botnet(unsigned int repeaters_number, unsigned int protecters_number, 
 			   unsigned int spammers_number, int attackers_number)
@@ -60,7 +60,7 @@ Botnet::Botnet(unsigned int repeaters_number, unsigned int protecters_number,
 		repeaters.push_back(attackers[i]);
 	}
 	
-	server.reset(new ServerCC());
+	server_cc.reset(new ServerCC());
 }
 
 
@@ -89,9 +89,15 @@ std::vector< boost::shared_ptr< Bot > > Botnet::attackers_list()
 }
 
 
+boost::shared_ptr< Bot > Botnet::server()
+{
+	return server_cc;
+}
+
+
 void Botnet::init()
 {
-	server->init();
+	server_cc->init();
 	
 	for (unsigned int i = 0; i < protecters.size(); ++i) {
 		protecters[i]->init();
@@ -111,7 +117,7 @@ void Botnet::init()
 
 void Botnet::start()
 {
-	server->start();
+	server_cc->start();
 	
 	for (unsigned int i = 0; i < protecters.size(); ++i) {
 		protecters[i]->start();
@@ -131,7 +137,7 @@ void Botnet::start()
 
 void Botnet::wait()
 {
-	server->wait();
+	server_cc->wait();
 	return;
 }
 

@@ -33,6 +33,16 @@ ServerCC::ServerCC() : Bot()
 /*
  *
  */
+response_code ServerCC::process_message(message_code message)
+{
+	response_code response = RESPONSE_OK;
+	return response;
+}
+
+
+/*
+ * initialiser C&C server
+ */
 void ServerCC::init()
 {
 	return;
@@ -40,7 +50,7 @@ void ServerCC::init()
 
 
 /*
- * life of ServerCC
+ * life of C&C server
  */
 void ServerCC::execute()
 {
