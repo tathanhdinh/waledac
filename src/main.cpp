@@ -2,7 +2,6 @@
 #include "Spammer.h"
 #include "Repeater.h"
 #include "Attacker.h"
-#include "BotnetVisual.h"
 #include "vtkBotnetGraph.h"
 
 #include <iostream>
@@ -48,10 +47,9 @@ int main(int argc, char **argv) {
 	else {
 		std::cout << "Waldac botnet simulation" << std::endl;
 		
-		
 		vtkBotnetGraph *botnetgraph = new vtkBotnetGraph(rlist_size, plist_size, spammers_number, attackers_number);
 	
-	botnetgraph->botnet->wait();
+		botnetgraph->botnet->wait();
 	}
     return 0;
 }
