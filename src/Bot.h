@@ -75,7 +75,6 @@ unsigned int random_number(unsigned int max);
 std::vector< boost::shared_ptr< Bot > > merge_list(
 						std::vector< boost::shared_ptr< Bot > > &existing_rlist, 
 						std::vector< boost::shared_ptr< Bot > > &received_rlist);
-
 }
 
 

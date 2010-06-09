@@ -1,7 +1,28 @@
 #include "vtkBotnetGraph.h"
+#include "Repeater.h"
+#include "Spammer.h"
+
+void vtkBotnetGraph::calc_points(vtkGraphLayout* layout)
+{
+	double pt[3];
+	vtkGraph* g = vtkGraph::SafeDownCast(layout->GetOutput());
+	
+	vtkIdType v;
+	for (v = 0; v < g->GetNumberOfVertices(); v++)
+    {
+		g->GetPoint(v, pt);
+		printf("points %f %f %f\n",pt[0], pt[1], pt[2]);
+		points->InsertNextPoint(pt[0], pt[1], pt[2]);
+	}
+}
 
 void vtkBotnetGraph::update_graph()
-{
+{	
+	this->repeaters = this->botnet->repeaters_list();
+	this->protecters = this->botnet->protecters_list();
+	this->spammers = this->botnet->spammers_list();
+	this->attackers = this->botnet->attackers_list();
+	
 	if(this->graph_iscreate)
 		delete_graph();
 		
@@ -16,35 +37,37 @@ void vtkBotnetGraph::update_graph()
 	
 	this->graph->Modified();
 	this->graph->GetVertexData()->AddArray(this->vertexcolors);
+	this->graph->GetEdgeData()->AddArray(this->edgescolors);
 	
-    vtkGraphLayout* layout = vtkGraphLayout::New();
-	vtkCircularLayoutStrategy* strategy = vtkCircularLayoutStrategy::New();
+	printf("on passe AAAAAIEIEIE\n");
+	if(this->graph_create_first_time)
+	{
+		this->graph_create_first_time = false;
+		vtkGraphLayout* layout = vtkGraphLayout::New();
+		vtkClustering2DLayoutStrategy* strategy = vtkClustering2DLayoutStrategy::New();
 	
-	layout->SetInput(this->graph);
-	layout->SetLayoutStrategy(strategy);
+		layout->SetInput(this->graph);
+		layout->SetLayoutStrategy(strategy);
+		
+		layout->Update();
+		calc_points(layout);
+	}
 	
-	this->graphLayoutView->AddRepresentationFromInputConnection(layout->GetOutputPort());
-
+	this->graph->SetPoints(this->points);
+	this->graphLayoutView->AddRepresentationFromInput(this->graph);
+	this->graphLayoutView->SetLayoutStrategyToPassThrough();
 }
 
-/*
-void vtkBotnetGraph::update_color_repeater(boost::shared_ptr<waledac::Bot> bot)
-{
-	vtkIdType repeater_vertex = assoc_repeaters[repeater->id()];
-	int p = (int) (waledac::Bot::percentage_compromised(repeater->rlist())*100);
-	vtkIntArray::SafeDownCast(this->tree->GetVertexData()->GetArray("color"))->SetValue(repeater_vertex, p);
-}
-*/
 void vtkBotnetGraph::update_protecters()
 {
-	for(unsigned int i = 0; i < this->nb_protecters; i++)
+	for(unsigned int i = 0; i < this->protecters.size(); i++)
 	{
 		vtkIdType vertex_protecter = this->graph->AddVertex();
 		/* tout les protecteurs sont liés au command and conquer */	
 		this->graph->AddEdge(vertex_protecter, this->vertex_command_and_conquer);
-		
-      	this->assoc_protecters[this->protecters[i]] = vertex_protecter;
-      	this->vertexcolors->InsertNextValue(2); // bleu
+		this->assoc_protecters[this->protecters[i]] = vertex_protecter;
+      	this->vertexcolors->InsertNextValue(10); // bleu
+      	this->edgescolors->InsertNextValue(10);
 	}
 
 	printf("FIN UPDATE PROTECTERS\n");
@@ -52,25 +75,33 @@ void vtkBotnetGraph::update_protecters()
 
 void vtkBotnetGraph::update_repeaters()
 {
-	for(unsigned int j = 0; j < this->nb_repeaters; j++)
+	waledac::Repeater *repeater;
+	
+	for(unsigned int j = 0; j < this->repeaters.size(); j++)
 	{
 		vtkIdType vertex_repeater =  this->graph->AddVertex();
-		this->assoc_repeaters[this->repeaters[j]] = vertex_repeater;
 		this->vertexcolors->InsertNextValue(4); // vert
-
-		/* les répéteurs sont liés aux protécteurs */
-		for(unsigned int k = 0; k < this->repeaters[j]->plist.size(); k++)
+		this->assoc_repeaters[this->repeaters[j]] = vertex_repeater;
+		repeater = dynamic_cast<waledac::Repeater*>(this->repeaters[j].get());
+		
+		/* les répéteurs sont liés aux protécteurs */	
+		for(unsigned int k = 0; k < repeater->plist().size(); k++)
 		{
-			this->graph->AddEdge(this->assoc_protecters[this->repeaters[j]->plist[k]], vertex_repeater);
+			this->graph->AddEdge(this->assoc_protecters[repeater->plist()[k]], vertex_repeater);
+			this->edgescolors->InsertNextValue(4);
 		}
 	}
 
-	/* les répéteurs sont liés entre eux */
-	for(unsigned int j = 0; j < this->nb_repeaters; j++)
+	// les répéteurs sont liés entre eux 
+	for(unsigned int j = 0; j < this->repeaters.size(); j++)
 	{
-		for(unsigned int k = 0; k < this->repeaters[j]->rlist.size(); k++)
+		repeater = dynamic_cast<waledac::Repeater*>(this->repeaters[j].get());
+		//std::vector< boost::shared_ptr<waledac::Bot> > repeater_rlist = repeater->rlist();
+	
+		for(unsigned int k = 0; k < repeater->rlist().size(); k++)
 		{	
-			this->graph->AddEdge(this->assoc_repeaters[this->repeaters[j]], this->assoc_repeaters[this->repeaters[j]->rlist[k]]);
+			this->graph->AddEdge(this->assoc_repeaters[this->repeaters[j]], this->assoc_repeaters[repeater->rlist()[k]]);
+			this->edgescolors->InsertNextValue(4);
 		}
 	}
 	
@@ -79,66 +110,55 @@ void vtkBotnetGraph::update_repeaters()
 
 void vtkBotnetGraph::update_spammers()
 {
-	for(unsigned int j = 0; j < this->nb_spammers; j++)
+	for(unsigned int j = 0; j < this->spammers.size(); j++)
 	{
 		vtkIdType vertex_spammer =  this->graph->AddVertex();
 		this->vertexcolors->InsertNextValue(2);
 		this->assoc_spammers[this->spammers[j]] = vertex_spammer;
 		
-		for(unsigned int k = 0; k < this->spammers[j]->rlist.size(); k++)
+		waledac::Spammer *spammer = dynamic_cast<waledac::Spammer*>(this->spammers[j].get());
+		
+		for(unsigned int k = 0; k < spammer->rlist().size(); k++)
 		{
-			this->graph->AddEdge(this->assoc_spammers[this->spammers[j]], this->assoc_spammers[this->spammers[j]->rlist[k]]);
+			this->graph->AddEdge(vertex_spammer, this->assoc_repeaters[spammer->rlist()[k]]);
+			this->edgescolors->InsertNextValue(2);
 		}
 	}
 	
 	printf("FIN UPDATE SPAMMERS\n")	;
 }
 
-vtkBotnetGraph::vtkBotnetGraph(unsigned int nb_protecters, unsigned int nb_repeaters, unsigned int nb_spammers)
-{
-	for(unsigned int i = 0; i < nb_protecters; i++)
-	{
-		Bot *newbot = new Bot; 
-		this->protecters.push_back(newbot);
-	}
+vtkBotnetGraph::vtkBotnetGraph(unsigned int rlist_size, unsigned int plist_size, unsigned int spammers_number, unsigned int attackers_number)
+{	
+	this->graph_create_first_time = true;
 	
-	for(unsigned int i = 0; i < nb_repeaters; i++)
-	{
-		Bot *newbot = new Bot; 
-		this->repeaters.push_back(newbot);
-	}
-	
-	for(unsigned int i = 0; i < nb_spammers; i++)
-	{
-		Bot *newbot = new Bot; 
-		this->spammers.push_back(newbot);
-	}
-	
-	this->nb_protecters = nb_protecters;
-	this->nb_repeaters = nb_repeaters;
-	this->nb_spammers = nb_spammers;
+	this->botnet = new waledac::Botnet(rlist_size, plist_size, spammers_number, attackers_number);
+	this->botnet->init();	
+	printf("BOTNET ASSIGN\n");
 	
 	this->interactor = new vtkBotnetInteractor;
-	this->graphLayoutView = vtkGraphLayoutView::New();
+	this->interactor->setbotnet(this);
 	
 	this->lookuptable = vtkLookupTable::New();
 	this->lookuptable->SetTableRange(0.0, 10.0);
 	this->lookuptable->Build();
 	
+	this->points = vtkPoints::New();
+	
 	construct_graph();
 	
 	this->graphLayoutView->ResetCamera();
 	this->graphLayoutView->Render();
-	this->graphLayoutView->GetInteractor()->Start();
+	this->graphLayoutView->GetInteractor()->Start();	
 }
 
 void vtkBotnetGraph::delete_graph()
 {
 	this->graph->Delete();
-	this->tree->Delete();
 	this->vertexcolors->Delete();
+	this->edgescolors->Delete();
 	this->theme->Delete();
-	//this->graphLayoutView->Delete();
+	this->graphLayoutView->Delete();
 	
 	this->graph_iscreate = false;
 }
@@ -147,24 +167,24 @@ void vtkBotnetGraph::construct_graph()
 {
 	this->vertexcolors = vtkIntArray::New();
 	this->vertexcolors->SetNumberOfComponents(1);
- 	this->vertexcolors->SetName("color");
+ 	this->vertexcolors->SetName("colorvertices");
+ 	
+ 	this->edgescolors = vtkIntArray::New();
+	this->edgescolors->SetNumberOfComponents(1);
+ 	this->edgescolors->SetName("coloredges");
 	
-	this->tree = vtkTree::New();
 	this->graph = vtkMutableUndirectedGraph::New();
 	
-	//this->graphLayoutView->AddRepresentationFromInput(this->graph);
-	//this->graphLayoutView->SetLayoutStrategyToCone();
-	
-	/*****/
-	this->graphLayoutView->SetVertexColorArrayName("color");
+	this->graphLayoutView = vtkGraphLayoutView::New();
+	this->graphLayoutView->SetVertexColorArrayName("colorvertices");
+	this->graphLayoutView->SetEdgeColorArrayName("coloredges"); 
 	this->graphLayoutView->ColorVerticesOn();
+	this->graphLayoutView->ColorEdgesOn();
  
 	this->theme = vtkViewTheme::New();
 	this->theme->SetPointLookupTable(this->lookuptable);
 	this->graphLayoutView->ApplyViewTheme(this->theme);
-	/*****/
  
- 	this->interactor->setbotnet(this);
  	this->interactor->SetDefaultRenderer(this->graphLayoutView->GetRenderer());
 	this->graphLayoutView->GetInteractor()->SetInteractorStyle(this->interactor);
 	
