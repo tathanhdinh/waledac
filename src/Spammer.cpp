@@ -92,20 +92,22 @@ void Spammer::update_rlist()
  */
 void Spammer::request_command()
 {
-	boost::shared_ptr<Bot> repeater_proxy;
-	
-	// take a random repeater from rlist
-	repeater_proxy = random_bot(m_rlist);
-	
-	std::cout << "\033[01;36m" 
-				<< boost::format("%1$'-'8s %2$'-'36s %3$'-'28s %4$'-'36s\n") 
-				% "spammer" % Bot::id() % "get command through repeater" % repeater_proxy->id();
-				
-	unsigned int received_command = dynamic_cast<Repeater*>
-										(repeater_proxy.get())->request_command();
-	if (received_command == COMMAND_FROM_ATTACKER) {
-		Bot::compromise();
-		std::cout << "spammer is compromised" << std::endl;
+	if (m_rlist.size() > 0) {
+		boost::shared_ptr<Bot> repeater_proxy;
+		
+		// take a random repeater from rlist
+		repeater_proxy = random_bot(m_rlist);
+		
+		std::cout << "\033[01;36m" 
+					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'28s %4$'-'36s\n") 
+					% "spammer" % Bot::id() % "get command through repeater" % repeater_proxy->id();
+					
+		unsigned int received_command = dynamic_cast<Repeater*>
+											(repeater_proxy.get())->request_command();
+		if (received_command == COMMAND_FROM_ATTACKER) {
+			Bot::compromise();
+			std::cout << "spammer is compromised" << std::endl;
+		}
 	}
 	
 	return;
