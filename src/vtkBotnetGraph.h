@@ -15,6 +15,7 @@
 #include <vtkGraphLayout.h>
 #include <vtkCircularLayoutStrategy.h>
 #include <vtkSpanTreeLayoutStrategy.h>
+#include <vtkClustering2DLayoutStrategy.h>
 #include <vtkAssignCoordinatesLayoutStrategy.h>
 
 #include "vtkBotnetInteractor.h"
@@ -38,7 +39,6 @@ class vtkBotnetGraph
 		void construct_graph();
 		void calc_points(vtkGraphLayout* layout);
 		
-		vtkTree *tree;
 		vtkMutableUndirectedGraph *graph;
 		vtkBotnetInteractor *interactor;
 		vtkGraphLayoutView *graphLayoutView;
