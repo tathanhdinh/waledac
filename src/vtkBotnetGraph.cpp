@@ -2,6 +2,11 @@
 
 void vtkBotnetGraph::update_graph()
 {
+	this->repeaters = this->botnet->repeaters_list();
+	this->protecters = this->botnet->protecters_list();
+	this->spammers = this->botnet->spammers_list();
+	this->attackers = this->botnet->attackers_list();
+		
 	if(this->graph_iscreate)
 		delete_graph();
 		
@@ -37,7 +42,7 @@ void vtkBotnetGraph::update_color_repeater(boost::shared_ptr<waledac::Bot> bot)
 */
 void vtkBotnetGraph::update_protecters()
 {
-	for(unsigned int i = 0; i < this->nb_protecters; i++)
+	for(unsigned int i = 0; i < this->protecters.size(); i++)
 	{
 		vtkIdType vertex_protecter = this->graph->AddVertex();
 		/* tout les protecteurs sont liés au command and conquer */	
@@ -52,25 +57,25 @@ void vtkBotnetGraph::update_protecters()
 
 void vtkBotnetGraph::update_repeaters()
 {
-	for(unsigned int j = 0; j < this->nb_repeaters; j++)
+	for(unsigned int j = 0; j < this->repeaters.size(); j++)
 	{
 		vtkIdType vertex_repeater =  this->graph->AddVertex();
 		this->assoc_repeaters[this->repeaters[j]] = vertex_repeater;
 		this->vertexcolors->InsertNextValue(4); // vert
 
 		/* les répéteurs sont liés aux protécteurs */
-		for(unsigned int k = 0; k < this->repeaters[j]->plist.size(); k++)
+		for(unsigned int k = 0; k < this->repeaters[j].plist().size(); k++)
 		{
-			this->graph->AddEdge(this->assoc_protecters[this->repeaters[j]->plist[k]], vertex_repeater);
+			this->graph->AddEdge(this->assoc_protecters[this->repeaters[j].plist()[k]], vertex_repeater);
 		}
 	}
 
 	/* les répéteurs sont liés entre eux */
-	for(unsigned int j = 0; j < this->nb_repeaters; j++)
+	for(unsigned int j = 0; j < this->repeaters.size(); j++)
 	{
-		for(unsigned int k = 0; k < this->repeaters[j]->rlist.size(); k++)
+		for(unsigned int k = 0; k < this->repeaters[j].rlist().size(); k++)
 		{	
-			this->graph->AddEdge(this->assoc_repeaters[this->repeaters[j]], this->assoc_repeaters[this->repeaters[j]->rlist[k]]);
+			this->graph->AddEdge(this->assoc_repeaters[this->repeaters[j]], this->assoc_repeaters[this->repeaters[j].rlist()[k]]);
 		}
 	}
 	
@@ -79,44 +84,24 @@ void vtkBotnetGraph::update_repeaters()
 
 void vtkBotnetGraph::update_spammers()
 {
-	for(unsigned int j = 0; j < this->nb_spammers; j++)
+	for(unsigned int j = 0; j < this->spammers.size(); j++)
 	{
 		vtkIdType vertex_spammer =  this->graph->AddVertex();
 		this->vertexcolors->InsertNextValue(2);
 		this->assoc_spammers[this->spammers[j]] = vertex_spammer;
 		
-		for(unsigned int k = 0; k < this->spammers[j]->rlist.size(); k++)
+		for(unsigned int k = 0; k < this->spammers[j].rlist().size(); k++)
 		{
-			this->graph->AddEdge(this->assoc_spammers[this->spammers[j]], this->assoc_spammers[this->spammers[j]->rlist[k]]);
+			this->graph->AddEdge(this->assoc_spammers[this->spammers[j]], this->assoc_spammers[this->spammers[j].rlist[k]]);
 		}
 	}
 	
 	printf("FIN UPDATE SPAMMERS\n")	;
 }
 
-vtkBotnetGraph::vtkBotnetGraph(unsigned int nb_protecters, unsigned int nb_repeaters, unsigned int nb_spammers)
+vtkBotnetGraph::vtkBotnetGraph(waledac::Botnet *botnet)
 {
-	for(unsigned int i = 0; i < nb_protecters; i++)
-	{
-		Bot *newbot = new Bot; 
-		this->protecters.push_back(newbot);
-	}
-	
-	for(unsigned int i = 0; i < nb_repeaters; i++)
-	{
-		Bot *newbot = new Bot; 
-		this->repeaters.push_back(newbot);
-	}
-	
-	for(unsigned int i = 0; i < nb_spammers; i++)
-	{
-		Bot *newbot = new Bot; 
-		this->spammers.push_back(newbot);
-	}
-	
-	this->nb_protecters = nb_protecters;
-	this->nb_repeaters = nb_repeaters;
-	this->nb_spammers = nb_spammers;
+	this->botnet = botnet;
 	
 	this->interactor = new vtkBotnetInteractor;
 	this->graphLayoutView = vtkGraphLayoutView::New();
@@ -138,7 +123,6 @@ void vtkBotnetGraph::delete_graph()
 	this->tree->Delete();
 	this->vertexcolors->Delete();
 	this->theme->Delete();
-	//this->graphLayoutView->Delete();
 	
 	this->graph_iscreate = false;
 }

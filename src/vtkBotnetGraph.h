@@ -19,6 +19,7 @@
 
 #include "vtkBotnetInteractor.h"
 #include "Bot.h"
+#include "Botnet.h"
 #include <map>
 #include <vector>
 
@@ -53,20 +54,22 @@ class vtkBotnetGraph
 		
 		vtkPoints *points;
 		
-		std::map< Bot *, vtkIdType > assoc_spammers; 
-		std::map< Bot *, vtkIdType > assoc_repeaters;
-		std::map< Bot *, vtkIdType > assoc_protecters;
+		std::map< boost::shared_ptr< waledac::Bot >, vtkIdType > assoc_spammers; 
+		std::map< boost::shared_ptr< waledac::Bot >, vtkIdType > assoc_repeaters;
+		std::map< boost::shared_ptr< waledac::Bot >, vtkIdType > assoc_protecters;
 		
-		std::vector< Bot * > protecters;
-		std::vector< Bot * > repeaters;
-		std::vector< Bot * > spammers;
-			
-		unsigned int nb_spammers; 
-		unsigned int nb_repeaters;
-		unsigned int nb_protecters;	
+		
+		waledac::Botnet *botnet;
 		
 		bool graph_iscreate;
 		bool graph_create_first_time;
+		
+	private :
+	
+		static std::vector< boost::shared_ptr< waledac::Bot > > repeaters;
+		static std::vector< boost::shared_ptr< waledac::Bot > > protecters;
+		static std::vector< boost::shared_ptr< waledac::Bot > > spammers;
+		static std::vector< boost::shared_ptr< waledac::Bot > > attackers;
 };
 
 #endif
