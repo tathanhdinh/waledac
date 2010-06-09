@@ -4,6 +4,7 @@
 
 void vtkBotnetGraph::calc_points(vtkGraphLayout* layout)
 {
+	/*
 	double pt[3];
 	vtkGraph* g = vtkGraph::SafeDownCast(layout->GetOutput());
 	
@@ -14,6 +15,27 @@ void vtkBotnetGraph::calc_points(vtkGraphLayout* layout)
 		printf("points %f %f %f\n",pt[0], pt[1], pt[2]);
 		points->InsertNextPoint(pt[0], pt[1], pt[2]);
 	}
+	*/
+	/* command and conquer */
+	this->points->InsertNextPoint(rand()%500, rand()%500, 100);
+	
+	unsigned int i;
+	for(i = 0; i < this->protecters.size(); i++)
+	{
+		this->points->InsertNextPoint(rand()%500, rand()%500, 200);
+	}
+	
+	for(i = 0; i < this->repeaters.size(); i++)
+	{
+		this->points->InsertNextPoint(rand()%500, rand()%500, 400);
+	}
+	
+	for(i = 0; i < this->spammers.size(); i++)
+	{
+		this->points->InsertNextPoint(rand()%500, rand()%500, 600);
+	}
+	
+	
 }
 
 void vtkBotnetGraph::update_graph()
@@ -30,6 +52,7 @@ void vtkBotnetGraph::update_graph()
 	
 	this->vertex_command_and_conquer = this->graph->AddVertex();
 	this->vertexcolors->InsertNextValue(1); // rouge
+	
 
 	update_protecters();
 	update_repeaters();
