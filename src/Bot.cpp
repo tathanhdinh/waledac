@@ -113,7 +113,7 @@ std::vector< boost::shared_ptr<Bot> > random_bots(std::vector< boost::shared_ptr
 	std::random_shuffle(tmplist.begin(), tmplist.end());
 	
 	std::vector< boost::shared_ptr<Bot> > sublist;
-	for (unsigned int i = 0; i < std::max(bot_number, bot_list.size()), ++i) {
+	for (unsigned int i = 0; i < std::max(bot_number, static_cast<unsigned int>(bot_list.size())); ++i) {
 	}
 }
 
