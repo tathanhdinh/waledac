@@ -19,11 +19,6 @@ set(waledac_botnet_src
 	src/OptionsDialog.cpp src/vtkTimerCallback.cpp src/vtkBotnetGraph.cpp src/vtkBotnetInteractor.cpp src/main.cpp
 )
 
-set(waledac_botnet_vtk_src
-#	src/BotnetVisual.cpp
->>>>>>> other
-)
-
 set(waledac_botnet_libraries
 	boost_system-mt boost_thread-mt boost_program_options-mt ossp-uuid++
 )

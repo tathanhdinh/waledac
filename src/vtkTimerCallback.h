@@ -9,6 +9,8 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTesting.h>
 
+#include <vtkCamera.h>
+
 class vtkBotnetGraph;
  
 class vtkTimerCallback : public vtkCommand
@@ -19,7 +21,6 @@ class vtkTimerCallback : public vtkCommand
  	
     virtual void Execute(vtkObject *vtkNotUsed(caller), unsigned long eventId, void *vtkNotUsed(callData));
  
-    int TimerCount;
     vtkBotnetGraph *ptrbotnetgraph;
     
     bool first_time;

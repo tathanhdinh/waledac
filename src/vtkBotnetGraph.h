@@ -11,6 +11,7 @@
 #include <vtkDataSetAttributes.h>
 #include <vtkAssignCoordinates.h>
 #include <vtkPoints.h>
+#include <vtkPointPicker.h>
 
 #include <vtkGraphLayout.h>
 #include <vtkCircularLayoutStrategy.h>
