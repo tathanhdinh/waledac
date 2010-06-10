@@ -38,7 +38,6 @@ void vtkTimerCallback::Execute(vtkObject *vtkNotUsed(caller), unsigned long even
 		else
 		{	
 			this->ptrbotnetgraph->update_graph();
-			//this->ptrbotnetgraph->graphLayoutView->ResetCamera();
 			
 			vtkCamera *camera = this->ptrbotnetgraph->interactor->GetCurrentRenderer()->GetActiveCamera();
 			if(camera->GetParallelProjection())
