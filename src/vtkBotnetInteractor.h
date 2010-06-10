@@ -2,6 +2,9 @@
 #define VTKBOTNETINTERACTOR_H
 
 #include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkMapper.h>
+#include <vtkDataSet.h>
+#include <vtkCamera.h>
 
 class vtkBotnetGraph;
 
@@ -15,10 +18,13 @@ class vtkBotnetInteractor : public vtkInteractorStyleTrackballCamera
    		void setbotnet(vtkBotnetGraph *ptrbotnetgraph);
    		virtual void OnLeftButtonDown();
    		virtual void OnRightButtonDown();
+   		virtual void OnMouseWheelForward();
+		virtual void OnMouseWheelBackward();
    		
    		vtkBotnetGraph *ptrbotnetgraph;
    		
    		bool first_time;
+   		double zoom_save;
 };
 
 #endif
