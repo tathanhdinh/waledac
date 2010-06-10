@@ -35,6 +35,9 @@ void vtkBotnetInteractor::OnMouseWheelBackward()
 
 boost::shared_ptr< waledac::Bot > vtkBotnetInteractor::FindBot(int point)
 {
+	boost::shared_ptr< waledac::Bot > null_bot;
+	null_bot.reset();
+	 
 	/* sync avec l'ordre dans lequel on insère les points */
 	
 	if(point == 0)
@@ -50,6 +53,8 @@ boost::shared_ptr< waledac::Bot > vtkBotnetInteractor::FindBot(int point)
 		
 	else if(point >= (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()) && point < (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()+this->ptrbotnetgraph->spammers.size()))
 		return this->ptrbotnetgraph->repeaters[point-this->ptrbotnetgraph->protecters.size()-this->ptrbotnetgraph->repeaters.size()-1];
+	else 
+		return null_bot;
 }
 
 /*
