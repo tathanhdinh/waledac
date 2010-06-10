@@ -25,19 +25,7 @@ void vtkBotnetInteractor::OnLeftButtonDown()
 void vtkBotnetInteractor::OnRightButtonDown()
 {
 	printf("ALLLLLLLLLLLLLLLLLLLLLAAAAAAAAAAAAAAAAAAAAL RIGHT\n");
-	if(this->first_time)
-	{
-		this->ptrbotnetgraph->botnet->start();
-		//this->ptrbotnetgraph->botnet->wait();
-		printf("FINITO\n");
-		this->first_time = false;
-	}
-	else
-	{
-		this->ptrbotnetgraph->update_graph();
-		this->ptrbotnetgraph->graphLayoutView->ResetCamera();
-		this->ptrbotnetgraph->graphLayoutView->Render();
-	}	
+		
 		
 	//vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
 	//this->ptrbotnetgraph->botnet->wait();
