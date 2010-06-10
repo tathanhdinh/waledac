@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #include <ossp/uuid++.hh>
 //#include <uuid++.hh>
@@ -87,28 +88,33 @@ void Bot::compromise()
 }
 
 
-/*
- *
- */
-/*response_code Bot::send_message(message_code message)
-{
-	response_code response = RESPONSE_OK;
-	return response;
-}*/
-
-
-
-/*
- * take a random bot from an existing list
- */
 boost::uniform_int<> dist(std::numeric_limits<int>::min(), 
 						  std::numeric_limits<int>::max());
 boost::mt19937 gen;
 boost::variate_generator<boost::mt19937, boost::uniform_int<> > die(gen, dist);
+
+/*
+ * take a random bot from an existing list
+ */
 boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& bot_list)
 {
 	unsigned int random_index = die() % bot_list.size();
 	return bot_list[random_index];
+}
+
+
+/*
+ * take a sub list of random bots from an existing list
+ */
+std::vector< boost::shared_ptr<Bot> > random_bots(std::vector< boost::shared_ptr<Bot> >& bot_list, 
+												  unsigned int bot_number)
+{
+	std::vector< boost::shared_ptr<Bot> > tmplist = bot_list;
+	std::random_shuffle(tmplist.begin(), tmplist.end());
+	
+	std::vector< boost::shared_ptr<Bot> > sublist;
+	for (unsigned int i = 0; i < std::max(bot_number, bot_list.size()), ++i) {
+	}
 }
 
 
