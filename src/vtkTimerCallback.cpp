@@ -24,7 +24,8 @@ void vtkTimerCallback::Execute(vtkObject *vtkNotUsed(caller), unsigned long even
 			this->ptrbotnetgraph->graphLayoutView->Render();
 			
 			/* hack = on attrape le renderer */
-			this->ptrbotnetgraph->interactor->FindPokedRenderer(this->ptrbotnetgraph->interactor->GetInteractor()->GetEventPosition()[0], this->ptrbotnetgraph->interactor->GetInteractor()->GetEventPosition()[1]);
+			this->ptrbotnetgraph->interactor->FindPokedRenderer(this->ptrbotnetgraph->interactor->GetInteractor()->GetEventPosition()[0], 
+																this->ptrbotnetgraph->interactor->GetInteractor()->GetEventPosition()[1]);
 			if (this->ptrbotnetgraph->interactor->GetCurrentRenderer() == NULL)
     			return;		
   	

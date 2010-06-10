@@ -63,12 +63,17 @@ void Spammer::update_rlist()
 			// takes a random repeater from rlist
 			repeater_target = random_bot(m_rlist);
 			
-			std::cout << "\033[22;32m" 
+			/*std::cout << "\033[22;32m" 
 						<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
-						% "spammer" % Bot::id() % "updates RList from repeater" % repeater_target->id();
+						% "spammer" % Bot::id() % "updates RList from repeater" % repeater_target->id();*/
 						
 			// get subset of rlist from this repeater
-			received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
+			//received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
+			received_rlist = boost::dynamic_pointer_cast<Repeater>(repeater_target)->sub_rlist();
+ 			/*std::cout << "received list " << std::endl;
+			for (unsigned int i = 0; i < received_rlist.size(); ++i) {
+				std::cout << received_rlist[i]->id() << std::endl;
+			}*/
 			
 			if (received_rlist.size() > 0) { // until received non-empty list
 				// merge new rlist and existing rlist
@@ -81,7 +86,7 @@ void Spammer::update_rlist()
 		}
 	}
 	
-	//std::cout << "received list size : " << received_rlist.size() << std::endl;
+	this->status() = UPDATE_RLIST;
 	
 	return;
 }
@@ -98,16 +103,16 @@ void Spammer::request_command()
 		// take a random repeater from rlist
 		repeater_proxy = random_bot(m_rlist);
 		
-		std::cout << "\033[01;36m" 
-					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'28s %4$'-'36s\n") 
-					% "spammer" % Bot::id() % "get command through repeater" % repeater_proxy->id();
+		/*std::cout << "\033[01;36m" 
+		<< boost::format("%1$'-'8s %2$'-'36s %3$'-'28s %4$'-'36s\n") 
+		% "spammer" % Bot::id() % "get command through repeater" % repeater_proxy->id();*/
 					
 		unsigned int received_command = dynamic_cast<Repeater*>
 											(repeater_proxy.get())->request_command();
-		if (received_command == COMMAND_FROM_ATTACKER) {
+		/*if (received_command == COMMAND_FROM_ATTACKER) {
 			Bot::compromise();
 			std::cout << "spammer is compromised" << std::endl;
-		}
+		}*/
 	}
 	
 	return;
@@ -136,7 +141,48 @@ response_code Spammer::send_message(message_code message)
 		repeater_proxy = boost::dynamic_pointer_cast< Repeater >(random_bot(m_rlist));
 		
 		// get a response
+		/*std::cout << "spammer " << this->id() 
+				<< " send message to repeater " 
+				<< repeater_proxy->id() << std::endl;*/
 		response = repeater_proxy->send_message(message);
+		
+		switch (message) {
+			case MESSAGE_GETKEY:
+				this->status() = SEND_MESSAGE_GETKEY;
+				break;
+				
+			case MESSAGE_FIRST:
+				this->status() = SEND_MESSAGE_FIRST;
+				break;
+				
+			case MESSAGE_NOTIFY:
+				this->status() = SEND_MESSAGE_NOTIFY;
+				break;
+				
+			case MESSAGE_EMAILS:
+				this->status() = SEND_MESSAGE_EMAILS;
+				break;
+				
+			case MESSAGE_TASKREQ:
+				this->status() = SEND_MESSAGE_TASKREQ;
+				break;
+				
+			case MESSAGE_WORDS:
+				this->status() = SEND_MESSAGE_WORDS;
+				break;
+				
+			case MESSAGE_TASKREP:
+				this->status() = SEND_MESSAGE_TASKREP;
+				break;
+				
+			case MESSAGE_HTTPSTATS:
+				this->status() = SEND_MESSAGE_HTTPSTATS;
+				break;
+				
+			case MESSAGE_CREDS:
+				this->status() = SEND_MESSAGE_CREDS;
+				break;
+		}
 	}
 	
 	return response;
@@ -148,10 +194,22 @@ response_code Spammer::send_message(message_code message)
  */
 void Spammer::init()
 {
-	m_rlist = Botnet::repeaters_list();
+	//m_rlist = Botnet::repeaters_list();
+	
+	// get a random sublist of all repeater
+	std::vector< boost::shared_ptr<Bot> > all_repeater = Botnet::repeaters_list();
+	m_rlist = random_bots(all_repeater, all_repeater.size() / 3);
+	
+	std::cout << "sdfsdfdsdfsdfsdfddddddddddddddddddddddd" << std::endl;
+	for (unsigned int i = 0; i < m_rlist.size(); ++i) {
+		std::cout << m_rlist[i]->id() << std::endl;
+	}
+	
+	
+	//std::cout << "spammer startup rlist size : " << m_rlist.size() << std::endl; 
+	
 	return;
 }
-
 
 /*
  * life of spammer
@@ -159,22 +217,34 @@ void Spammer::init()
 void Spammer::execute()
 {	
 	// "getkey" message
+	//std::cout << "spammer send MESSAGE_GETKEY to repeater" << std::endl;
 	send_message(MESSAGE_GETKEY);
-	
-	sleep(7);
+	//sleep(7);
 	
 	// "first" message
+	//std::cout << "spammer send MESSAGE_FIRST to repeater" << std::endl;
 	send_message(MESSAGE_FIRST);
+	//sleep(7);
 	
 	while (true) {
+		std::cout << "address of current spammer : " << this << std::endl;
+		/*std::cout << "before update : " << this->id() << std::endl;
+		for (unsigned int i = 0; i < m_rlist.size(); ++i) {
+			std::cout << m_rlist[i]->id() << std::endl;
+		}*/
 		update_rlist();
-		sleep(7);
+		/*std::cout << "after update : " << this->id() << std::endl;
+		for (unsigned int i = 0; i < m_rlist.size(); ++i) {
+			std::cout << m_rlist[i]->id() << std::endl;
+		}*/
+		sleep(3);
 		
-		request_command();
-		sleep(7);
+		// obsolete, need to be replaced by send_message
+		//request_command();
+		//sleep(1);
 		
-		send_message(MESSAGE_TASKREQ);
-		sleep(7);
+		//send_message(MESSAGE_TASKREQ);
+		//sleep(2);
 	}
 	
 	return;
@@ -187,8 +257,8 @@ void Spammer::execute()
 void Spammer::start()
 {
 	std::cout << "start spammer with id : " << Bot::id() << std::endl;
-	m_spammer_thread.reset(new boost::thread(boost::bind(&Spammer::execute, 
-														 *this)));
+	std::cout << "address of calling spammer : " << this << std::endl;
+	m_spammer_thread.reset(new boost::thread(boost::bind(&Spammer::execute, this)));
 	return;
 }
 

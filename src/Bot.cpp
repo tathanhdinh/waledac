@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #include <ossp/uuid++.hh>
 //#include <uuid++.hh>
@@ -27,7 +28,7 @@
 
 namespace waledac {
 
-enum { BOT_COMPROMISED = 1, BOT_NON_COMPROMISED = 0 };
+//enum { BOT_COMPROMISED = 1, BOT_NON_COMPROMISED = 0 };
 	
 Bot::Bot()
 {
@@ -36,12 +37,12 @@ Bot::Bot()
 	bot_uuid.make(UUID_MAKE_V4);
 	m_id = bot_uuid.string();	
 	
-	m_status = BOT_NON_COMPROMISED;
+	m_status = IDLE;
 }
 
 
 /*
- * get id of bot
+ * get bot id
  */
 const std::string& Bot::id()
 {
@@ -50,23 +51,32 @@ const std::string& Bot::id()
 
 
 /*
- * check status of bot
+ * get/set bot running status
+ */
+bot_status& Bot::status()
+{
+	return m_status;
+}
+
+
+/*
+ * check bot compromised status
  */
 bool Bot::is_compromised()
 {
 	bool compromised = false;
-	if (m_status == BOT_COMPROMISED)
+	if (m_status == COMPROMISED)
 		compromised = true;
 	return compromised;
 }
 
 
 /*
- *
+ * obsolete method (will be replace by Bot::status() = COMPROMISED)
  */
 void Bot::compromise()
 {
-	m_status = BOT_COMPROMISED;
+	m_status = COMPROMISED;
 	
 	/*
 	printf("test update\n");
@@ -78,28 +88,37 @@ void Bot::compromise()
 }
 
 
-/*
- *
- */
-response_code Bot::send_message(message_code message)
-{
-	response_code response = RESPONSE_OK;
-	return response;
-}
-
-
-
-/*
- * take a random bot from an existing list
- */
 boost::uniform_int<> dist(std::numeric_limits<int>::min(), 
 						  std::numeric_limits<int>::max());
 boost::mt19937 gen;
 boost::variate_generator<boost::mt19937, boost::uniform_int<> > die(gen, dist);
+
+/*
+ * take a random bot from an existing list
+ */
 boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& bot_list)
 {
 	unsigned int random_index = die() % bot_list.size();
 	return bot_list[random_index];
+}
+
+
+/*
+ * take a sub list of random bots from an existing list
+ */
+std::vector< boost::shared_ptr<Bot> > random_bots(std::vector< boost::shared_ptr<Bot> >& bot_list, 
+												  unsigned int bot_number)
+{
+	std::vector< boost::shared_ptr<Bot> > tmplist = bot_list;
+	std::random_shuffle(tmplist.begin(), tmplist.end());
+	
+	std::vector< boost::shared_ptr<Bot> > sublist;
+	for (unsigned int i = 0; i < std::min(bot_number, static_cast<unsigned int>
+										(bot_list.size())); ++i) {
+		sublist.push_back(tmplist[i]);
+	}
+	
+	return sublist;
 }
 
 

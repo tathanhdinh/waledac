@@ -28,7 +28,7 @@ namespace waledac {
 class Spammer : public Bot
 {
 private:
-	std::vector< boost::shared_ptr<Bot> > m_rlist;
+	//std::vector< boost::shared_ptr<Bot> > m_rlist;
 	boost::shared_ptr< boost::thread > m_spammer_thread;
 	
 	
@@ -45,6 +45,8 @@ public:
 	virtual void execute();
 	virtual void start();
 	virtual void wait();
+	
+	std::vector< boost::shared_ptr<Bot> > m_rlist;
 };
 
 }
