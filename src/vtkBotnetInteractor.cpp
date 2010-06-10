@@ -33,7 +33,7 @@ void vtkBotnetInteractor::OnMouseWheelBackward()
 		this->zoom_save = camera->GetParallelScale();
 }
 
-int vtkBotnetInteractor::FindBotPosition(int point)
+boost::shared_ptr< waledac::Bot > vtkBotnetInteractor::FindBot(int point)
 {
 	/* sync avec l'ordre dans lequel on insère les points */
 	
@@ -52,33 +52,16 @@ int vtkBotnetInteractor::FindBotPosition(int point)
 		return this->ptrbotnetgraph->repeaters[point-this->ptrbotnetgraph->protecters.size()-this->ptrbotnetgraph->repeaters.size()-1];
 }
 
-void vtkBotnetInteractor::FindBot(int point)
-{
-	/* sync avec l'ordre dans lequel on insère les points */
-	
-	int pos = this->FindBotPosition(point);
-	if(point == 0)
-	{
-		printf("command and conquer touché\n");
-	}
-	else if(point > 0 && point < this->ptrbotnetgraph->protecters.size())
-	{
-		printf("protecter touché\n");
-	}
-	else if(point >= this->ptrbotnetgraph->protecters.size() && point < (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()))
-	{
-		printf("repeater touché\n");
-	}
-	else if(point >= (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()) && point < (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()+this->ptrbotnetgraph->spammers.size()))
-	{
-		printf("spammer touché\n");
-	}	
-}
-
+/*
 void vtkBotnetInteractor::OnLeftButtonDown()
 {
-	bool click_point = false;
-	
+	vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
+	//this->ptrbotnetgraph->botnet->wait();
+}
+*/
+
+void vtkBotnetInteractor::OnRightButtonDown()
+{
 	int* clickPos = this->GetInteractor()->GetEventPosition();
 	vtkPointPicker* picker = (vtkPointPicker *)this->GetInteractor()->GetPicker();
 	picker->Pick(clickPos[0], clickPos[1], 0, this->GetDefaultRenderer());
@@ -90,7 +73,7 @@ void vtkBotnetInteractor::OnLeftButtonDown()
 	{
 		printf("get actor fini\n");
 		int point = pickedObject->GetMapper()->GetInput()->FindPoint(pos[0],pos[1],pos[2]);
-		this->FindBot(point);
+		boost::shared_ptr< waledac::Bot > bot = this->FindBot(point);
 		printf("point = %d\n",point);
 		
 		/*
@@ -126,19 +109,7 @@ void vtkBotnetInteractor::OnLeftButtonDown()
 			}
 		}*/
 	}
-	
-	// forward events
-	if(!click_point)
-		vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
 
-
-
-	vtkInteractorStyleTrackballCamera::OnLeftButtonDown();
-	//this->ptrbotnetgraph->botnet->wait();
-}
-
-void vtkBotnetInteractor::OnRightButtonDown()
-{	
 	/* overwrite vtkInteractorStyleTrackballCamera::OnRightButtonDown */
 }
 
