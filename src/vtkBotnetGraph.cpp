@@ -171,7 +171,7 @@ vtkBotnetGraph::vtkBotnetGraph(unsigned int rlist_size, unsigned int plist_size,
 
 	vtkTimerCallback* cb = new vtkTimerCallback(this);
 	this->graphLayoutView->GetInteractor()->AddObserver(vtkCommand::TimerEvent, cb);
-	this->graphLayoutView->GetInteractor()->CreateRepeatingTimer(3000);
+	this->graphLayoutView->GetInteractor()->CreateRepeatingTimer(300);
  	
 	this->graphLayoutView->ResetCamera();
 	this->graphLayoutView->Render();
