@@ -11,12 +11,15 @@
 #include <vtkDataSetAttributes.h>
 #include <vtkAssignCoordinates.h>
 #include <vtkPoints.h>
+#include <vtkPointPicker.h>
 
 #include <vtkGraphLayout.h>
 #include <vtkCircularLayoutStrategy.h>
 #include <vtkSpanTreeLayoutStrategy.h>
 #include <vtkClustering2DLayoutStrategy.h>
 #include <vtkAssignCoordinatesLayoutStrategy.h>
+
+#include "vtkTimerCallback.h"
 
 #include "vtkBotnetInteractor.h"
 #include "Bot.h"

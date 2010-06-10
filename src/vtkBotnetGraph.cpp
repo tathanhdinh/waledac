@@ -4,18 +4,6 @@
 
 void vtkBotnetGraph::calc_points(vtkGraphLayout* layout)
 {
-	/*
-	double pt[3];
-	vtkGraph* g = vtkGraph::SafeDownCast(layout->GetOutput());
-	
-	vtkIdType v;
-	for (v = 0; v < g->GetNumberOfVertices(); v++)
-    {
-		g->GetPoint(v, pt);
-		printf("points %f %f %f\n",pt[0], pt[1], pt[2]);
-		points->InsertNextPoint(pt[0], pt[1], pt[2]);
-	}
-	*/
 	/* command and conquer */
 	this->points->InsertNextPoint(rand()%500, rand()%500, 100);
 	
@@ -33,9 +21,7 @@ void vtkBotnetGraph::calc_points(vtkGraphLayout* layout)
 	for(i = 0; i < this->spammers.size(); i++)
 	{
 		this->points->InsertNextPoint(rand()%500, rand()%500, 600);
-	}
-	
-	
+	}	
 }
 
 void vtkBotnetGraph::update_graph()
@@ -62,7 +48,6 @@ void vtkBotnetGraph::update_graph()
 	this->graph->GetVertexData()->AddArray(this->vertexcolors);
 	this->graph->GetEdgeData()->AddArray(this->edgescolors);
 	
-	printf("on passe AAAAAIEIEIE\n");
 	if(this->graph_create_first_time)
 	{
 		this->graph_create_first_time = false;
@@ -76,11 +61,8 @@ void vtkBotnetGraph::update_graph()
 		calc_points(layout);
 	}
 	
-	printf("setpoints\n");
 	this->graph->SetPoints(this->points);
-	printf("AddRepresentationFromInput\n");
 	this->graphLayoutView->AddRepresentationFromInput(this->graph);
-	printf("SetLayoutStrategyToPassThrough\n");
 	this->graphLayoutView->SetLayoutStrategyToPassThrough();
 }
 
@@ -95,8 +77,6 @@ void vtkBotnetGraph::update_protecters()
       	this->vertexcolors->InsertNextValue(10); // bleu
       	this->edgescolors->InsertNextValue(10);
 	}
-
-	printf("FIN UPDATE PROTECTERS\n");
 }
 
 void vtkBotnetGraph::update_repeaters()
@@ -130,8 +110,6 @@ void vtkBotnetGraph::update_repeaters()
 			this->edgescolors->InsertNextValue(4);
 		}
 	}
-	
-	printf("FIN UPDATE REPEATERS\n");
 }
 
 void vtkBotnetGraph::update_spammers()
@@ -150,8 +128,6 @@ void vtkBotnetGraph::update_spammers()
 			this->edgescolors->InsertNextValue(2);
 		}
 	}
-	
-	printf("FIN UPDATE SPAMMERS\n")	;
 }
 
 vtkBotnetGraph::vtkBotnetGraph(unsigned int rlist_size, unsigned int plist_size, unsigned int spammers_number, unsigned int attackers_number)
@@ -160,7 +136,6 @@ vtkBotnetGraph::vtkBotnetGraph(unsigned int rlist_size, unsigned int plist_size,
 	
 	this->botnet = new waledac::Botnet(rlist_size, plist_size, spammers_number, attackers_number);
 	this->botnet->init();	
-	printf("BOTNET ASSIGN\n");
 	
 	this->interactor = new vtkBotnetInteractor;
 	this->interactor->setbotnet(this);
@@ -177,8 +152,27 @@ vtkBotnetGraph::vtkBotnetGraph(unsigned int rlist_size, unsigned int plist_size,
 	this->graphLayoutView->ColorVerticesOn();
 	this->graphLayoutView->ColorEdgesOn();
 	
+	this->graphLayoutView->GetInteractor()->Initialize();
+
+	
 	construct_graph();
 	
+	this->theme = vtkViewTheme::New();
+	this->theme->SetPointLookupTable(this->lookuptable);
+	this->graphLayoutView->ApplyViewTheme(this->theme);
+ 
+ 	this->interactor->SetDefaultRenderer(this->graphLayoutView->GetRenderer());
+	this->graphLayoutView->GetInteractor()->SetInteractorStyle(this->interactor);
+	
+	vtkPointPicker *picker = vtkPointPicker::New();
+  	picker->SetTolerance(0.01);
+  	this->graphLayoutView->GetInteractor()->SetPicker(picker);
+  	
+
+	vtkTimerCallback* cb = new vtkTimerCallback(this);
+	this->graphLayoutView->GetInteractor()->AddObserver(vtkCommand::TimerEvent, cb);
+	this->graphLayoutView->GetInteractor()->CreateRepeatingTimer(3000);
+ 	
 	this->graphLayoutView->ResetCamera();
 	this->graphLayoutView->Render();
 	this->graphLayoutView->GetInteractor()->Start();	
@@ -189,8 +183,6 @@ void vtkBotnetGraph::delete_graph()
 	this->graph->Delete();
 	this->vertexcolors->Delete();
 	this->edgescolors->Delete();
-	this->theme->Delete();
-	//this->graphLayoutView->Delete();
 	
 	this->graph_iscreate = false;
 }
@@ -206,13 +198,6 @@ void vtkBotnetGraph::construct_graph()
  	this->edgescolors->SetName("coloredges");
 	
 	this->graph = vtkMutableUndirectedGraph::New();
- 
-	this->theme = vtkViewTheme::New();
-	this->theme->SetPointLookupTable(this->lookuptable);
-	this->graphLayoutView->ApplyViewTheme(this->theme);
- 
- 	this->interactor->SetDefaultRenderer(this->graphLayoutView->GetRenderer());
-	this->graphLayoutView->GetInteractor()->SetInteractorStyle(this->interactor);
 	
 	this->graph_iscreate = true;
 }
