@@ -18,7 +18,7 @@ void vtkBotnetGraph::calc_points(vtkGraphLayout* layout)
 		this->points->InsertNextPoint(rand()%500, rand()%500, 400);
 	}
 	
-	for(i = 0; i < this->spammers.size(); i++)
+	for(i = 0; i < /*this->spammers.size()*/1; i++)
 	{
 		this->points->InsertNextPoint(rand()%500, rand()%500, 600);
 	}	
@@ -94,7 +94,7 @@ void vtkBotnetGraph::update_repeaters()
 		for(unsigned int k = 0; k < repeater->plist().size(); k++)
 		{
 			this->graph->AddEdge(this->assoc_protecters[repeater->plist()[k]], vertex_repeater);
-			this->edgescolors->InsertNextValue(4);
+			this->edgescolors->InsertNextValue(2);
 		}
 	}
 
@@ -107,14 +107,29 @@ void vtkBotnetGraph::update_repeaters()
 		for(unsigned int k = 0; k < repeater->rlist().size(); k++)
 		{	
 			this->graph->AddEdge(this->assoc_repeaters[this->repeaters[j]], this->assoc_repeaters[repeater->rlist()[k]]);
-			this->edgescolors->InsertNextValue(4);
+			this->edgescolors->InsertNextValue(9);
 		}
 	}
 }
 
 void vtkBotnetGraph::update_spammers()
 {
-	for(unsigned int j = 0; j < this->spammers.size(); j++)
+	
+		vtkIdType vertex_spammer =  this->graph->AddVertex();
+		this->vertexcolors->InsertNextValue(5);
+		this->assoc_spammers[this->spammers[0]] = vertex_spammer;
+		
+		waledac::Spammer *spammer = dynamic_cast<waledac::Spammer*>(this->spammers[0].get());
+		
+		printf("\n\n");
+		for(unsigned int k = 0; k < spammer->m_rlist.size(); k++)
+		{
+			printf("lien = %s\n",spammer->m_rlist[k]->id().c_str());
+			this->graph->AddEdge(vertex_spammer, this->assoc_repeaters[spammer->m_rlist[k]]);
+ 			this->edgescolors->InsertNextValue(5);
+		}
+		
+	/*for(unsigned int j = 1; j < this->spammers.size(); j++)
 	{
 		vtkIdType vertex_spammer =  this->graph->AddVertex();
 		this->vertexcolors->InsertNextValue(2);
@@ -125,9 +140,9 @@ void vtkBotnetGraph::update_spammers()
 		for(unsigned int k = 0; k < spammer->rlist().size(); k++)
 		{
 			this->graph->AddEdge(vertex_spammer, this->assoc_repeaters[spammer->rlist()[k]]);
-			this->edgescolors->InsertNextValue(2);
+ 			this->edgescolors->InsertNextValue(4);
 		}
-	}
+	}*/
 }
 
 vtkBotnetGraph::vtkBotnetGraph(unsigned int rlist_size, unsigned int plist_size, unsigned int spammers_number, unsigned int attackers_number)
@@ -171,7 +186,7 @@ vtkBotnetGraph::vtkBotnetGraph(unsigned int rlist_size, unsigned int plist_size,
 
 	vtkTimerCallback* cb = new vtkTimerCallback(this);
 	this->graphLayoutView->GetInteractor()->AddObserver(vtkCommand::TimerEvent, cb);
-	this->graphLayoutView->GetInteractor()->CreateRepeatingTimer(300);
+	this->graphLayoutView->GetInteractor()->CreateRepeatingTimer(1);
  	
 	this->graphLayoutView->ResetCamera();
 	this->graphLayoutView->Render();

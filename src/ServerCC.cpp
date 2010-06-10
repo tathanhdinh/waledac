@@ -31,7 +31,7 @@ ServerCC::ServerCC() : Bot()
 
 
 /*
- *
+ * C&C server process the message received from protecters
  */
 response_code ServerCC::process_message(message_code message)
 {
@@ -68,6 +68,16 @@ response_code ServerCC::process_message(message_code message)
 
 
 /*
+ * C&C server never takes the initiative of communication
+ */
+response_code ServerCC::send_message(message_code message)
+{
+	// do nothing
+	return RESPONSE_FAILED;
+}
+
+
+/*
  * initialiser C&C server
  */
 void ServerCC::init()
@@ -95,8 +105,7 @@ void ServerCC::execute()
 void ServerCC::start()
 {
 	std::cout << "start servercc with id : " << Bot::id() << std::endl;
-	m_servercc_thread.reset(new boost::thread(boost::bind(&ServerCC::execute, 
-														  *this)));
+	m_servercc_thread.reset(new boost::thread(boost::bind(&ServerCC::execute, this)));
 	return;
 }
 
