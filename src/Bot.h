@@ -98,9 +98,13 @@ public :
 extern boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& 
 										bot_list);
 										
-unsigned int random_number(unsigned int max);
+extern std::vector< boost::shared_ptr<Bot> > random_bots(
+								std::vector< boost::shared_ptr<Bot> >& bot_list, 
+								unsigned int bot_number);
+										
+extern unsigned int random_number(unsigned int max);
 
-std::vector< boost::shared_ptr< Bot > > merge_list(
+extern std::vector< boost::shared_ptr< Bot > > merge_list(
 						std::vector< boost::shared_ptr< Bot > > &existing_rlist, 
 						std::vector< boost::shared_ptr< Bot > > &received_rlist);
 }
