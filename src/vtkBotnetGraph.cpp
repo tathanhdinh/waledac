@@ -177,8 +177,26 @@ vtkBotnetGraph::vtkBotnetGraph(unsigned int rlist_size, unsigned int plist_size,
 	this->graphLayoutView->ColorVerticesOn();
 	this->graphLayoutView->ColorEdgesOn();
 	
+	this->graphLayoutView->GetInteractor()->Initialize();
+
+	
 	construct_graph();
 	
+	this->theme = vtkViewTheme::New();
+	this->theme->SetPointLookupTable(this->lookuptable);
+	this->graphLayoutView->ApplyViewTheme(this->theme);
+ 
+ 	this->interactor->SetDefaultRenderer(this->graphLayoutView->GetRenderer());
+	this->graphLayoutView->GetInteractor()->SetInteractorStyle(this->interactor);
+	
+	
+	printf("create callback\n");
+	vtkTimerCallback* cb = new vtkTimerCallback(this);
+	printf("create callback addobserver\n");
+	this->graphLayoutView->GetInteractor()->AddObserver(vtkCommand::TimerEvent, cb);
+	printf("create callback timer\n");
+	this->graphLayoutView->GetInteractor()->CreateRepeatingTimer(1000);
+ 	
 	this->graphLayoutView->ResetCamera();
 	this->graphLayoutView->Render();
 	this->graphLayoutView->GetInteractor()->Start();	
@@ -189,7 +207,7 @@ void vtkBotnetGraph::delete_graph()
 	this->graph->Delete();
 	this->vertexcolors->Delete();
 	this->edgescolors->Delete();
-	this->theme->Delete();
+	//this->theme->Delete();
 	//this->graphLayoutView->Delete();
 	
 	this->graph_iscreate = false;
@@ -206,13 +224,6 @@ void vtkBotnetGraph::construct_graph()
  	this->edgescolors->SetName("coloredges");
 	
 	this->graph = vtkMutableUndirectedGraph::New();
- 
-	this->theme = vtkViewTheme::New();
-	this->theme->SetPointLookupTable(this->lookuptable);
-	this->graphLayoutView->ApplyViewTheme(this->theme);
- 
- 	this->interactor->SetDefaultRenderer(this->graphLayoutView->GetRenderer());
-	this->graphLayoutView->GetInteractor()->SetInteractorStyle(this->interactor);
 	
 	this->graph_iscreate = true;
 }

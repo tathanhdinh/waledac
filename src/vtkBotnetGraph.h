@@ -18,6 +18,8 @@
 #include <vtkClustering2DLayoutStrategy.h>
 #include <vtkAssignCoordinatesLayoutStrategy.h>
 
+#include "vtkTimerCallback.h"
+
 #include "vtkBotnetInteractor.h"
 #include "Bot.h"
 #include <map>

@@ -5,6 +5,8 @@ project(waledac)
 find_package(Boost REQUIRED)
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
+FIND_PACKAGE(Qt4 REQUIRED) 
+INCLUDE(${QT_USE_FILE})
 
 set(CMAKE_BUILD_TYPE Release)
 
@@ -14,11 +16,12 @@ link_directories(/usr/local/lib/vtk-5.6/)
 set(waledac_botnet_src
 	src/Bot.cpp src/Spammer.cpp src/Repeater.cpp src/Protecter.cpp
 	src/ServerCC.cpp src/Attacker.cpp src/Botnet.cpp
-	src/vtkBotnetGraph.cpp src/vtkBotnetInteractor.cpp src/main.cpp
+	src/OptionsDialog.cpp src/vtkTimerCallback.cpp src/vtkBotnetGraph.cpp src/vtkBotnetInteractor.cpp src/main.cpp
 )
 
 set(waledac_botnet_vtk_src
 #	src/BotnetVisual.cpp
+>>>>>>> other
 )
 
 set(waledac_botnet_libraries
@@ -29,6 +32,17 @@ set(waledac_botnet_vtk_libraries
 	vtkHybrid vtkViews
 )
 
+set(waledac_botnet_qt_libraries
+	${QT_LIBRARIES} QVTK
+)
+
+SET(waledac_botnet_moc_srcs src/OptionsDialog.h)
+  
+QT4_WRAP_CPP(waledac_botnet_src ${waledac_botnet_moc_srcs})
+
 add_executable(waledac ${waledac_botnet_src} ${waledac_botnet_vtk_src})
-target_link_libraries(waledac ${waledac_botnet_libraries} ${waledac_botnet_vtk_libraries})
+target_link_libraries(waledac ${waledac_botnet_libraries} ${waledac_botnet_qt_libraries} ${waledac_botnet_vtk_libraries})
+
+
+
 
