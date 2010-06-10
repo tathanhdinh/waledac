@@ -27,7 +27,7 @@
 
 namespace waledac {
 
-enum { BOT_COMPROMISED = 1, BOT_NON_COMPROMISED = 0 };
+//enum { BOT_COMPROMISED = 1, BOT_NON_COMPROMISED = 0 };
 	
 Bot::Bot()
 {
@@ -36,12 +36,12 @@ Bot::Bot()
 	bot_uuid.make(UUID_MAKE_V4);
 	m_id = bot_uuid.string();	
 	
-	m_status = BOT_NON_COMPROMISED;
+	m_status = IDLE;
 }
 
 
 /*
- * get id of bot
+ * get bot id
  */
 const std::string& Bot::id()
 {
@@ -50,23 +50,32 @@ const std::string& Bot::id()
 
 
 /*
- * check status of bot
+ * get/set bot running status
+ */
+bot_status& Bot::status()
+{
+	return m_status;
+}
+
+
+/*
+ * check bot compromised status
  */
 bool Bot::is_compromised()
 {
 	bool compromised = false;
-	if (m_status == BOT_COMPROMISED)
+	if (m_status == COMPROMISED)
 		compromised = true;
 	return compromised;
 }
 
 
 /*
- *
+ * obsolete method (will be replace by Bot::status() = COMPROMISED)
  */
 void Bot::compromise()
 {
-	m_status = BOT_COMPROMISED;
+	m_status = COMPROMISED;
 	
 	/*
 	printf("test update\n");
@@ -81,11 +90,11 @@ void Bot::compromise()
 /*
  *
  */
-response_code Bot::send_message(message_code message)
+/*response_code Bot::send_message(message_code message)
 {
 	response_code response = RESPONSE_OK;
 	return response;
-}
+}*/
 
 
 

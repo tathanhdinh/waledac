@@ -81,7 +81,7 @@ void Spammer::update_rlist()
 		}
 	}
 	
-	//std::cout << "received list size : " << received_rlist.size() << std::endl;
+	this->status() = UPDATE_RLIST;
 	
 	return;
 }
@@ -99,8 +99,8 @@ void Spammer::request_command()
 		repeater_proxy = random_bot(m_rlist);
 		
 		std::cout << "\033[01;36m" 
-					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'28s %4$'-'36s\n") 
-					% "spammer" % Bot::id() % "get command through repeater" % repeater_proxy->id();
+		<< boost::format("%1$'-'8s %2$'-'36s %3$'-'28s %4$'-'36s\n") 
+		% "spammer" % Bot::id() % "get command through repeater" % repeater_proxy->id();
 					
 		unsigned int received_command = dynamic_cast<Repeater*>
 											(repeater_proxy.get())->request_command();
@@ -136,7 +136,48 @@ response_code Spammer::send_message(message_code message)
 		repeater_proxy = boost::dynamic_pointer_cast< Repeater >(random_bot(m_rlist));
 		
 		// get a response
+		std::cout << "spammer " << this->id() 
+				<< " send message to repeater " 
+				<< repeater_proxy->id() << std::endl;
 		response = repeater_proxy->send_message(message);
+		
+		switch (message) {
+			case MESSAGE_GETKEY:
+				this->status() = SEND_MESSAGE_GETKEY;
+				break;
+				
+			case MESSAGE_FIRST:
+				this->status() = SEND_MESSAGE_FIRST;
+				break;
+				
+			case MESSAGE_NOTIFY:
+				this->status() = SEND_MESSAGE_NOTIFY;
+				break;
+				
+			case MESSAGE_EMAILS:
+				this->status() = SEND_MESSAGE_EMAILS;
+				break;
+				
+			case MESSAGE_TASKREQ:
+				this->status() = SEND_MESSAGE_TASKREQ;
+				break;
+				
+			case MESSAGE_WORDS:
+				this->status() = SEND_MESSAGE_WORDS;
+				break;
+				
+			case MESSAGE_TASKREP:
+				this->status() = SEND_MESSAGE_TASKREP;
+				break;
+				
+			case MESSAGE_HTTPSTATS:
+				this->status() = SEND_MESSAGE_HTTPSTATS;
+				break;
+				
+			case MESSAGE_CREDS:
+				this->status() = SEND_MESSAGE_CREDS;
+				break;
+		}
 	}
 	
 	return response;
@@ -159,17 +200,20 @@ void Spammer::init()
 void Spammer::execute()
 {	
 	// "getkey" message
+	std::cout << "spammer send MESSAGE_GETKEY to repeater" << std::endl;
 	send_message(MESSAGE_GETKEY);
-	
 	sleep(7);
 	
 	// "first" message
+	std::cout << "spammer send MESSAGE_FIRST to repeater" << std::endl;
 	send_message(MESSAGE_FIRST);
+	sleep(7);
 	
 	while (true) {
 		update_rlist();
 		sleep(7);
 		
+		// obsolete, need to be replaced by send_message
 		request_command();
 		sleep(7);
 		

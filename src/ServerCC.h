@@ -39,6 +39,8 @@ public:
 	
 	response_code process_message(message_code message);
 	
+	virtual response_code send_message(message_code message);
+	
 	virtual void init();
 	virtual void execute();
 	virtual void start();

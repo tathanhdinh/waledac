@@ -24,12 +24,15 @@
 namespace waledac 
 {
 
-enum command_code { 
+// obsolete codes
+enum command_code 
+{ 
 	COMMAND_FROM_REPEATER = 0, 
 	COMMAND_FROM_ATTACKER = 1 
 };
 
-enum message_code {
+enum message_code 
+{
 	MESSAGE_GETKEY = 0,
 	MESSAGE_FIRST = 1,
 	MESSAGE_NOTIFY = 2,
@@ -41,25 +44,50 @@ enum message_code {
 	MESSAGE_CREDS = 8
 };
 
-enum response_code {
+enum response_code 
+{
 	RESPONSE_OK = 0,
-	RESPONSE_FAILED = 1, // not implemented method, ...
+	RESPONSE_FAILED = 1, // not yet implemented methods
 	RESPONSE_GETKEY = 0
+};
+
+enum bot_status 
+{
+	SEND_MESSAGE_GETKEY = 0,
+	SEND_MESSAGE_FIRST = 1,
+	SEND_MESSAGE_NOTIFY = 2,
+	SEND_MESSAGE_EMAILS = 3,
+	SEND_MESSAGE_TASKREQ = 4,
+	SEND_MESSAGE_WORDS = 5,
+	SEND_MESSAGE_TASKREP = 6,
+	SEND_MESSAGE_HTTPSTATS = 7,
+	SEND_MESSAGE_CREDS = 8,
+	
+	UPDATE_RLIST = 9,
+	UPDATE_PLIST = 10,
+	
+	COMPROMISED = 11,
+	IDLE = 12
 };
 	
 class Bot : public boost::enable_shared_from_this< Bot >
 {
 private :
 	std::string m_id;
-	unsigned int m_status;
+	bot_status m_status;
 
 public :
 	Bot();
 	const std::string& id();
+	
+	//virtual void update_status();
+	virtual bot_status& status();
+	
+	// obsolete methods
 	void compromise();
 	bool is_compromised();
 	
-	virtual response_code send_message(message_code message);
+	virtual response_code send_message(message_code message) = 0;
 	
 	virtual void init() = 0;
 	virtual void execute() = 0;

@@ -31,7 +31,7 @@ ServerCC::ServerCC() : Bot()
 
 
 /*
- *
+ * C&C server process the message received from protecters
  */
 response_code ServerCC::process_message(message_code message)
 {
@@ -64,6 +64,16 @@ response_code ServerCC::process_message(message_code message)
 	}
 	
 	return response;
+}
+
+
+/*
+ * C&C server never takes the initiative of communication
+ */
+response_code ServerCC::send_message(message_code message)
+{
+	// do nothing
+	return RESPONSE_FAILED;
 }
 
 

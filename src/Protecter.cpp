@@ -47,7 +47,7 @@ response_code Protecter::send_message(message_code message)
 
 
 /*
- * 
+ * initialise protecter
  */
 void Protecter::init()
 {
@@ -62,7 +62,7 @@ void Protecter::execute()
 {
 	while (true) {
 		// wait for request from repeater
-		sleep(5);
+		sleep(7);
 	}
 	return;
 }
@@ -73,7 +73,7 @@ void Protecter::execute()
  */
 void Protecter::start()
 {
-	//std::cout << "start protecter with id : " << Bot::id() << std::endl;
+	std::cout << "start protecter with id : " << Bot::id() << std::endl;
 	m_protecter_thread.reset(new boost::thread(boost::bind(&Protecter::execute, 
 														   *this)));
 	return;

@@ -112,11 +112,11 @@ void Repeater::update_rlist()
 		boost::shared_ptr<Bot> repeater_target;
 		repeater_target = random_bot(m_rlist);
 		
-		/*
+		
 		std::cout << "\033[01;31m" 
 					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
 					% "repeater" % Bot::id() % "updates RList from repeater" % repeater_target->id();
-		*/
+		
 		// get subset of rlist from this repeater
 		std::vector< boost::shared_ptr<Bot> > received_rlist;
 		received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
@@ -124,6 +124,8 @@ void Repeater::update_rlist()
 		// merge new rlist and existing rlist
 		m_rlist = repeater_merge_list(m_rlist, received_rlist);
 	}
+	
+	this->status() = UPDATE_RLIST;
 	
 	return;
 }
@@ -139,11 +141,9 @@ void Repeater::update_plist()
 		boost::shared_ptr< Bot > repeater_target;
 		repeater_target = random_bot(m_rlist);
 		
-		/*
 		std::cout << "\033[01;34m" 
 					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
 					% "repeater" % Bot::id() % "updates PList from repeater" % repeater_target->id();
-		*/
 		
 		// get subset of plist from this repeater
 		std::vector< boost::shared_ptr< Bot > > received_plist;
@@ -153,12 +153,14 @@ void Repeater::update_plist()
 		m_plist = repeater_merge_list(m_plist, received_plist);
 	}
 	
+	this->status() = UPDATE_PLIST;
+	
 	return;
 }
 
 
 /*
- * get command from C&C server
+ * get command from C&C server (obsolete methods)
  */
 command_code Repeater::request_command()
 {
@@ -195,6 +197,9 @@ response_code Repeater::send_message(message_code message)
 		boost::shared_ptr< Protecter > protecter_proxy;
 		protecter_proxy = boost::dynamic_pointer_cast<Protecter>(random_bot(m_plist));
 		
+		std::cout << "repeater " << this->id() 
+				<< " send message to protecter " 
+				<< protecter_proxy->id() << std::endl;
 		response = protecter_proxy->send_message(message);
 	}
 	
@@ -220,8 +225,10 @@ void Repeater::execute()
 {
 	while (true) {
 		update_rlist();
+		sleep(7);
+		
 		update_plist();
-		sleep(5);
+		sleep(7);
 	}
 	
 	return;
