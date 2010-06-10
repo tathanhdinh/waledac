@@ -200,10 +200,10 @@ void Spammer::init()
 	std::vector< boost::shared_ptr<Bot> > all_repeater = Botnet::repeaters_list();
 	m_rlist = random_bots(all_repeater, all_repeater.size() / 3);
 	
-	std::cout << "sdfsdfdsdfsdfsdfddddddddddddddddddddddd" << std::endl;
+	/*std::cout << "sdfsdfdsdfsdfsdfddddddddddddddddddddddd" << std::endl;
 	for (unsigned int i = 0; i < m_rlist.size(); ++i) {
 		std::cout << m_rlist[i]->id() << std::endl;
-	}
+	}*/
 	
 	
 	//std::cout << "spammer startup rlist size : " << m_rlist.size() << std::endl; 
@@ -220,14 +220,16 @@ void Spammer::execute()
 	//std::cout << "spammer send MESSAGE_GETKEY to repeater" << std::endl;
 	send_message(MESSAGE_GETKEY);
 	//sleep(7);
+	boost::this_thread::sleep(boost::posix_time::seconds(7));
 	
 	// "first" message
 	//std::cout << "spammer send MESSAGE_FIRST to repeater" << std::endl;
 	send_message(MESSAGE_FIRST);
 	//sleep(7);
+	boost::this_thread::sleep(boost::posix_time::seconds(7));
 	
 	while (true) {
-		std::cout << "address of current spammer : " << this << std::endl;
+		//std::cout << "address of current spammer : " << this << std::endl;
 		/*std::cout << "before update : " << this->id() << std::endl;
 		for (unsigned int i = 0; i < m_rlist.size(); ++i) {
 			std::cout << m_rlist[i]->id() << std::endl;
@@ -237,14 +239,16 @@ void Spammer::execute()
 		for (unsigned int i = 0; i < m_rlist.size(); ++i) {
 			std::cout << m_rlist[i]->id() << std::endl;
 		}*/
-		sleep(3);
+		//sleep(3);
+		boost::this_thread::sleep(boost::posix_time::seconds(3));
 		
 		// obsolete, need to be replaced by send_message
 		//request_command();
 		//sleep(1);
 		
-		//send_message(MESSAGE_TASKREQ);
+		send_message(MESSAGE_TASKREQ);
 		//sleep(2);
+		boost::this_thread::sleep(boost::posix_time::seconds(2));
 	}
 	
 	return;
@@ -257,7 +261,7 @@ void Spammer::execute()
 void Spammer::start()
 {
 	std::cout << "start spammer with id : " << Bot::id() << std::endl;
-	std::cout << "address of calling spammer : " << this << std::endl;
+	//std::cout << "address of calling spammer : " << this << std::endl;
 	m_spammer_thread.reset(new boost::thread(boost::bind(&Spammer::execute, this)));
 	return;
 }
