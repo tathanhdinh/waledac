@@ -28,7 +28,7 @@ set(waledac_botnet_vtk_libraries
 )
 
 set(waledac_botnet_qt_libraries
-	${QT_LIBRARIES} QVTK
+	${QT_LIBRARIES}
 )
 
 SET(waledac_botnet_moc_srcs src/OptionsDialog.h)
