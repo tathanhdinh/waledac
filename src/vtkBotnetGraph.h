@@ -62,6 +62,8 @@ class vtkBotnetGraph
 		std::map< boost::shared_ptr< waledac::Bot >, vtkIdType > assoc_repeaters;
 		std::map< boost::shared_ptr< waledac::Bot >, vtkIdType > assoc_protecters;
 		
+		std::map< int, boost::shared_ptr< waledac::Bot > > assoc_points;
+		
 		waledac::Botnet *botnet;
 
 		bool graph_iscreate;

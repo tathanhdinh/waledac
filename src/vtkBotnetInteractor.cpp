@@ -33,6 +33,48 @@ void vtkBotnetInteractor::OnMouseWheelBackward()
 		this->zoom_save = camera->GetParallelScale();
 }
 
+int vtkBotnetInteractor::FindBotPosition(int point)
+{
+	/* sync avec l'ordre dans lequel on insère les points */
+	
+	if(point == 0)
+	{
+		printf("command and conquer touché, retourne le premier repéteur pour l'instant\n");
+		return this->ptrbotnetgraph->repeaters[0];
+	}
+	else if(point > 0 && point < this->ptrbotnetgraph->protecters.size())
+		return this->ptrbotnetgraph->repeaters[point-1];
+		
+	else if(point >= this->ptrbotnetgraph->protecters.size() && point < (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()))
+		return this->ptrbotnetgraph->repeaters[point-this->ptrbotnetgraph->protecters.size()-1];
+		
+	else if(point >= (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()) && point < (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()+this->ptrbotnetgraph->spammers.size()))
+		return this->ptrbotnetgraph->repeaters[point-this->ptrbotnetgraph->protecters.size()-this->ptrbotnetgraph->repeaters.size()-1];
+}
+
+void vtkBotnetInteractor::FindBot(int point)
+{
+	/* sync avec l'ordre dans lequel on insère les points */
+	
+	int pos = this->FindBotPosition(point);
+	if(point == 0)
+	{
+		printf("command and conquer touché\n");
+	}
+	else if(point > 0 && point < this->ptrbotnetgraph->protecters.size())
+	{
+		printf("protecter touché\n");
+	}
+	else if(point >= this->ptrbotnetgraph->protecters.size() && point < (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()))
+	{
+		printf("repeater touché\n");
+	}
+	else if(point >= (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()) && point < (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()+this->ptrbotnetgraph->spammers.size()))
+	{
+		printf("spammer touché\n");
+	}	
+}
+
 void vtkBotnetInteractor::OnLeftButtonDown()
 {
 	bool click_point = false;
@@ -48,6 +90,8 @@ void vtkBotnetInteractor::OnLeftButtonDown()
 	{
 		printf("get actor fini\n");
 		int point = pickedObject->GetMapper()->GetInput()->FindPoint(pos[0],pos[1],pos[2]);
+		this->FindBot(point);
+		printf("point = %d\n",point);
 		
 		/*
 		printf("find point fini\n");
@@ -95,31 +139,7 @@ void vtkBotnetInteractor::OnLeftButtonDown()
 
 void vtkBotnetInteractor::OnRightButtonDown()
 {	
-	printf("ALLLLLLLLLLLLLLLLLLLLLAAAAAAAAAAAAAAAAAAAAL RIGHT\n");
-	
-	this->FindPokedRenderer(this->Interactor->GetEventPosition()[0], this->Interactor->GetEventPosition()[1]);
-	if(this->CurrentRenderer == NULL)
-    	return;
-  
-	//this->GrabFocus(this->EventCallbackCommand);
-	//this->StartDolly();
-	//double factor = this->MotionFactor * 0.2 * this->MouseWheelMotionFactor;
-	//this->Dolly(pow(1.1, factor));	
-	
-	vtkCamera *camera = this->CurrentRenderer->GetActiveCamera();
-	if(camera->GetParallelProjection())
-	{
-		printf("scale = %f\n",camera->GetParallelScale());
-		camera->SetParallelScale(camera->GetParallelScale()*2);
-	}
-	
-	//this->EndDolly();
-	//this->ReleaseFocus();		
-		
-		
-		
-	vtkInteractorStyleTrackballCamera::OnRightButtonDown();
-	//this->ptrbotnetgraph->botnet->wait();
+	/* overwrite vtkInteractorStyleTrackballCamera::OnRightButtonDown */
 }
 
 
