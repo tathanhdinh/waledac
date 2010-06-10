@@ -16,6 +16,8 @@ class vtkBotnetInteractor : public vtkInteractorStyleTrackballCamera
    		~vtkBotnetInteractor();
    		
    		void setbotnet(vtkBotnetGraph *ptrbotnetgraph);
+   		void FindBot(int point);
+   		
    		virtual void OnLeftButtonDown();
    		virtual void OnRightButtonDown();
    		virtual void OnMouseWheelForward();
