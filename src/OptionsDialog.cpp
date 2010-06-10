@@ -4,7 +4,7 @@ OptionsDialog::OptionsDialog(QWidget *parent) : QDialog(parent)
 {
 	this->setWindowTitle("Timer option");
 	
-	this->parent = (QVTKBotnetWidget *) parent;
+	//this->parent = (QVTKBotnetWidget *) parent;
 	
 	timerbox = new QSpinBox;
 	timerbox->setRange(100000,1000000);

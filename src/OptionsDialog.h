@@ -2,7 +2,7 @@
 #define OPTIONSDIALOG_H
 
 #include <QtGui>
-#include "QVTKBotnetWidget.h"
+//#include "QVTKBotnetWidget.h"
 
 class OptionsDialog : public QDialog
 {
@@ -12,7 +12,7 @@ class OptionsDialog : public QDialog
 		OptionsDialog(QWidget *parent);
 		~OptionsDialog();
 		
-		QVTKBotnetWidget *parent;
+		//QVTKBotnetWidget *parent;
 		QSpinBox *timerbox;	
 };
 
