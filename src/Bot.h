@@ -63,7 +63,7 @@ enum bot_status
         UPDATE_RLIST = 9,
         UPDATE_PLIST = 10,
         
-        COMPROMISED = 11,
+        STOPPED = 11,
         IDLE = 12
 };
 
@@ -83,7 +83,7 @@ public :
 	
 	virtual response_code send_message(message_code message);
 	
-	virtual void init(bot_t server, bots_t plist, bots_t rlist) = 0;
+	virtual void init(bot_t& server, bots_t& plist, bots_t& rlist) = 0;
 	
 	#ifdef THREAD_VERSION
 		virtual void execute() = 0;
@@ -93,7 +93,8 @@ public :
 
 };
 
-	extern bot_t random_bot(bots_t & bot_list);									
+	extern bot_t random_bot(bots_t & bot_list);
+	extern bots_t random_bots(bots_t& bot_list, unsigned int bot_number);
 	extern unsigned int random_number(unsigned int max);
 	extern bots_t merge_list(bots_t& original_list, bots_t& new_list);
 	extern bool compare_bot(bot_t a, bot_t b);

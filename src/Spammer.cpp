@@ -181,7 +181,7 @@ response_code Spammer::send_message(message_code message)
 void Spammer::init(bot_t& server, bots_t& plist, bots_t& rlist)
 {
 	// get a random sublist of all repeater
-	std::vector< boost::shared_ptr<Bot> > all_repeater = rlist;
+	bots_t all_repeater = rlist;
 	m_rlist = random_bots(all_repeater, all_repeater.size() / 3);
 	
 #ifndef THREAD_VERSION

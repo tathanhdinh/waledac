@@ -44,7 +44,7 @@ void vtkBotnetGraph::update_graph(bots_t repeaters, bots_t protecters, bots_t sp
 	construct_graph();
 	
 	this->vertex_command_and_conquer = this->graph->AddVertex();
-	this->colors_vertex->InsertNextValue(1); // rouge
+	this->colors_vertex->InsertNextValue(2); // rouge
 	
 	update_attackers(attackers);
 	update_protecters(protecters);
@@ -119,7 +119,7 @@ void vtkBotnetGraph::update_repeaters(bots_t repeaters)
 	for(unsigned int j = 0; j < repeaters.size(); j++)
 	{
 		vtkIdType vertex_repeater =  this->graph->AddVertex();
-		this->colors_vertex->InsertNextValue(3); // vert
+		this->colors_vertex->InsertNextValue(2); // vert
 		this->assoc_bot_vertex[repeaters[j]] = vertex_repeater;
 		repeater = dynamic_cast<waledac::Repeater*>(repeaters[j].get());
 		
@@ -127,7 +127,7 @@ void vtkBotnetGraph::update_repeaters(bots_t repeaters)
 		for(unsigned int k = 0; k < repeater->plist().size(); k++)
 		{
 			this->graph->AddEdge(this->assoc_bot_vertex[repeater->plist()[k]], vertex_repeater);
-			this->colors_edges->InsertNextValue(3);
+			this->colors_edges->InsertNextValue(2);
 		}
 	}
 
@@ -140,7 +140,7 @@ void vtkBotnetGraph::update_repeaters(bots_t repeaters)
 		for(unsigned int k = 0; k < repeater->rlist().size(); k++)
 		{	
 			this->graph->AddEdge(this->assoc_bot_vertex[repeaters[j]], this->assoc_bot_vertex[repeater->rlist()[k]]);
-			this->colors_edges->InsertNextValue(3);
+			this->colors_edges->InsertNextValue(2);
 		}
 	}
 }
@@ -150,7 +150,7 @@ void vtkBotnetGraph::update_spammers(bots_t spammers)
 	for(unsigned int j = 0; j < spammers.size(); j++)
 	{
 		vtkIdType vertex_spammer =  this->graph->AddVertex();
-		this->colors_vertex->InsertNextValue(5);
+		this->colors_vertex->InsertNextValue(2);
 		this->assoc_bot_vertex[spammers[j]] = vertex_spammer;
 		
 		waledac::Spammer *spammer = dynamic_cast<waledac::Spammer*>(spammers[j].get());
@@ -158,7 +158,7 @@ void vtkBotnetGraph::update_spammers(bots_t spammers)
 		for(unsigned int k = 0; k < spammer->rlist().size(); k++)
 		{
 			this->graph->AddEdge(vertex_spammer, this->assoc_bot_vertex[spammer->rlist()[k]]);
-			this->colors_edges->InsertNextValue(10);
+			this->colors_edges->InsertNextValue(2);
 		}
 	}
 }
@@ -172,8 +172,21 @@ vtkBotnetGraph::vtkBotnetGraph(waledac::Botnet *botnet)
 	this->interactor_style = new vtkBotnetInteractorStyle(this);
 	
 	this->lookup_table = vtkLookupTable::New();
-	this->lookup_table->SetTableRange(0.0, 10.0);
-	this->lookup_table->Build();
+	this->lookup_table->SetNumberOfTableValues(10);
+  	this->lookup_table->Build();
+  
+	//this->lookup_table->SetTableRange(0.0, 10.0);
+	this->lookup_table->SetTableValue(0     , 0     , 0     , 0, 1);  //Black
+  	this->lookup_table->SetTableValue(1, 0.8900, 0.8100, 0.3400, 1); // Banana
+ 	this->lookup_table->SetTableValue(2, 1.0000, 0.3882, 0.2784, 1); // Tomato
+  	this->lookup_table->SetTableValue(3, 0.9608, 0.8706, 0.7020, 1); // Wheat
+  	this->lookup_table->SetTableValue(4, 0.9020, 0.9020, 0.9804, 1); // Lavender
+  	this->lookup_table->SetTableValue(5, 1.0000, 0.4900, 0.2500, 1); // Flesh
+  	this->lookup_table->SetTableValue(6, 0.5300, 0.1500, 0.3400, 1); // Raspberry
+  	this->lookup_table->SetTableValue(7, 0.9804, 0.5020, 0.4471, 1); // Salmon
+  	this->lookup_table->SetTableValue(8, 0.7400, 0.9900, 0.7900, 1); // Mint
+  	this->lookup_table->SetTableValue(9, 0.2000, 0.6300, 0.7900, 1); // Peacock
+
 	
 	this->graph_points = vtkPoints::New();
 	
@@ -207,7 +220,36 @@ vtkBotnetGraph::vtkBotnetGraph(waledac::Botnet *botnet)
  	
 	this->graphLayoutView->ResetCamera();
 	this->graphLayoutView->Render();
-	this->graphLayoutView->GetInteractor()->Start();	
+	this->graphLayoutView->GetInteractor()->Start();
+	
+	
+	
+	vtkGraphMapper *mapper = vtkGraphMapper::New();
+	mapper->SetInput(this->graph_points);
+	mapper->SetEdgeColorArrayName("coloredges");
+	mapper->ColorEdgesOn();
+	mapper->SetVertexColorArrayName("colorvertices");
+	mapper->ColorVerticesOn();
+	
+	vtkActor *actor = vtkActor::New();
+	actor->SetMapper(mapper);
+
+
+	vtkRenderer *ren1 = vtkRenderer::New();
+	vtkRenderWindow *renWin = vtkRenderWindow::New();
+	renWin->AddRenderer(ren1);
+	renWin->SetSize(800,600);
+	
+	vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
+	iren->SetRenderWindow(renWin);
+
+	ren1->AddActor(actor);
+	ren1->AddActor(labelActor);
+	ren1->SetBackground(1,1,1); // Background color white
+
+	renWin->Render();
+
+	iren->Start();
 }
 
 

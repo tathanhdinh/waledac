@@ -73,7 +73,9 @@ response_code Bot::send_message(message_code message)
 	return response;
 }
 
-
+/*===========================================================================*/
+/*                    implementation of common functions                     */
+/*===========================================================================*/
 
 /*
  * take a random bot from an existing list
@@ -85,6 +87,23 @@ bot_t random_bot(bots_t& bot_list)
 {
 	unsigned int random_index = die() % bot_list.size();
 	return bot_list[random_index];
+}
+
+
+/*
+ * take a sub list of random bots from an existing list
+ */
+bots_t random_bots(bots_t& bot_list, unsigned int bot_number)
+{
+        bots_t tmplist = bot_list;
+        std::random_shuffle(tmplist.begin(), tmplist.end());
+        
+        bots_t sublist;
+        for (unsigned int i = 0; i < std::min(bot_number, static_cast<unsigned int>(bot_list.size())); ++i) {
+                sublist.push_back(tmplist[i]);
+        }
+        
+        return sublist;
 }
 
 
