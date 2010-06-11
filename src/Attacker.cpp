@@ -71,12 +71,12 @@ void Attacker::update_rlist()
 
 
 /*
- * get control command from C&C server
+ * depend on type of attack
  */
-command_code Attacker::request_command()
+response_code Attacker::send_message(message_code message)
 {
-	//std::cout << "\033[01;33m" << "request from spammer detected" << std::endl;
-	return COMMAND_FROM_ATTACKER;
+	// always response stop when receive a message from spammer
+	return RESPONSE_STOP;
 }
 
 
