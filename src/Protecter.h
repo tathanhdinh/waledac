@@ -38,7 +38,7 @@ class Protecter : public Bot
 		bot_t server;
 	
 		virtual response_code send_message(message_code message);
-		virtual void init(bot_t server, bots_t plist, bots_t rlist);
+		virtual void init(bot_t& server, bots_t& plist, bots_t& rlist);
 		
 		#ifdef THREAD_VERSION
 		virtual void execute();

@@ -32,6 +32,7 @@ class Spammer : public Bot
 {
 private:
 	bots_t m_rlist;
+	void update_status(response_code code);
 	#ifdef THREAD_VERSION
 	boost::shared_ptr< boost::thread > m_spammer_thread;
 	#endif
@@ -39,13 +40,12 @@ private:
 public:
 	Spammer();
 	void update_rlist();
-	void request_command();
 	
 	bots_t rlist();
 	
 	virtual response_code send_message(message_code message);
 	
-	virtual void init(bot_t server, bots_t plist, bots_t rlist);
+	virtual void init(bot_t& server, bots_t& plist, bots_t& rlist);
 	
 	#ifdef THREAD_VERSION
 	virtual void execute();

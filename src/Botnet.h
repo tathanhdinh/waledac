@@ -20,14 +20,16 @@
 #include "Bot.h"
 #include "botnet_types.h"
 
+#include <boost/smart_ptr.hpp>
 
 
 namespace waledac {
 
-class Botnet
+class Botnet : public boost::enable_shared_from_this< Botnet >
 {
 public:
-	Botnet(unsigned int repeaters_number, unsigned int protecters_number, unsigned int spammers_number, unsigned int attackers_number);
+	Botnet(unsigned int repeaters_number, unsigned int protecters_number, 
+		   unsigned int spammers_number, unsigned int attackers_number);
 		   
 	void init();
 	void start();

@@ -78,7 +78,7 @@ response_code ServerCC::send_message(message_code message)
 /*
  * initialiser C&C server
  */
-void ServerCC::init(bot_t server, bots_t plist, bots_t rlist)
+void ServerCC::init(bot_t& server, bots_t& plist, bots_t& rlist)
 {
 	return;
 }
@@ -92,7 +92,8 @@ void ServerCC::execute()
 {
         while (true) {
                 // wait for request from protecter
-                sleep(5);
+                //sleep(5);
+				boost::this_thread::sleep(boost::posix_time::seconds(5));
         }
         return;
 }
