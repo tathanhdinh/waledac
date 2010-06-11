@@ -35,6 +35,7 @@ public:
 	
 	virtual response_code send_message(message_code message);
 	
+	virtual void init();
 	virtual void execute();
 	virtual void start();
 	virtual void wait();

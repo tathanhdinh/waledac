@@ -53,7 +53,6 @@ std::vector< boost::shared_ptr< Bot > > Attacker::sub_plist()
  */
 void Attacker::update_plist()
 {
-	//std::cout << "\033[01;34m" << "fake ";
 	Repeater::update_plist();
 	return;
 }
@@ -64,7 +63,6 @@ void Attacker::update_plist()
  */
 void Attacker::update_rlist()
 {
-	//std::cout << "\033[01;31m" << "fake ";
 	Repeater::update_rlist();
 	return;
 }
@@ -77,6 +75,15 @@ response_code Attacker::send_message(message_code message)
 {
 	// always response stop when receive a message from spammer
 	return RESPONSE_STOP;
+}
+
+
+/*
+ * initialise rlist and plist of repeater before running
+ */
+void Attacker::init()
+{
+	waledac::Repeater::init();
 }
 
 
@@ -98,7 +105,6 @@ void Attacker::start()
 	//std::cout << "start attacker with id : " << Bot::id() << std::endl;
 	m_attacker_thread.reset(new boost::thread(boost::bind(&Attacker::execute, 
 														  this)));
-	//waledac::Repeater::start();
 	return;
 }
 
@@ -109,7 +115,6 @@ void Attacker::start()
 void Attacker::wait()
 {
 	m_attacker_thread->join();
-	//Repeater::wait();
 	return;
 }
 
