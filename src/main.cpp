@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 	else {
 		std::cout << "Waldac botnet simulation" << std::endl;
 		
-		//vtkBotnetGraph *botnetgraph = new vtkBotnetGraph(rlist_size, plist_size, spammers_number, attackers_number);
+		vtkBotnetGraph *botnetgraph = new vtkBotnetGraph(rlist_size, plist_size, spammers_number, attackers_number);
 		
 		/*while (true) {
 			botnetgraph->update_graph();
@@ -54,16 +54,16 @@ int main(int argc, char **argv) {
 			sleep(5);
 		}*/
 	
-		//botnetgraph->botnet->wait();
+		botnetgraph->botnet->wait();
 		
 		// testing botnet only
-		boost::shared_ptr<waledac::Botnet> botnet;
+		/*boost::shared_ptr<waledac::Botnet> botnet;
 		botnet.reset(new waledac::Botnet(rlist_size, plist_size, spammers_number, attackers_number));
 		
 		botnet->init();
 		botnet->start();
 		
-		//std::cout << "print first : " << std::endl;
+		std::cout << "print first : " << std::endl;
 		boost::shared_ptr< waledac::Spammer > first_spammer;
 		
 		first_spammer = boost::dynamic_pointer_cast<waledac::Spammer>(botnet->spammers_list()[0]);
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 			sleep(3);
 		}
 		
-		botnet->wait();
+		botnet->wait();*/
 	}
     return 0;
 }

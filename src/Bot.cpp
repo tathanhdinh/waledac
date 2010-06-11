@@ -20,8 +20,8 @@
 #include <vector>
 #include <algorithm>
 
-//#include <ossp/uuid++.hh>
-#include <uuid++.hh>
+#include <ossp/uuid++.hh>
+//#include <uuid++.hh>
 
 #include <boost/smart_ptr.hpp>
 #include <boost/random.hpp>
@@ -44,7 +44,7 @@ Bot::Bot()
 /*
  * get bot id
  */
-const std::string& Bot::id()
+const std::string& Bot::id() const
 {
 	return m_id;
 }
@@ -128,7 +128,6 @@ std::vector< boost::shared_ptr<Bot> > random_bots(std::vector< boost::shared_ptr
 unsigned int random_number(unsigned int max)
 {
 	unsigned int random_value = die() % (max + 1);;
-	//std::cout << "random value " << random_value << std::endl;
 	return random_value;
 }
 
@@ -136,21 +135,60 @@ unsigned int random_number(unsigned int max)
 /*
  * merge randomly two lists
  */
-std::vector< boost::shared_ptr< Bot > > merge_list(std::vector< boost::shared_ptr< Bot > >& listA, 
-												   std::vector< boost::shared_ptr< Bot > >& listB)
+std::vector< boost::shared_ptr< Bot > > merge_list(std::vector< boost::shared_ptr< Bot > >& original_list, 
+												   std::vector< boost::shared_ptr< Bot > >& new_list)
 {
-	std::vector< boost::shared_ptr<Bot> >  total_list = listA;
-	for (unsigned int i = 0; i < listB.size(); ++i) {
-		total_list.push_back(listB[i]);
+	std::vector< boost::shared_ptr<Bot> >  total_list = original_list;
+	for (unsigned int i = 0; i < new_list.size(); ++i) {
+		total_list.push_back(new_list[i]);
 	}
 	std::random_shuffle(total_list.begin(), total_list.end());
+	total_list = remove_duplicate(total_list);
+	std::random_shuffle(total_list.begin(), total_list.end());
 	
-	std::vector< boost::shared_ptr<Bot> > merged_list(listA.size());
+	/*std::vector< boost::shared_ptr<Bot> > merged_list((listA.size() + listB.size()) / 2);
 	std::copy(total_list.begin(), total_list.begin() + merged_list.size(), 
 			  merged_list.begin());
 	
+	return merged_list;*/
+	
+	std::vector< boost::shared_ptr<Bot> > merged_list;
+	merged_list.assign(total_list.begin(), total_list.begin() + original_list.size());
 	return merged_list;
 }
+
+
+/*
+ * less than compare two smart pointers of bot
+ */
+bool compare_bot(boost::shared_ptr<Bot> a, boost::shared_ptr<Bot> b)
+{
+	return (a->id() < b->id());
+}
+
+
+/*
+ * unique compare two smart pointer of bot
+ */
+bool unique_bot(boost::shared_ptr<Bot> a, boost::shared_ptr<Bot> b)
+{
+	return (a->id() == b->id());
+}
+
+
+/*
+ * remove duplicate bots from a list
+ */
+std::vector< boost::shared_ptr< Bot > > remove_duplicate(
+						std::vector< boost::shared_ptr< Bot > >& list)
+{
+	std::vector< boost::shared_ptr<Bot> > tmplist = list;
+	std::sort(tmplist.begin(), tmplist.end(), compare_bot);
+	tmplist.erase(std::unique(tmplist.begin(), tmplist.end()), tmplist.end());
+	
+	return tmplist;
+}
+
 
 
 }
