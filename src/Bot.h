@@ -27,30 +27,25 @@
 namespace waledac 
 {
 
-enum command_code 
-{ 
-        COMMAND_FROM_REPEATER = 0, 
-        COMMAND_FROM_ATTACKER = 1 
-};
-
 enum message_code 
 {
-        MESSAGE_GETKEY = 0,
-        MESSAGE_FIRST = 1,
-        MESSAGE_NOTIFY = 2,
-        MESSAGE_EMAILS = 3,
-        MESSAGE_TASKREQ = 4,
-        MESSAGE_WORDS = 5,
-        MESSAGE_TASKREP = 6,
-        MESSAGE_HTTPSTATS = 7,
-        MESSAGE_CREDS = 8
+	MESSAGE_GETKEY = 0,
+	MESSAGE_FIRST = 1,
+	MESSAGE_NOTIFY = 2,
+	MESSAGE_EMAILS = 3,
+	MESSAGE_TASKREQ = 4,
+	MESSAGE_WORDS = 5,
+	MESSAGE_TASKREP = 6,
+	MESSAGE_HTTPSTATS = 7,
+	MESSAGE_CREDS = 8
 };
 
 enum response_code 
 {
-        RESPONSE_OK = 0,
-        RESPONSE_FAILED = 1, // not yet implemented methods
-        RESPONSE_GETKEY = 0
+	RESPONSE_FAILED = 0, // response from not yet implemented methods
+	RESPONSE_OK = 1,
+	RESPONSE_GETKEY = 2,
+	RESPONSE_STOP = 3
 };
 
 enum bot_status 
@@ -68,7 +63,7 @@ enum bot_status
         UPDATE_RLIST = 9,
         UPDATE_PLIST = 10,
         
-        COMPROMISED = 11,
+        STOPPED = 11,
         IDLE = 12
 };
 
@@ -81,15 +76,14 @@ private :
 
 public :
 	Bot();
-	const std::string& id();
+	const std::string& id() const;
 	
 	virtual bot_status& status();
-	void compromise();
 	bool is_compromised();
 	
 	virtual response_code send_message(message_code message);
 	
-	virtual void init(bot_t server, bots_t plist, bots_t rlist) = 0;
+	virtual void init(bot_t& server, bots_t& plist, bots_t& rlist) = 0;
 	
 	#ifdef THREAD_VERSION
 		virtual void execute() = 0;
@@ -99,7 +93,8 @@ public :
 
 };
 
-	extern bot_t random_bot(bots_t & bot_list);									
+	extern bot_t random_bot(bots_t & bot_list);
+	extern bots_t random_bots(bots_t& bot_list, unsigned int bot_number);
 	extern unsigned int random_number(unsigned int max);
 	extern bots_t merge_list(bots_t& original_list, bots_t& new_list);
 	extern bool compare_bot(bot_t a, bot_t b);

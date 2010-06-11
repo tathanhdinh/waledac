@@ -45,14 +45,12 @@ public:
 	virtual bots_t sub_rlist();
 	virtual bots_t sub_plist();
 	
-	virtual command_code request_command();
-	
 	bots_t plist();
 	bots_t rlist();
 	
 	virtual response_code send_message(message_code message);
 	
-	virtual void init(bot_t server, bots_t plist, bots_t rlist);
+	virtual void init(bot_t& server, bots_t& plist, bots_t& rlist);
 	
 	#ifdef THREAD_VERSION
 	virtual void execute();

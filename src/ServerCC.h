@@ -20,7 +20,6 @@
 #include "Bot.h"
 #include <boost/smart_ptr.hpp>
 #include <boost/thread.hpp>
-#include <boost/serialization/singleton.hpp>
 #include "botnet_types.h"
 
 
@@ -44,7 +43,7 @@ public:
 	response_code process_message(message_code message);
 	virtual response_code send_message(message_code message);
 	
-	virtual void init(bot_t server, bots_t plist, bots_t rlist);
+	virtual void init(bot_t& server, bots_t& plist, bots_t& rlist);
 
 	#ifdef THREAD_VERSION
 	virtual void execute();

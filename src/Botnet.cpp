@@ -26,7 +26,8 @@
 namespace waledac
 {
 	
-Botnet::Botnet(unsigned int repeaters_number, unsigned int protecters_number, unsigned int spammers_number, unsigned int attackers_number)
+Botnet::Botnet(unsigned int repeaters_number, unsigned int protecters_number, 
+			   unsigned int spammers_number, unsigned int attackers_number)
 {
 	repeaters.resize(repeaters_number);
 	for (unsigned int i = 0; i < repeaters.size(); ++i) {

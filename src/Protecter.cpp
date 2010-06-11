@@ -46,7 +46,7 @@ response_code Protecter::send_message(message_code message)
 }
 
 
-void Protecter::init(bot_t server, bots_t plist, bots_t rlist)
+void Protecter::init(bot_t& server, bots_t& plist, bots_t& rlist)
 {
 	this->server = server;
 	return;

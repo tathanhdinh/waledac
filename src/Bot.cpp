@@ -19,13 +19,12 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <ossp/uuid++.hh>
 #include <boost/smart_ptr.hpp>
 #include <boost/random.hpp>
 
 namespace waledac {
-
-enum { BOT_COMPROMISED = 1, BOT_NON_COMPROMISED = 0 };
 	
 Bot::Bot()
 {
@@ -41,7 +40,7 @@ Bot::Bot()
 /*
  * get id of bot
  */
-const std::string& Bot::id()
+const std::string& Bot::id() const
 {
 	return m_id;
 }
@@ -60,18 +59,8 @@ bot_status& Bot::status()
 bool Bot::is_compromised()
 {
 	bool compromised = false;
-	if (m_status == COMPROMISED)
-		compromised = true;
+	if (this->status() == STOPPED) compromised = true;
 	return compromised;
-}
-
-
-/*
- *
- */
-void Bot::compromise()
-{
-	m_status = COMPROMISED;
 }
 
 
@@ -84,7 +73,9 @@ response_code Bot::send_message(message_code message)
 	return response;
 }
 
-
+/*===========================================================================*/
+/*                    implementation of common functions                     */
+/*===========================================================================*/
 
 /*
  * take a random bot from an existing list
@@ -100,12 +91,28 @@ bot_t random_bot(bots_t& bot_list)
 
 
 /*
+ * take a sub list of random bots from an existing list
+ */
+bots_t random_bots(bots_t& bot_list, unsigned int bot_number)
+{
+        bots_t tmplist = bot_list;
+        std::random_shuffle(tmplist.begin(), tmplist.end());
+        
+        bots_t sublist;
+        for (unsigned int i = 0; i < std::min(bot_number, static_cast<unsigned int>(bot_list.size())); ++i) {
+                sublist.push_back(tmplist[i]);
+        }
+        
+        return sublist;
+}
+
+
+/*
  *
  */
 unsigned int random_number(unsigned int max)
 {
 	unsigned int random_value = die() % (max + 1);;
-	//std::cout << "random value " << random_value << std::endl;
 	return random_value;
 }
 
@@ -159,10 +166,6 @@ bots_t remove_duplicate(bots_t& list)
         
 	return tmplist;
 }
-
-
-
-
 
 }
 
