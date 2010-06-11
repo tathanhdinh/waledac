@@ -28,8 +28,6 @@
 
 namespace waledac {
 
-//enum { BOT_COMPROMISED = 1, BOT_NON_COMPROMISED = 0 };
-	
 Bot::Bot()
 {
 	// generate random bot id
@@ -37,7 +35,7 @@ Bot::Bot()
 	bot_uuid.make(UUID_MAKE_V4);
 	m_id = bot_uuid.string();	
 	
-	m_status = IDLE;
+	m_status = IDLE; // first status of bot
 }
 
 
@@ -65,28 +63,15 @@ bot_status& Bot::status()
 bool Bot::is_compromised()
 {
 	bool compromised = false;
-	if (m_status == COMPROMISED)
-		compromised = true;
+	
+	if (this->status() == STOPPED) compromised = true;
 	return compromised;
 }
 
 
-/*
- * obsolete method (will be replace by Bot::status() = COMPROMISED)
- */
-void Bot::compromise()
-{
-	m_status = COMPROMISED;
-	
-	/*
-	printf("test update\n");
-	botnetgraph->update_graph();
-	printf("test fin update\n");	
-	botnetgraph->graphLayoutView->ResetCamera();
-	botnetgraph->graphLayoutView->Render();
-	*/
-}
-
+/*===========================================================================*/
+/*                    implementation of common functions                     */
+/*===========================================================================*/
 
 boost::uniform_int<> dist(std::numeric_limits<int>::min(), 
 						  std::numeric_limits<int>::max());
@@ -123,7 +108,7 @@ std::vector< boost::shared_ptr<Bot> > random_bots(std::vector< boost::shared_ptr
 
 
 /*
- *
+ * get a random number in [0,max]
  */
 unsigned int random_number(unsigned int max)
 {
@@ -145,12 +130,6 @@ std::vector< boost::shared_ptr< Bot > > merge_list(std::vector< boost::shared_pt
 	std::random_shuffle(total_list.begin(), total_list.end());
 	total_list = remove_duplicate(total_list);
 	std::random_shuffle(total_list.begin(), total_list.end());
-	
-	/*std::vector< boost::shared_ptr<Bot> > merged_list((listA.size() + listB.size()) / 2);
-	std::copy(total_list.begin(), total_list.begin() + merged_list.size(), 
-			  merged_list.begin());
-	
-	return merged_list;*/
 	
 	std::vector< boost::shared_ptr<Bot> > merged_list;
 	merged_list.assign(total_list.begin(), total_list.begin() + original_list.size());

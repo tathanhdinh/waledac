@@ -33,7 +33,7 @@ public:
 	virtual std::vector< boost::shared_ptr<Bot> > sub_rlist();
 	virtual std::vector< boost::shared_ptr<Bot> > sub_plist();
 	
-	virtual command_code request_command();
+	virtual response_code send_message(message_code message);
 	
 	virtual void execute();
 	virtual void start();

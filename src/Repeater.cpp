@@ -164,15 +164,6 @@ void Repeater::update_plist()
 
 
 /*
- * get command from C&C server (obsolete methods)
- */
-command_code Repeater::request_command()
-{
-	return COMMAND_FROM_REPEATER;
-}
-
-
-/*
  * return PList
  */
 std::vector< boost::shared_ptr< Bot > > Repeater::plist()
@@ -200,10 +191,6 @@ response_code Repeater::send_message(message_code message)
 	if (m_plist.size() > 0) {
 		boost::shared_ptr< Protecter > protecter_proxy;
 		protecter_proxy = boost::dynamic_pointer_cast<Protecter>(random_bot(m_plist));
-		
-		/*std::cout << "repeater " << this->id() 
-				<< " send message to protecter " 
-				<< protecter_proxy->id() << std::endl; */
 		response = protecter_proxy->send_message(message);
 	}
 	
@@ -217,7 +204,8 @@ response_code Repeater::send_message(message_code message)
 void Repeater::init()
 {
 	m_plist = Botnet::protecters_list();
-	//m_rlist = Botnet::repeaters_list();
+	
+	// initialise rlist
 	std::vector< boost::shared_ptr<Bot>  > all_repeaters = Botnet::repeaters_list();
 	m_rlist = random_bots(all_repeaters, all_repeaters.size() / 2);
 	return;
@@ -231,10 +219,10 @@ void Repeater::execute()
 {
 	while (true) {
 		update_rlist();
-		sleep(1);
+		//sleep(1);
 		
 		update_plist();
-		sleep(1);
+		//sleep(1);
 	}
 	
 	return;
@@ -246,7 +234,7 @@ void Repeater::execute()
  */
 void Repeater::start()
 {
-	std::cout << "start repeater with id : " << Bot::id() << std::endl;
+	//std::cout << "start repeater with id : " << Bot::id() << std::endl;
 	m_repeater_thread.reset(new boost::thread(boost::bind(&Repeater::execute, this)));
 	return;
 }

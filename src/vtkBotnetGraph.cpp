@@ -74,6 +74,7 @@ void vtkBotnetGraph::update_protecters()
 		/* tout les protecteurs sont liés au command and conquer */	
 		this->graph->AddEdge(vertex_protecter, this->vertex_command_and_conquer);
 		this->assoc_protecters[this->protecters[i]] = vertex_protecter;
+		
       	this->vertexcolors->InsertNextValue(4); // bleu
       	this->edgescolors->InsertNextValue(4);
 	}
@@ -196,7 +197,7 @@ vtkBotnetGraph::vtkBotnetGraph(unsigned int rlist_size, unsigned int plist_size,
 
 	vtkTimerCallback* cb = new vtkTimerCallback(this);
 	this->graphLayoutView->GetInteractor()->AddObserver(vtkCommand::TimerEvent, cb);
-	this->graphLayoutView->GetInteractor()->CreateRepeatingTimer(1000);
+	this->graphLayoutView->GetInteractor()->CreateRepeatingTimer(100);
  	
 	this->graphLayoutView->ResetCamera();
 	this->graphLayoutView->Render();

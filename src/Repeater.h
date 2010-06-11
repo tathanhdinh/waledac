@@ -41,8 +41,6 @@ public:
 	virtual std::vector< boost::shared_ptr<Bot> > sub_rlist();
 	virtual std::vector< boost::shared_ptr<Bot> > sub_plist();
 	
-	virtual command_code request_command();
-	
 	std::vector< boost::shared_ptr<Bot> > plist();
 	std::vector< boost::shared_ptr<Bot> > rlist();
 	

