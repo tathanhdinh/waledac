@@ -18,34 +18,41 @@
 #define SPAMMER_H
 
 #include "Bot.h"
-
 #include <vector>
 #include <boost/smart_ptr.hpp>
 #include <boost/thread.hpp>
+#include "botnet_types.h"
+class vtkBotnetGraph;
+
+
 
 namespace waledac {
 
 class Spammer : public Bot
 {
 private:
+	bots_t m_rlist;
+	#ifdef THREAD_VERSION
 	boost::shared_ptr< boost::thread > m_spammer_thread;
-	
+	#endif
 	
 public:
 	Spammer();
 	void update_rlist();
 	void request_command();
 	
-	std::vector< boost::shared_ptr<Bot> > rlist();
+	bots_t rlist();
 	
 	virtual response_code send_message(message_code message);
 	
-	virtual void init();
+	virtual void init(bot_t server, bots_t plist, bots_t rlist);
+	
+	#ifdef THREAD_VERSION
 	virtual void execute();
 	virtual void start();
 	virtual void wait();
-	
-	std::vector< boost::shared_ptr<Bot> > m_rlist;
+	#endif
+
 };
 
 }

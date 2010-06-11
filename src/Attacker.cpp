@@ -15,7 +15,6 @@
 */
 
 #include "Attacker.h"
-
 #include <iostream>
 
 namespace waledac
@@ -33,7 +32,7 @@ Attacker::Attacker() : Repeater()
 /*
  * extract a random subset of repeaters from rlist
  */
-std::vector< boost::shared_ptr< Bot > > Attacker::sub_rlist()
+bots_t Attacker::sub_rlist()
 {
 	return Repeater::sub_rlist();
 }
@@ -42,7 +41,7 @@ std::vector< boost::shared_ptr< Bot > > Attacker::sub_rlist()
 /*
  * extract a random subset of repeaters from plist
  */
-std::vector< boost::shared_ptr< Bot > > Attacker::sub_plist()
+bots_t Attacker::sub_plist()
 {
 	return Repeater::sub_plist();
 }
@@ -80,13 +79,14 @@ command_code Attacker::request_command()
 }
 
 
+#ifdef THREAD_VERSION
 /*
  * life of attacker
  */
 void Attacker::execute()
 {
-	waledac::Repeater::execute();
-	return;
+        waledac::Repeater::execute();
+        return;
 }
 
 
@@ -95,11 +95,11 @@ void Attacker::execute()
  */
 void Attacker::start()
 {
-	//std::cout << "start attacker with id : " << Bot::id() << std::endl;
-	m_attacker_thread.reset(new boost::thread(boost::bind(&Attacker::execute, 
-														  this)));
-	//waledac::Repeater::start();
-	return;
+        //std::cout << "start attacker with id : " << Bot::id() << std::endl;
+        m_attacker_thread.reset(new boost::thread(boost::bind(&Attacker::execute, 
+                                                                                                                  this)));
+        //waledac::Repeater::start();
+        return;
 }
 
 
@@ -108,10 +108,11 @@ void Attacker::start()
  */
 void Attacker::wait()
 {
-	m_attacker_thread->join();
-	//Repeater::wait();
-	return;
+        m_attacker_thread->join();
+        //Repeater::wait();
+        return;
 }
+#endif
 
 
 }

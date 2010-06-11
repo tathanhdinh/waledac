@@ -21,23 +21,12 @@
 #include "Protecter.h"
 #include "ServerCC.h"
 
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
-
 #include <iostream>
-#include <boost/thread/pthread/mutex.hpp>
 
 namespace waledac
 {
-
-static std::vector< boost::shared_ptr< Bot > > repeaters;
-static std::vector< boost::shared_ptr< Bot > > protecters;
-static std::vector< boost::shared_ptr< Bot > > spammers;
-static std::vector< boost::shared_ptr< Bot > > attackers;
-boost::shared_ptr< ServerCC > server_cc;
 	
-Botnet::Botnet(unsigned int repeaters_number, unsigned int protecters_number, 
-			   unsigned int spammers_number, int attackers_number)
+Botnet::Botnet(unsigned int repeaters_number, unsigned int protecters_number, unsigned int spammers_number, unsigned int attackers_number)
 {
 	repeaters.resize(repeaters_number);
 	for (unsigned int i = 0; i < repeaters.size(); ++i) {
@@ -59,30 +48,30 @@ Botnet::Botnet(unsigned int repeaters_number, unsigned int protecters_number,
 		attackers[i].reset(new Attacker());
 		repeaters.push_back(attackers[i]);
 	}
-	
+
 	server_cc.reset(new ServerCC());
 }
 
 
-std::vector< boost::shared_ptr< Bot > > Botnet::protecters_list()
+bots_t Botnet::protecters_list()
 {
 	return protecters;
 }
 
 
-std::vector< boost::shared_ptr< Bot > > Botnet::repeaters_list()
+bots_t Botnet::repeaters_list()
 {
 	return repeaters;
 }
 
 
-std::vector< boost::shared_ptr< Bot > > Botnet::spammers_list()
+bots_t Botnet::spammers_list()
 {
 	return spammers;
 }
 
 
-std::vector< boost::shared_ptr< Bot > > Botnet::attackers_list()
+bots_t Botnet::attackers_list()
 {
 	return attackers;
 }
@@ -96,50 +85,96 @@ boost::shared_ptr< Bot > Botnet::server()
 
 void Botnet::init()
 {
-	server_cc->init();
+	this->server_cc->init(server_cc, protecters, repeaters);
 	
-	for (unsigned int i = 0; i < protecters.size(); ++i) {
-		protecters[i]->init();
+	for (unsigned int i = 0; i < this->attackers.size(); ++i) {
+		this->attackers[i]->init(server_cc, protecters, repeaters);
+	}
+	
+	for (unsigned int i = 0; i < this->protecters.size(); ++i) {
+		this->protecters[i]->init(server_cc, protecters, repeaters);
 	}
 	
 	for (unsigned int i = 0; i < repeaters.size(); ++i) {
-		repeaters[i]->init();
+		this->repeaters[i]->init(server_cc, protecters, repeaters);
 	}
 	
 	for (unsigned int i = 0; i < spammers.size(); ++i) {
-		spammers[i]->init();
+		this->spammers[i]->init(server_cc, protecters, repeaters);
 	}
-	
+
 	return;
 }
 
-
+#ifdef THREAD_VERSION
 void Botnet::start()
 {
-	server_cc->start();
-	
-	for (unsigned int i = 0; i < protecters.size(); ++i) {
-		protecters[i]->start();
-	}
-	
-	for (unsigned int i = 0; i < repeaters.size(); ++i) {
-		repeaters[i]->start();
-	}
-	
-	for (unsigned int i = 0; i < spammers.size(); ++i) {
-		spammers[i]->start();
-	}
-	
-	return;
+        server_cc->start();
+        
+        for (unsigned int i = 0; i < protecters.size(); ++i) {
+                protecters[i]->start();
+        }
+        
+        for (unsigned int i = 0; i < repeaters.size(); ++i) {
+                repeaters[i]->start();
+        }
+        
+        for (unsigned int i = 0; i < spammers.size(); ++i) {
+                spammers[i]->start();
+        }
+        
+        return;
 }
 
 
 void Botnet::wait()
 {
-	server_cc->wait();
+        server_cc->wait();
+        return;
+}
+#else
+void Botnet::start()
+{
+	waledac::Attacker *attacker;	
+	waledac::Protecter *protecter;	
+	waledac::Repeater *repeater;
+	waledac::Spammer *spammer;
+	
+	
+	//server_cc->start();	
+
+	for(unsigned int i = 0; i < attackers.size(); ++i) 
+	{
+		attacker = dynamic_cast<waledac::Attacker*>(attackers[i].get());
+		attacker->update_rlist();
+		attacker->request_command();
+		attacker->send_message(MESSAGE_TASKREQ);
+	}
+	
+	for(unsigned int i = 0; i < protecters.size(); ++i) 
+	{
+		protecter = dynamic_cast<waledac::Protecter*>(protecters[i].get());
+		// rien pour l'instant
+	}
+
+	for(unsigned int i = 0; i < repeaters.size(); ++i) 
+	{
+		repeater = dynamic_cast<waledac::Repeater*>(repeaters[i].get());
+		repeater->update_rlist();
+		repeater->update_plist();
+	}
+	
+	for(unsigned int i = 0; i < spammers.size(); ++i) 
+	{
+		spammer = dynamic_cast<waledac::Spammer*>(spammers[i].get());
+		spammer->update_rlist();
+		spammer->request_command();
+		spammer->send_message(MESSAGE_TASKREQ);
+	}
+
 	return;
 }
-
+#endif
 
 
 }

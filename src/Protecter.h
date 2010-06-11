@@ -18,26 +18,33 @@
 #define PROTECTER_H
 
 #include "Bot.h"
-
 #include <boost/smart_ptr.hpp>
 #include <boost/thread.hpp>
+#include "botnet_types.h"
+
+
 
 namespace waledac {
 
 class Protecter : public Bot
-{
-private:
-	boost::shared_ptr<boost::thread> m_protecter_thread;
+{	
+	private:
+		#ifdef THREAD_VERSION
+		boost::shared_ptr<boost::thread> m_protecter_thread;
+		#endif
+		
+	public:
+		Protecter();
+		bot_t server;
 	
-public:
-	Protecter();
-	
-	virtual response_code send_message(message_code message);
-	
-	virtual void init();
-	virtual void execute();
-	virtual void start();
-	virtual void wait();
+		virtual response_code send_message(message_code message);
+		virtual void init(bot_t server, bots_t plist, bots_t rlist);
+		
+		#ifdef THREAD_VERSION
+		virtual void execute();
+        virtual void start();
+        virtual void wait();
+		#endif
 };
 
 }

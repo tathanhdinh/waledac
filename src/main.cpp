@@ -1,11 +1,11 @@
 #include "Botnet.h"
+#include "Spammer.h"
+#include "Repeater.h"
+#include "Attacker.h"
 #include "vtkBotnetGraph.h"
-
 #include <iostream>
 #include <vector>
-
 #include <boost/program_options.hpp>
-#include "Spammer.h"
 
 int main(int argc, char **argv) {
 	unsigned int rlist_size;
@@ -45,39 +45,11 @@ int main(int argc, char **argv) {
 	else {
 		std::cout << "Waldac botnet simulation" << std::endl;
 		
-		vtkBotnetGraph *botnetgraph = new vtkBotnetGraph(rlist_size, plist_size, spammers_number, attackers_number);
+		waledac::Botnet *botnet = new waledac::Botnet(rlist_size, plist_size, spammers_number, attackers_number);
+		vtkBotnetGraph *botnetgraph = new vtkBotnetGraph(botnet);
 		
-		/*while (true) {
-			botnetgraph->update_graph();
-			botnetgraph->graphLayoutView->ResetCamera();
-			botnetgraph->graphLayoutView->Render();
-			sleep(5);
-		}*/
-	
-		botnetgraph->botnet->wait();
-		
-		// testing botnet only
-		/*boost::shared_ptr<waledac::Botnet> botnet;
-		botnet.reset(new waledac::Botnet(rlist_size, plist_size, spammers_number, attackers_number));
-		
-		botnet->init();
-		botnet->start();
-		
-		std::cout << "print first : " << std::endl;
-		boost::shared_ptr< waledac::Spammer > first_spammer;
-		
-		first_spammer = boost::dynamic_pointer_cast<waledac::Spammer>(botnet->spammers_list()[0]);
-		
-		while (true) {
-			std::cout << "print first spammer : " << first_spammer->id() << std::endl;
-			for (unsigned int i = 0; i < first_spammer->rlist().size(); ++i) {
-				std::cout << first_spammer->rlist()[i]->id() << std::endl;
-			}
-			
-			sleep(3);
-		}
-		
-		botnet->wait();*/
+		//botnet->init(botnetgraph);
+		//botnet->wait();
 	}
     return 0;
 }
