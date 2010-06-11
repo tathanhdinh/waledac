@@ -31,7 +31,7 @@ ServerCC::ServerCC() : Bot()
 
 
 /*
- * C&C server process the message received from protecters
+ *
  */
 response_code ServerCC::process_message(message_code message)
 {
@@ -66,36 +66,35 @@ response_code ServerCC::process_message(message_code message)
 	return response;
 }
 
-
 /*
  * C&C server never takes the initiative of communication
  */
 response_code ServerCC::send_message(message_code message)
 {
-	// do nothing
-	return RESPONSE_FAILED;
+        // do nothing
+        return RESPONSE_FAILED;
 }
-
 
 /*
  * initialiser C&C server
  */
-void ServerCC::init()
+void ServerCC::init(bot_t server, bots_t plist, bots_t rlist)
 {
 	return;
 }
 
 
+#ifdef THREAD_VERSION
 /*
  * life of C&C server
  */
 void ServerCC::execute()
 {
-	while (true) {
-		// wait for request from protecter
-		sleep(5);
-	}
-	return;
+        while (true) {
+                // wait for request from protecter
+                sleep(5);
+        }
+        return;
 }
 
 
@@ -104,9 +103,9 @@ void ServerCC::execute()
  */
 void ServerCC::start()
 {
-	std::cout << "start servercc with id : " << Bot::id() << std::endl;
-	m_servercc_thread.reset(new boost::thread(boost::bind(&ServerCC::execute, this)));
-	return;
+        std::cout << "start servercc with id : " << Bot::id() << std::endl;
+        m_servercc_thread.reset(new boost::thread(boost::bind(&ServerCC::execute, this)));
+        return;
 }
 
 
@@ -115,9 +114,10 @@ void ServerCC::start()
  */
 void ServerCC::wait()
 {
-	m_servercc_thread->join();
-	return;
+        m_servercc_thread->join();
+        return;
 }
+#endif
 
 
 }

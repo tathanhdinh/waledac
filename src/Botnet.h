@@ -17,28 +17,38 @@
 #ifndef BOTNET_H
 #define BOTNET_H
 
-#include <vector>
-#include <boost/smart_ptr.hpp>
-
 #include "Bot.h"
+#include "botnet_types.h"
+
+
 
 namespace waledac {
 
 class Botnet
 {
 public:
-	Botnet(unsigned int repeaters_number, unsigned int protecters_number, 
-		   unsigned int spammers_number, int attackers_number);
+	Botnet(unsigned int repeaters_number, unsigned int protecters_number, unsigned int spammers_number, unsigned int attackers_number);
 		   
 	void init();
 	void start();
-	void wait();
 	
-	static std::vector< boost::shared_ptr< Bot > > repeaters_list();
-	static std::vector< boost::shared_ptr< Bot > > protecters_list();
-	static std::vector< boost::shared_ptr< Bot > > spammers_list();
-	static std::vector< boost::shared_ptr< Bot > > attackers_list();
-	static boost::shared_ptr< Bot > server();
+	#ifdef THREAD_VERSION
+	void wait();
+	#endif
+	
+	bots_t repeaters_list();
+	bots_t protecters_list();
+	bots_t spammers_list();
+	bots_t attackers_list();
+	bot_t server();
+	
+	
+private:	
+	bots_t repeaters;
+	bots_t protecters;
+	bots_t spammers;
+	bots_t attackers;
+	bot_t server_cc;
 };
 
 }
