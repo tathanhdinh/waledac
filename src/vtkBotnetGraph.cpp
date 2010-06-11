@@ -6,6 +6,12 @@
 #include "vtkViewTheme.h"
 #include "vtkPointPicker.h"
 #include "vtkTimerCallback.h"
+
+#include "vtkGraphMapper.h"
+#include "vtkActor.h"
+#include "vtkRenderer.h"
+#include "vtkRenderWindow.h"
+
 #include "Attacker.h"
 #include "Spammer.h"
 
@@ -223,7 +229,7 @@ vtkBotnetGraph::vtkBotnetGraph(waledac::Botnet *botnet)
 	this->graphLayoutView->GetInteractor()->Start();
 	
 	
-	
+	/*
 	vtkGraphMapper *mapper = vtkGraphMapper::New();
 	mapper->SetInput(this->graph_points);
 	mapper->SetEdgeColorArrayName("coloredges");
@@ -249,7 +255,7 @@ vtkBotnetGraph::vtkBotnetGraph(waledac::Botnet *botnet)
 
 	renWin->Render();
 
-	iren->Start();
+	iren->Start();*/
 }
 
 
