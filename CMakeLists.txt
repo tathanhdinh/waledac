@@ -35,7 +35,7 @@ SET(waledac_botnet_moc_srcs src/OptionsDialog.h)
   
 QT4_WRAP_CPP(waledac_botnet_src ${waledac_botnet_moc_srcs})
 
-add_executable(waledac ${waledac_botnet_src} ${waledac_botnet_vtk_src})
+add_executable(waledac ${waledac_botnet_src})
 target_link_libraries(waledac ${waledac_botnet_libraries} ${waledac_botnet_qt_libraries} ${waledac_botnet_vtk_libraries})
 
 

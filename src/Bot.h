@@ -78,7 +78,7 @@ private :
 
 public :
 	Bot();
-	const std::string& id();
+	const std::string& id() const;
 	
 	//virtual void update_status();
 	virtual bot_status& status();
@@ -93,6 +93,8 @@ public :
 	virtual void execute() = 0;
 	virtual void start() = 0;
  	virtual void wait() = 0;
+	
+	//bool operator<(const Bot& other_bot);
 };
 
 extern boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& 
@@ -107,6 +109,14 @@ extern unsigned int random_number(unsigned int max);
 extern std::vector< boost::shared_ptr< Bot > > merge_list(
 						std::vector< boost::shared_ptr< Bot > > &existing_rlist, 
 						std::vector< boost::shared_ptr< Bot > > &received_rlist);
+						
+extern bool compare_bot(boost::shared_ptr<Bot> a, boost::shared_ptr<Bot> b);
+
+extern bool unique_bot(boost::shared_ptr<Bot> a, boost::shared_ptr<Bot> b);
+
+extern std::vector< boost::shared_ptr< Bot > > remove_duplicate(
+									std::vector< boost::shared_ptr< Bot > > &list);
+
 }
 
 

@@ -20,6 +20,8 @@
 #include "Bot.h"
 
 #include <iostream>
+#include <algorithm>
+
 #include <boost/smart_ptr.hpp>
 #include <boost/random.hpp>
 #include <boost/format.hpp>
@@ -78,6 +80,7 @@ void Spammer::update_rlist()
 			if (received_rlist.size() > 0) { // until received non-empty list
 				// merge new rlist and existing rlist
 				m_rlist = spammer_merge_rlist(m_rlist, received_rlist);
+				//m_rlist = remove_duplicate(m_rlist);
 				break;
 			}
 			
@@ -124,7 +127,12 @@ void Spammer::request_command()
  */
 std::vector< boost::shared_ptr< Bot > > Spammer::rlist()
 {
+	/*std::vector< boost::shared_ptr<Bot> > tmplist = m_rlist;
+	std::sort(tmplist.begin(), tmplist.end(), compare_bot());
+	tmplist.erase(std::unique(tmplist.begin()))*/
+	
 	return m_rlist;
+	
 }
 
 
@@ -228,8 +236,8 @@ void Spammer::execute()
 	//sleep(7);
 	boost::this_thread::sleep(boost::posix_time::seconds(7));
 	
+	//std::cout << "address of current spammer : " << this << std::endl;
 	while (true) {
-		//std::cout << "address of current spammer : " << this << std::endl;
 		/*std::cout << "before update : " << this->id() << std::endl;
 		for (unsigned int i = 0; i < m_rlist.size(); ++i) {
 			std::cout << m_rlist[i]->id() << std::endl;
@@ -240,7 +248,7 @@ void Spammer::execute()
 			std::cout << m_rlist[i]->id() << std::endl;
 		}*/
 		//sleep(3);
-		boost::this_thread::sleep(boost::posix_time::seconds(3));
+		boost::this_thread::sleep(boost::posix_time::seconds(1));
 		
 		// obsolete, need to be replaced by send_message
 		//request_command();
@@ -248,7 +256,7 @@ void Spammer::execute()
 		
 		send_message(MESSAGE_TASKREQ);
 		//sleep(2);
-		boost::this_thread::sleep(boost::posix_time::seconds(2));
+		boost::this_thread::sleep(boost::posix_time::seconds(1));
 	}
 	
 	return;
