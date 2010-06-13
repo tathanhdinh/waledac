@@ -1,5 +1,7 @@
 #include "vtkTimerCallback.h"
 #include "vtkBotnetGraph.h"
+#include "Botnet.h"
+#include "vtkActor.h"
 
 vtkTimerCallback::vtkTimerCallback(vtkBotnetGraph *ptrbotnetgraph)
 {
@@ -17,32 +19,19 @@ void vtkTimerCallback::Execute(vtkObject *vtkNotUsed(caller), unsigned long even
 	{
 		if(this->first_time)
 		{
-			/* on laisse vtk positionner la caméra */
+			this->ptrbotnetgraph->botnet->init();	
 			this->ptrbotnetgraph->botnet->start();
-			this->ptrbotnetgraph->update_graph();
+			this->ptrbotnetgraph->update_graph(this->ptrbotnetgraph->botnet->repeaters_list(),this->ptrbotnetgraph->botnet->protecters_list(),this->ptrbotnetgraph->botnet->spammers_list(),this->ptrbotnetgraph->botnet->attackers_list());
 			this->ptrbotnetgraph->graphLayoutView->ResetCamera();
 			this->ptrbotnetgraph->graphLayoutView->Render();
-			
-			/* hack = on attrape le renderer */
-			this->ptrbotnetgraph->interactor->FindPokedRenderer(this->ptrbotnetgraph->interactor->GetInteractor()->GetEventPosition()[0], 
-																this->ptrbotnetgraph->interactor->GetInteractor()->GetEventPosition()[1]);
-			if (this->ptrbotnetgraph->interactor->GetCurrentRenderer() == NULL)
-    			return;		
-  	
-  			/* on sauvegarde le coefficient du zoom au départ */
-    		vtkCamera *camera = this->ptrbotnetgraph->interactor->GetCurrentRenderer()->GetActiveCamera();
-			if(camera->GetParallelProjection())
-				this->ptrbotnetgraph->interactor->zoom_save = camera->GetParallelScale();
-
 			this->first_time = false;
 		}
 		else
 		{	
-			this->ptrbotnetgraph->update_graph();
-			
-			vtkCamera *camera = this->ptrbotnetgraph->interactor->GetCurrentRenderer()->GetActiveCamera();
-			if(camera->GetParallelProjection())
-				camera->SetParallelScale(this->ptrbotnetgraph->interactor->zoom_save);
+			#ifndef THREAD_VERSION
+			this->ptrbotnetgraph->botnet->start();
+			#endif
+			this->ptrbotnetgraph->update_graph(this->ptrbotnetgraph->botnet->repeaters_list(),this->ptrbotnetgraph->botnet->protecters_list(),this->ptrbotnetgraph->botnet->spammers_list(),this->ptrbotnetgraph->botnet->attackers_list());
 			
 			this->ptrbotnetgraph->graphLayoutView->Render();
 		}

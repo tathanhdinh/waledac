@@ -18,40 +18,45 @@
 #define REPEATER_H
 
 #include "Bot.h"
-
 #include <vector>
 #include <string>
 #include <boost/smart_ptr.hpp>
 #include <boost/thread.hpp>
+#include "botnet_types.h"
+
+
 
 namespace waledac {
 
 class Repeater : public Bot
 {
 private:
-	std::vector< boost::shared_ptr<Bot> > m_rlist;
-	std::vector< boost::shared_ptr<Bot> > m_plist;
+	bots_t m_rlist;
+	bots_t m_plist;
+	#ifdef THREAD_VERSION
 	boost::shared_ptr<boost::thread> m_repeater_thread;
-	
+	#endif
+
 public:
 	Repeater();
 	virtual void update_rlist();
 	virtual void update_plist();
 	
-	virtual std::vector< boost::shared_ptr<Bot> > sub_rlist();
-	virtual std::vector< boost::shared_ptr<Bot> > sub_plist();
+	virtual bots_t sub_rlist();
+	virtual bots_t sub_plist();
 	
-	virtual command_code request_command();
-	
-	std::vector< boost::shared_ptr<Bot> > plist();
-	std::vector< boost::shared_ptr<Bot> > rlist();
+	bots_t plist();
+	bots_t rlist();
 	
 	virtual response_code send_message(message_code message);
 	
-	virtual void init();
+	virtual void init(bot_t& server, bots_t& plist, bots_t& rlist);
+	
+	#ifdef THREAD_VERSION
 	virtual void execute();
 	virtual void start();
 	virtual void wait();
+	#endif
 };
 
 }

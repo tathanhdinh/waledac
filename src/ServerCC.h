@@ -18,10 +18,11 @@
 #define SERVERCC_H
 
 #include "Bot.h"
-
 #include <boost/smart_ptr.hpp>
 #include <boost/thread.hpp>
-#include <boost/serialization/singleton.hpp>
+#include "botnet_types.h"
+
+
 
 namespace waledac {
 
@@ -32,19 +33,24 @@ namespace waledac {
 class ServerCC : public Bot
 {
 private:
+	#ifdef THREAD_VERSION
 	boost::shared_ptr<boost::thread> m_servercc_thread;
-	
+	#endif	 
+
 public:
 	ServerCC();
 	
 	response_code process_message(message_code message);
-	
 	virtual response_code send_message(message_code message);
 	
-	virtual void init();
+	virtual void init(bot_t& server, bots_t& plist, bots_t& rlist);
+
+	#ifdef THREAD_VERSION
 	virtual void execute();
 	virtual void start();
 	virtual void wait();
+	#endif
+
 };
 
 }

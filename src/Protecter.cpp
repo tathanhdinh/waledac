@@ -37,7 +37,7 @@ Protecter::Protecter() : Bot()
 response_code Protecter::send_message(message_code message)
 {
 	boost::shared_ptr<ServerCC> server;
-	server = boost::dynamic_pointer_cast<ServerCC>(Botnet::server());
+	server = boost::dynamic_pointer_cast<ServerCC>(this->server);
 	
 	response_code response;
 	response = server->process_message(message);
@@ -46,25 +46,24 @@ response_code Protecter::send_message(message_code message)
 }
 
 
-/*
- * initialise protecter
- */
-void Protecter::init()
+void Protecter::init(bot_t& server, bots_t& plist, bots_t& rlist)
 {
+	this->server = server;
 	return;
 }
 
 
+#ifdef THREAD_VERSION
 /*
  * life of protecter
  */
 void Protecter::execute()
 {
-	while (true) {
-		// wait for request from repeater
-		sleep(7);
-	}
-	return;
+        while (true) {
+                // wait for request from repeater
+                sleep(7);
+        }
+        return;
 }
 
 
@@ -73,9 +72,9 @@ void Protecter::execute()
  */
 void Protecter::start()
 {
-	std::cout << "start protecter with id : " << Bot::id() << std::endl;
-	m_protecter_thread.reset(new boost::thread(boost::bind(&Protecter::execute, this)));
-	return;
+        std::cout << "start protecter with id : " << Bot::id() << std::endl;
+        m_protecter_thread.reset(new boost::thread(boost::bind(&Protecter::execute, this)));
+        return;
 }
 
 
@@ -84,9 +83,9 @@ void Protecter::start()
  */
 void Protecter::wait()
 {
-	m_protecter_thread->join();
-	return;
+        m_protecter_thread->join();
+        return;
 }
-
+#endif
 
 }

@@ -15,20 +15,17 @@
 */
 
 #include "Bot.h"
+#include "Botnet.h"
 
 #include <iostream>
 #include <vector>
 #include <algorithm>
-
 //#include <ossp/uuid++.hh>
 #include <uuid++.hh>
-
 #include <boost/smart_ptr.hpp>
 #include <boost/random.hpp>
 
 namespace waledac {
-
-//enum { BOT_COMPROMISED = 1, BOT_NON_COMPROMISED = 0 };
 	
 Bot::Bot()
 {
@@ -37,66 +34,61 @@ Bot::Bot()
 	bot_uuid.make(UUID_MAKE_V4);
 	m_id = bot_uuid.string();	
 	
+	// bot in idle status
 	m_status = IDLE;
+	
+	// no connection
+	m_connections.clear();
 }
 
 
 /*
- * get bot id
+ * get id of bot
  */
-const std::string& Bot::id()
+const std::string& Bot::id() const
 {
 	return m_id;
 }
-
 
 /*
  * get/set bot running status
  */
 bot_status& Bot::status()
 {
-	return m_status;
+        return m_status;
 }
 
-
 /*
- * check bot compromised status
+ * check status of bot
  */
 bool Bot::is_compromised()
 {
 	bool compromised = false;
-	if (m_status == COMPROMISED)
-		compromised = true;
+	if (this->status() == STOPPED) compromised = true;
 	return compromised;
 }
 
 
 /*
- * obsolete method (will be replace by Bot::status() = COMPROMISED)
+ * get all connections of bot
  */
-void Bot::compromise()
+connections_t& Bot::connections()
 {
-	m_status = COMPROMISED;
-	
-	/*
-	printf("test update\n");
-	botnetgraph->update_graph();
-	printf("test fin update\n");	
-	botnetgraph->graphLayoutView->ResetCamera();
-	botnetgraph->graphLayoutView->Render();
-	*/
+	return m_connections;
 }
 
 
-boost::uniform_int<> dist(std::numeric_limits<int>::min(), 
-						  std::numeric_limits<int>::max());
-boost::mt19937 gen;
-boost::variate_generator<boost::mt19937, boost::uniform_int<> > die(gen, dist);
+/*===========================================================================*/
+/*                    implementation of common functions                     */
+/*===========================================================================*/
 
 /*
  * take a random bot from an existing list
  */
-boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& bot_list)
+boost::uniform_int<> dist(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+boost::mt19937 gen;
+boost::variate_generator<boost::mt19937, boost::uniform_int<> > die(gen, dist);
+bot_t random_bot(bots_t& bot_list)
 {
 	unsigned int random_index = die() % bot_list.size();
 	return bot_list[random_index];
@@ -106,18 +98,16 @@ boost::shared_ptr<Bot> random_bot(std::vector< boost::shared_ptr<Bot> >& bot_lis
 /*
  * take a sub list of random bots from an existing list
  */
-std::vector< boost::shared_ptr<Bot> > random_bots(std::vector< boost::shared_ptr<Bot> >& bot_list, 
-												  unsigned int bot_number)
+bots_t random_bots(bots_t& bot_list, unsigned int bot_number)
 {
-	std::vector< boost::shared_ptr<Bot> > tmplist = bot_list;
+	bots_t tmplist = bot_list;
 	std::random_shuffle(tmplist.begin(), tmplist.end());
-	
-	std::vector< boost::shared_ptr<Bot> > sublist;
-	for (unsigned int i = 0; i < std::min(bot_number, static_cast<unsigned int>
-										(bot_list.size())); ++i) {
-		sublist.push_back(tmplist[i]);
+
+	bots_t sublist;
+	for (unsigned int i = 0; i < std::min(bot_number, static_cast<unsigned int>(bot_list.size())); ++i) {
+					sublist.push_back(tmplist[i]);
 	}
-	
+
 	return sublist;
 }
 
@@ -128,7 +118,6 @@ std::vector< boost::shared_ptr<Bot> > random_bots(std::vector< boost::shared_ptr
 unsigned int random_number(unsigned int max)
 {
 	unsigned int random_value = die() % (max + 1);;
-	//std::cout << "random value " << random_value << std::endl;
 	return random_value;
 }
 
@@ -136,22 +125,52 @@ unsigned int random_number(unsigned int max)
 /*
  * merge randomly two lists
  */
-std::vector< boost::shared_ptr< Bot > > merge_list(std::vector< boost::shared_ptr< Bot > >& listA, 
-												   std::vector< boost::shared_ptr< Bot > >& listB)
+bots_t merge_list(bots_t& original_list, bots_t& new_list)
 {
-	std::vector< boost::shared_ptr<Bot> >  total_list = listA;
-	for (unsigned int i = 0; i < listB.size(); ++i) {
-		total_list.push_back(listB[i]);
+	bots_t total_list = original_list;
+	for (unsigned int i = 0; i < new_list.size(); ++i) {
+		total_list.push_back(new_list[i]);
 	}
+        
 	std::random_shuffle(total_list.begin(), total_list.end());
-	
-	std::vector< boost::shared_ptr<Bot> > merged_list(listA.size());
-	std::copy(total_list.begin(), total_list.begin() + merged_list.size(), 
-			  merged_list.begin());
-	
+	total_list = remove_duplicate(total_list);
+	std::random_shuffle(total_list.begin(), total_list.end());
+        
+	bots_t merged_list;
+	merged_list.assign(total_list.begin(), total_list.begin() + original_list.size());
 	return merged_list;
 }
 
+
+/*
+ * less than compare two smart pointers of bot
+ */
+bool compare_bot(bot_t a, bot_t b)
+{
+	return (a->id() < b->id());
+}
+
+
+/*
+ * unique compare two smart pointer of bot
+ */
+bool unique_bot(bot_t a, bot_t b)
+{
+	return (a->id() == b->id());
+}
+
+
+/*
+ * remove duplicate bots from a list
+ */
+bots_t remove_duplicate(bots_t& list)
+{
+	bots_t tmplist = list;
+	std::sort(tmplist.begin(), tmplist.end(), compare_bot);
+	tmplist.erase(std::unique(tmplist.begin(), tmplist.end()), tmplist.end());
+        
+	return tmplist;
+}
 
 }
 
