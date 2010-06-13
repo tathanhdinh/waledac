@@ -17,11 +17,12 @@
 #ifndef BOT_H
 #define BOT_H
 
+#include "Connection.h"
+#include "botnet_types.h"
+
 #include <string>
 #include <vector>
 #include <boost/smart_ptr.hpp>
-#include "botnet_types.h"
-
 
 namespace waledac 
 {
@@ -102,6 +103,8 @@ extern bots_t merge_list(bots_t& original_list, bots_t& new_list);
 extern bool compare_bot(bot_t a, bot_t b);
 extern bool unique_bot(bot_t a, bot_t b);
 extern bots_t remove_duplicate(bots_t& list);
+
+extern void update_connections(bot_t& bot, bots_t& connected_bots);
 }
 
 
