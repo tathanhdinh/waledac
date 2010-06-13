@@ -53,26 +53,37 @@ Spammer::Spammer() : Bot()
  */
 void Spammer::update_rlist()
 {
-	bot_t repeater_target;
-	bots_t received_rlist;
-	unsigned int nb_try = 0;
-	
 	// repeat
 	if (m_rlist.size() > 0) {
+		bot_t destination_bot;
+		repeater_t destination_repeater;
+		bots_t received_rlist;
+		unsigned int nb_try = 0;
+	
 		while (true) {
 			// takes a random repeater from rlist
-			repeater_target = random_bot(m_rlist);
+			destination_bot = random_bot(m_rlist);
+			destination_repeater = boost::dynamic_pointer_cast<Repeater>(destination_bot);
 			
 			/*std::cout << "\033[22;32m" 
 						<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
 						% "spammer" % Bot::id() % "updates RList from repeater" % repeater_target->id();*/
 						
 			// get subset of rlist from this repeater
-			received_rlist = boost::dynamic_pointer_cast<Repeater>(repeater_target)->sub_rlist();
+			received_rlist = destination_repeater->sub_rlist();
 			
 			if (received_rlist.size() > 0) { // until received non-empty list
+				// update status of connection from current spammer to destination repeater
+				bot_t current_spammer = Bot::shared_from_this();
+				connection_t current_connection = find_connection(Bot::connections(), 
+																													current_spammer, 
+																													destination_bot);
+				current_connection->type() = CONNECTION_RLIST;
+				
+				
 				// merge new rlist and existing rlist
 				m_rlist = spammer_merge_rlist(m_rlist, received_rlist);
+				
 				break;
 			}
 			
@@ -122,8 +133,16 @@ response_code Spammer::send_message(message_code message)
 
 	if (m_rlist.size() > 0) {
 		// take a random repeater from RList
-		boost::shared_ptr< Repeater > repeater_proxy;
-		repeater_proxy = boost::dynamic_pointer_cast< Repeater >(random_bot(m_rlist));
+		bot_t bot_proxy;
+		repeater_t repeater_proxy;
+
+		bot_proxy = random_bot(m_rlist);
+		repeater_proxy = boost::dynamic_pointer_cast< Repeater >(bot_proxy);
+		
+		// find connection from current spammer to proxy repeater
+		connection_t current_connection;
+		bot_t current_spammer = Bot::shared_from_this();
+		current_connection = find_connection(Bot::connections(), current_spammer, bot_proxy);
 
 		// get a response
 		/*std::cout << "spammer " << this->id() 
@@ -134,38 +153,47 @@ response_code Spammer::send_message(message_code message)
 		switch (message) {
 			case MESSAGE_GETKEY:
 				this->status() = SEND_MESSAGE_GETKEY;
+				current_connection->type() = CONNECTION_GETKEY;
 				break;
 							
 			case MESSAGE_FIRST:
 				this->status() = SEND_MESSAGE_FIRST;
+				current_connection->type() = CONNECTION_FIRST;
 				break;
 							
 			case MESSAGE_NOTIFY:
 				this->status() = SEND_MESSAGE_NOTIFY;
+				current_connection->type() = CONNECTION_NOTIFY;
 				break;
 							
 			case MESSAGE_EMAILS:
 				this->status() = SEND_MESSAGE_EMAILS;
+				current_connection->type() = CONNECTION_EMAILS;
 				break;
 							
 			case MESSAGE_TASKREQ:
 				this->status() = SEND_MESSAGE_TASKREQ;
+				current_connection->type() = CONNECTION_TASKREQ;
 				break;
 							
 			case MESSAGE_WORDS:
 				this->status() = SEND_MESSAGE_WORDS;
+				current_connection->type() = CONNECTION_WORDS;
 				break;
 							
 			case MESSAGE_TASKREP:
 				this->status() = SEND_MESSAGE_TASKREP;
+				current_connection->type() = CONNECTION_TASKREP;
 				break;
 							
 			case MESSAGE_HTTPSTATS:
 				this->status() = SEND_MESSAGE_HTTPSTATS;
+				current_connection->type() = CONNECTION_HTTPSTATS;
 				break;
 							
 			case MESSAGE_CREDS:
 				this->status() = SEND_MESSAGE_CREDS;
+				current_connection->type() = CONNECTION_CREDS;
 				break;
 		}
 	}
@@ -193,6 +221,7 @@ void Spammer::init(bot_t& server, bots_t& plist, bots_t& rlist)
 
 #ifndef THREAD_VERSION
 	this->send_message(MESSAGE_GETKEY);
+	boost::this_thread::sleep(boost::posix_time::seconds(5));
 	this->send_message(MESSAGE_FIRST);
 #endif
 	return;

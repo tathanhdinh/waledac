@@ -95,13 +95,13 @@ public :
 
 };
 
-	extern bot_t random_bot(bots_t & bot_list);
-	extern bots_t random_bots(bots_t& bot_list, unsigned int bot_number);
-	extern unsigned int random_number(unsigned int max);
-	extern bots_t merge_list(bots_t& original_list, bots_t& new_list);
-	extern bool compare_bot(bot_t a, bot_t b);
-	extern bool unique_bot(bot_t a, bot_t b);
-	extern bots_t remove_duplicate(bots_t& list);
+extern bot_t random_bot(bots_t & bot_list);
+extern bots_t random_bots(bots_t& bot_list, unsigned int bot_number);
+extern unsigned int random_number(unsigned int max);
+extern bots_t merge_list(bots_t& original_list, bots_t& new_list);
+extern bool compare_bot(bot_t a, bot_t b);
+extern bool unique_bot(bot_t a, bot_t b);
+extern bots_t remove_duplicate(bots_t& list);
 }
 
 
