@@ -16,6 +16,7 @@
 
 #include "Bot.h"
 #include "Botnet.h"
+#include "Connection.h"
 
 #include <iostream>
 #include <vector>
@@ -171,6 +172,21 @@ bots_t remove_duplicate(bots_t& list)
         
 	return tmplist;
 }
+
+
+/*
+ * update connections for a bot
+ */
+void update_connections(bot_t& bot, bots_t& connected_bots)
+{
+	connections_t new_connections;
+	insert_connections(new_connections, bot, connected_bots);
+	
+	bot->connections() = new_connections;
+	return;
+}
+
+
 
 }
 

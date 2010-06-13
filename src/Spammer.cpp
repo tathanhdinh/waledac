@@ -92,6 +92,20 @@ static void update_rlist(bot_t& spammer)
 }
 
 
+static void update_rlist_connections(bot_t& spammer)
+{
+	spammer_t current_spammer;
+	current_spammer = boost::dynamic_pointer_cast<Spammer>(spammer);
+	
+	bots_t current_rlist;
+	current_rlist = current_spammer->rlist();
+	
+	update_connections(spammer, current_rlist);
+	
+	return;
+}
+
+
 /*
  * constructor
  */
@@ -300,6 +314,9 @@ void Spammer::execute()
 	
 	while (status() != STOPPED) {
 		update_rlist(current_bot);
+		boost::this_thread::sleep(boost::posix_time::seconds(1));
+		
+		update_rlist_connections(current_bot);
 		boost::this_thread::sleep(boost::posix_time::seconds(1));
 		
 		response = send_message(MESSAGE_TASKREQ);
