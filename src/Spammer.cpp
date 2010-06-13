@@ -39,6 +39,60 @@ static bots_t spammer_merge_rlist(bots_t &existing_rlist, bots_t &new_rlist)
 
 
 /*
+ * spammer update its Rlist
+ */
+static void update_rlist(bot_t& spammer)
+{
+	spammer_t current_spammer;
+	current_spammer = boost::dynamic_pointer_cast<Spammer>(spammer);
+	
+	bots_t rlist;
+	rlist = current_spammer->rlist();
+	
+	// repeat
+	if (rlist.size() > 0) {
+		bot_t destination_bot;
+		repeater_t destination_repeater;
+		bots_t received_rlist;
+		unsigned int nb_try = 0;
+	
+		while (true) {
+			// takes a random repeater from rlist
+			destination_bot = random_bot(rlist);
+			destination_repeater = boost::dynamic_pointer_cast<Repeater>(destination_bot);
+			
+			/*std::cout << "\033[22;32m" 
+						<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
+						% "spammer" % Bot::id() % "updates RList from repeater" % repeater_target->id();*/
+						
+			// get subset of rlist from this repeater
+			received_rlist = destination_repeater->sub_rlist();
+			
+			if (received_rlist.size() > 0) { // until received non-empty list
+				// update status of connection from current spammer to destination repeater
+				connections_t connections;
+				connections = current_spammer->connections();
+				connection_t current_connection = find_connection(connections, spammer, 
+																													destination_bot);
+				current_connection->type() = CONNECTION_RLIST;
+				
+				
+				// merge new rlist and existing rlist
+				current_spammer->rlist() = spammer_merge_rlist(rlist, received_rlist);
+				
+				break;
+			}
+			
+			nb_try++;
+			if (nb_try >= 10) break;
+		}
+	}
+	
+	current_spammer->status() = UPDATE_RLIST;
+}
+
+
+/*
  * constructor
  */
 Spammer::Spammer() : Bot()
@@ -51,51 +105,51 @@ Spammer::Spammer() : Bot()
 /*
  * update rlist from other spammers
  */
-void Spammer::update_rlist()
-{
-	// repeat
-	if (m_rlist.size() > 0) {
-		bot_t destination_bot;
-		repeater_t destination_repeater;
-		bots_t received_rlist;
-		unsigned int nb_try = 0;
-	
-		while (true) {
-			// takes a random repeater from rlist
-			destination_bot = random_bot(m_rlist);
-			destination_repeater = boost::dynamic_pointer_cast<Repeater>(destination_bot);
-			
-			/*std::cout << "\033[22;32m" 
-						<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
-						% "spammer" % Bot::id() % "updates RList from repeater" % repeater_target->id();*/
-						
-			// get subset of rlist from this repeater
-			received_rlist = destination_repeater->sub_rlist();
-			
-			if (received_rlist.size() > 0) { // until received non-empty list
-				// update status of connection from current spammer to destination repeater
-				bot_t current_spammer = Bot::shared_from_this();
-				connection_t current_connection = find_connection(Bot::connections(), 
-																													current_spammer, 
-																													destination_bot);
-				current_connection->type() = CONNECTION_RLIST;
-				
-				
-				// merge new rlist and existing rlist
-				m_rlist = spammer_merge_rlist(m_rlist, received_rlist);
-				
-				break;
-			}
-			
-			nb_try++;
-			if (nb_try >= 10) break;
-		}
-	}
-	
-	this->status() = UPDATE_RLIST;
-
-	return;
-}
+// void Spammer::update_rlist()
+// {
+// 	// repeat
+// 	if (m_rlist.size() > 0) {
+// 		bot_t destination_bot;
+// 		repeater_t destination_repeater;
+// 		bots_t received_rlist;
+// 		unsigned int nb_try = 0;
+// 	
+// 		while (true) {
+// 			// takes a random repeater from rlist
+// 			destination_bot = random_bot(m_rlist);
+// 			destination_repeater = boost::dynamic_pointer_cast<Repeater>(destination_bot);
+// 			
+// // 			std::cout << "\033[22;32m" 
+// // 						<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
+// // 						% "spammer" % Bot::id() % "updates RList from repeater" % repeater_target->id();
+// 						
+// 			// get subset of rlist from this repeater
+// 			received_rlist = destination_repeater->sub_rlist();
+// 			
+// 			if (received_rlist.size() > 0) { // until received non-empty list
+// 				// update status of connection from current spammer to destination repeater
+// 				bot_t current_spammer = Bot::shared_from_this();
+// 				connection_t current_connection = find_connection(Bot::connections(), 
+// 																													current_spammer, 
+// 																													destination_bot);
+// 				current_connection->type() = CONNECTION_RLIST;
+// 				
+// 				
+// 				// merge new rlist and existing rlist
+// 				m_rlist = spammer_merge_rlist(m_rlist, received_rlist);
+// 				
+// 				break;
+// 			}
+// 			
+// 			nb_try++;
+// 			if (nb_try >= 10) break;
+// 		}
+// 	}
+// 	
+// 	this->status() = UPDATE_RLIST;
+// 
+// 	return;
+// }
 
 
 /*
@@ -118,7 +172,7 @@ void Spammer::update_status(response_code code)
 /*
  * return rlist
  */
-bots_t Spammer::rlist()
+bots_t& Spammer::rlist()
 {
 	return m_rlist;
 }
@@ -235,6 +289,8 @@ void Spammer::init(bot_t& server, bots_t& plist, bots_t& rlist)
 void Spammer::execute()
 {	
 	response_code response;
+	bot_t current_bot;
+	current_bot = Bot::shared_from_this();
 	
 	send_message(MESSAGE_GETKEY);
 	boost::this_thread::sleep(boost::posix_time::seconds(7));
@@ -243,7 +299,7 @@ void Spammer::execute()
 	boost::this_thread::sleep(boost::posix_time::seconds(7));
 	
 	while (status() != STOPPED) {
-		update_rlist();
+		update_rlist(current_bot);
 		boost::this_thread::sleep(boost::posix_time::seconds(1));
 		
 		response = send_message(MESSAGE_TASKREQ);

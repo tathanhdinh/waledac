@@ -7,6 +7,7 @@
 namespace waledac
 {
 	class Bot;
+	class Spammer;
 	class Repeater;
 	class Botnet;
 	class Connection;
@@ -14,6 +15,7 @@ namespace waledac
 
 typedef std::vector< boost::shared_ptr< waledac::Bot > > bots_t;
 typedef boost::shared_ptr< waledac::Bot > bot_t;
+typedef boost::shared_ptr< waledac::Spammer > spammer_t;
 typedef boost::shared_ptr< waledac::Repeater > repeater_t;
 
 typedef std::vector< boost::shared_ptr< waledac::Connection > > connections_t;

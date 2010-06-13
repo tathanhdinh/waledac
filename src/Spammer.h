@@ -40,9 +40,9 @@ private:
 	
 public:
 	Spammer();
-	void update_rlist();
+	//void update_rlist();
 	
-	bots_t rlist();
+	bots_t& rlist();
 	
 	virtual response_code send_message(message_code message);
 	
