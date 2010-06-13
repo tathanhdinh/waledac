@@ -1,78 +1,57 @@
 #ifndef VTKBOTNETGRAPH_H
 	#define VTKBOTNETGRAPH_H
-	
-#include <vtkIntArray.h>
-#include <vtkLookupTable.h>
-#include <vtkMutableUndirectedGraph.h>
-#include <vtkGraphLayoutView.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkTree.h>
-#include <vtkViewTheme.h>
-#include <vtkDataSetAttributes.h>
-#include <vtkAssignCoordinates.h>
-#include <vtkPoints.h>
-#include <vtkPointPicker.h>
 
-#include <vtkGraphLayout.h>
-#include <vtkCircularLayoutStrategy.h>
-#include <vtkSpanTreeLayoutStrategy.h>
-#include <vtkClustering2DLayoutStrategy.h>
-#include <vtkAssignCoordinatesLayoutStrategy.h>
-
-#include "vtkTimerCallback.h"
-
-#include "vtkBotnetInteractor.h"
-#include "Bot.h"
+#include "botnet_types.h"
+#include "vtkMutableUndirectedGraph.h"
+#include "vtkBotnetInteractorStyle.h"
+#include "vtkGraphLayoutView.h"
+#include "vtkIntArray.h"
 #include <map>
-#include <vector>
-#include "Botnet.h"
+class Bot;
+
+namespace waledac
+{
+	class Botnet;
+}
+
+
 
 class vtkBotnetGraph
 {
 	public :
-		vtkBotnetGraph(unsigned int rlist_size, unsigned int plist_size, unsigned int spammers_number, unsigned int attackers_number);
+		vtkBotnetGraph(waledac::Botnet *botnet);
 		~vtkBotnetGraph();
 		
-		void update_graph();
-		void update_protecters();
-		void update_repeaters();
-		void update_spammers();
+		void update_graph(bots_t repeaters, bots_t protecters, bots_t spammers, bots_t attackers);
+		
+		waledac::Botnet *botnet;
+		vtkGraphLayoutView *graphLayoutView;
+		
+	private :	
+		void update_attackers(bots_t attackers);
+		void update_protecters(bots_t protecters);
+		void update_repeaters(bots_t repeaters);
+		void update_spammers(bots_t spammers);
 		
 		void delete_graph();
 		void construct_graph();
-		void calc_points(vtkGraphLayout* layout);
+		void assign_points(bots_t repeaters, bots_t protecters, bots_t spammers, bots_t attackers);
 		
 		vtkMutableUndirectedGraph *graph;
-		vtkBotnetInteractor *interactor;
-		vtkGraphLayoutView *graphLayoutView;
-		vtkViewTheme *theme;
+		vtkBotnetInteractorStyle *interactor_style;
+		vtkViewTheme *view_theme;
 		vtkIdType vertex_command_and_conquer;
-		vtkGraphLayout* layout;
-		//vtkCircularLayoutStrategy* strategy;
-		vtkAssignCoordinates *assign;
-		vtkAssignCoordinatesLayoutStrategy *assign_coordinates;
 		
-		vtkIntArray* edgescolors;
-		vtkIntArray* vertexcolors;
-		vtkLookupTable* lookuptable;
+		vtkIntArray *colors_edges;
+		vtkIntArray *colors_vertex;
+		vtkLookupTable *lookup_table;
 		
-		vtkPoints *points;
+		vtkPoints *graph_points;
 		
-		std::map< boost::shared_ptr< waledac::Bot >, vtkIdType > assoc_spammers; 
-		std::map< boost::shared_ptr< waledac::Bot >, vtkIdType > assoc_repeaters;
-		std::map< boost::shared_ptr< waledac::Bot >, vtkIdType > assoc_protecters;
-		
-		std::map< int, boost::shared_ptr< waledac::Bot > > assoc_points;
-		
-		waledac::Botnet *botnet;
+		std::map< bot_t, vtkIdType > assoc_bot_vertex; 
 
 		bool graph_iscreate;
-		bool graph_create_first_time;
-		
-		std::vector< boost::shared_ptr< waledac::Bot > > repeaters;
-		std::vector< boost::shared_ptr< waledac::Bot > > protecters;
-		std::vector< boost::shared_ptr< waledac::Bot > > spammers;
-		std::vector< boost::shared_ptr< waledac::Bot > > attackers;
+		bool graph_create_first_time;			
 };
 
 #endif

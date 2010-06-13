@@ -4,6 +4,8 @@
 #include <QtGui>
 //#include "QVTKBotnetWidget.h"
 
+
+
 class OptionsDialog : public QDialog
 {
 	Q_OBJECT

@@ -18,26 +18,31 @@
 #define ATTACKER_H
 
 #include "Repeater.h"
+#include "botnet_types.h"
 
 namespace waledac {
 
 class Attacker : public Repeater
 {
 private:
+	#ifdef THREAD_VERSION
 	boost::shared_ptr< boost::thread > m_attacker_thread;
-	
+	#endif
+
 public:
 	Attacker();
 	virtual void update_rlist();
 	virtual void update_plist();
-	virtual std::vector< boost::shared_ptr<Bot> > sub_rlist();
-	virtual std::vector< boost::shared_ptr<Bot> > sub_plist();
+	virtual bots_t sub_rlist();
+	virtual bots_t sub_plist();
 	
-	virtual command_code request_command();
+	virtual response_code send_message(message_code message);
 	
+	#ifdef THREAD_VERSION
 	virtual void execute();
 	virtual void start();
 	virtual void wait();
+	#endif
 };
 
 }
