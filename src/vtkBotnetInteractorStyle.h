@@ -13,11 +13,14 @@ class vtkBotnetInteractorStyle : public vtkInteractorStyleTrackballCamera
    		vtkBotnetInteractorStyle(vtkBotnetGraph *ptrbotnetgraph);
    		~vtkBotnetInteractorStyle();
    		
+   		void FlyToLastClick();
+   		
    	private:	
    		bot_t FindBot(int point);
    		virtual void OnRightButtonDown();
    		vtkBotnetGraph *ptrbotnetgraph;
-   		bool first_time;
+   		
+   		double* pos;
 };
 
 #endif

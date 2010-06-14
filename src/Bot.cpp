@@ -59,7 +59,7 @@ bot_status& Bot::status()
 bool Bot::is_compromised()
 {
 	bool compromised = false;
-	if (this->status() == STOPPED) compromised = true;
+	if (this->status() == STOPPED) compromised = true; // Il faut rajouter un type COMPROMIS (le bot peut etre stoppé mais pas compromis)
 	return compromised;
 }
 

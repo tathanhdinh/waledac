@@ -23,7 +23,6 @@ class vtkTimerCallback : public vtkCommand
  
 	private:
     	vtkBotnetGraph *ptrbotnetgraph;
-   		bool first_time;
 };
  
 #endif

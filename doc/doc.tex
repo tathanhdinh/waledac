@@ -1,0 +1,368 @@
+\documentclass[11pt]{article}
+
+\setlength{\topmargin}{-.20in}
+\setlength{\textheight}{9in}
+\setlength{\oddsidemargin}{.125in}
+\setlength{\textwidth}{6.25in}
+
+\usepackage[frenchb]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{moreverb}
+\usepackage{listings} 
+\usepackage{url}
+\usepackage{colortbl}
+\usepackage{bigdelim}
+\usepackage{bigstrut}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{float}
+\usepackage{color}
+\usepackage{verbatim}
+%%%% Liens et coloration des liens %%%% 
+
+\usepackage{hyperref} 
+\hypersetup{unicode=false,pdftoolbar=true,pdfmenubar=true,pdffitwindow=false,colorlinks=true,linkcolor=black,citecolor=black,filecolor=magenta,urlcolor=gray}
+
+%%%% Packages LatexPix %%%% 
+
+\usepackage{bez123}
+\usepackage{calc}
+\usepackage{curves}
+\usepackage{ebezier}
+\usepackage{eepic}
+\usepackage{multiply}
+\usepackage{pgf} 
+\usepackage{rotating}
+\usepackage{xcolor} 
+
+%%%% Maths %%%%
+
+\usepackage{amsfonts} 
+\usepackage{amssymb} 
+\usepackage{amsmath}
+
+\newcommand{\M}{\mathcal M}
+\newcommand{\F}{\mathbb F}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\W}{\mathcal W}
+
+
+% options pour le package listings
+\lstset{language=C,frame=shadowbox,showstringspaces=false,stringstyle=\ttfamily}
+
+
+\setcounter{page}{1}
+\begin{document}
+\title{Simulateur de Botnet}
+\date{} 
+
+\newcommand{\sautligneperso}{\newline\vspace{1mm}\newline}
+\newcommand{\esp}[1]{\hspace*{#1mm}}
+
+\maketitle
+\section{Compilation}
+Deux versions du simulateur ont été programmés en C++, une qui utilise un thread pour chaque bot du botnet et l'autre sans. Dans le premier cas cela permet le calcul en parallèle, rendant la simulation plus proche de la réalité, chaque bot fonctionnant de manière indépendante, dans le deuxième cas, les actions des bots sont effectués séquentiellement, le ou les actions du bot numéroté 3 sont effectués après le ou les actions du bot 2, ce qui est moins réaliste.\\\\ Cette deuxième version est utile lorsque l'on souhaite lancer la simulation sur un seul processeur, puisqu'elle nécessite moins de ressources (on économise le changement de contexte effectué par l'OS lorsqu'il bascule d'un thread à l'autre). Dans le CMakeFile.txt on ajoutera ou pas la macro THREAD\_VERSION dans les options de gcc en fonction de la version du simulateur que l'on souhaite compiler.  
+\begin{center}
+\begin{verbatim}
+set (CMAKE_CXX_FLAGS "-Wall -W -Wno-deprecated -D THREAD_VERSION")
+\end{verbatim}
+\end{center}
+La compilation du programme nécessite les librairies Boost, QT et VTK (avec support Qt). 
+\newpage
+\section{Classe Bot}
+Tout les bots du Botnet (spammers, repeaters, attackers, protecters, c\&c dans le cas de Waledac) dérivent de cette classe.\\
+
+\begin{minipage}[c]{.46\linewidth}
+\begin{verbatim} 
+class Bot : public 
+boost::enable_shared_from_this< Bot >
+{
+
+private :
+	std::string m_id;
+	bot_status m_status;
+
+public :
+	Bot();
+	const std::string& id() const;
+	
+	virtual bot_status& status();
+	bool is_compromised();
+	
+	virtual response_code 
+	send_message(message_code message);
+	
+	virtual void init(bot_t& server, 
+	bots_t& plist, bots_t& rlist) = 0;
+	
+	#ifdef THREAD_VERSION
+		virtual void execute() = 0;
+		virtual void start() = 0;
+		virtual void wait() = 0;
+	#endif
+	
+};
+\end{verbatim}	
+\end{minipage} \hfill
+\begin{minipage}[c]{.46\linewidth}
+Chaque bot à ainsi un identifiant (m\_id) et un status (m\_status) accessiblement respectivement par le biais des fonctions id() et status(). La fonction is\_compromised() permet de savoir si un bot est entre les mains de l'attaquant. Le bot est dit compromit par l'attaquant si et seulement si le statut du bot vaut STOPPED et a ce moment le fonctionnement du Bot est stoppé (il ne peut pas repasser à l'ennemi).\\\\Chaque Bot peut effectuer des "actions", pour l'instant seul l'envoi d'un message est possible (par le biais de la fonction send\_message()).
+\end{minipage}
+
+\newpage
+\section{Classe Spammer}
+Cette classe implémente les fonctionnalitées d'un Bot de type spammer.\\
+
+\begin{minipage}[c]{.46\linewidth}
+\begin{verbatim} 
+class Spammer : public Bot
+{
+private:
+	bots_t m_rlist;
+	void update_status(response_code code);
+	#ifdef THREAD_VERSION
+	boost::shared_ptr< boost::thread > 
+	m_spammer_thread;
+	#endif
+	
+public:
+	Spammer();
+	void update_rlist();
+	
+	bots_t rlist();
+	
+	virtual response_code 
+	send_message(message_code message);
+	
+	virtual void init(bot_t& server, 
+	bots_t& plist, bots_t& rlist);
+	
+	#ifdef THREAD_VERSION
+	virtual void execute();
+	virtual void start();
+	virtual void wait();
+	#endif
+
+};
+\end{verbatim}	
+\end{minipage} \hfill
+\begin{minipage}[c]{.46\linewidth}
+Chaque spammer à une rlist (m\_rlist) accessible par le biais de la fonction rlist() et qui est mise à jour grace à la fonction update\_rlist(). status(). oppé (il ne peut pas repasser à l'ennemi).\\\\Chaque Bot peut effectuer des "actions", pour l'instant seul l'envoi d'un message est possible (par le biais de la fonction send\_message()).
+\end{minipage}
+
+\newpage
+\section{Classe Repeater}
+Cette classe implémente les fonctionnalitées d'un Bot de type Repeater.\\
+
+\begin{minipage}[c]{.46\linewidth}
+\begin{verbatim} 
+class Repeater : public Bot
+{
+private:
+	bots_t m_rlist;
+	bots_t m_plist;
+	#ifdef THREAD_VERSION
+	boost::shared_ptr<boost::thread> 
+	m_repeater_thread;
+	#endif
+
+public:
+	Repeater();
+	virtual void update_rlist();
+	virtual void update_plist();
+	
+	virtual bots_t sub_rlist();
+	virtual bots_t sub_plist();
+	
+	bots_t plist();
+	bots_t rlist();
+	
+	virtual response_code 
+	send_message(message_code message);
+	
+	virtual void init(bot_t& server, 
+	bots_t& plist, bots_t& rlist);
+	
+	#ifdef THREAD_VERSION
+	virtual void execute();
+	virtual void start();
+	virtual void wait();
+	#endif
+};
+\end{verbatim}	
+\end{minipage} \hfill
+\begin{minipage}[c]{.46\linewidth}
+Chaque bot à ainsi un identifiant (m\_id) et un status (m\_status) accessiblement respectivement par le biais des fonctions id() et status(). La fonction is\_compromised() permet de savoir si un bot est entre les mains de l'attaquant. Le bot est dit compromit par l'attaquant si et seulement si le statut du bot vaut STOPPED et a ce moment le fonctionnement du Bot est stoppé (il ne peut pas repasser à l'ennemi).\\\\Chaque Bot peut effectuer des "actions", pour l'instant seul l'envoi d'un message est possible (par le biais de la fonction send\_message()).
+\end{minipage}
+
+\newpage
+\section{Classe Attacker}
+Cette classe implémente les fonctionnalitées d'un Bot de type attaquant. Elle dérive de la class Repeater (la plupart des attaques sur le botnet waledac se font en introduisant des repeaters).\\
+
+\begin{minipage}[c]{.46\linewidth}
+\begin{verbatim} 
+class Attacker : public Repeater
+{
+private:
+	#ifdef THREAD_VERSION
+	boost::shared_ptr< boost::thread > 
+	m_attacker_thread;
+	#endif
+
+public:
+	Attacker();
+	virtual void update_rlist();
+	virtual void update_plist();
+	virtual bots_t sub_rlist();
+	virtual bots_t sub_plist();
+	
+	virtual response_code 
+	send_message(message_code message);
+	
+	#ifdef THREAD_VERSION
+	virtual void execute();
+	virtual void start();
+	virtual void wait();
+	#endif
+};
+\end{verbatim}	
+\end{minipage} \hfill
+\begin{minipage}[c]{.46\linewidth}
+
+\end{minipage}
+
+\newpage
+\section{Classe Protecter}
+Cette classe implémente les fonctionnalitées d'un Bot de type Protecter.\\
+
+\begin{minipage}[c]{.46\linewidth}
+\begin{verbatim} 
+class Protecter : public Bot
+{	
+	private:
+		#ifdef THREAD_VERSION
+		boost::shared_ptr<boost::thread> 
+		m_protecter_thread;
+		#endif
+		
+	public:
+		Protecter();
+		bot_t server;
+	
+		virtual response_code 
+		send_message(message_code message);
+		virtual void init(bot_t& server, 
+		bots_t& plist, bots_t& rlist);
+		
+		#ifdef THREAD_VERSION
+		virtual void execute();
+        virtual void start();
+        virtual void wait();
+		#endif
+};
+\end{verbatim}	
+\end{minipage} \hfill
+\begin{minipage}[c]{.46\linewidth}
+
+\end{minipage}
+
+\newpage
+\section{Classe ServerCC}
+Cette classe implémente les fonctionnalitées d'un Bot de type ServerCC.\\
+
+\begin{minipage}[c]{.46\linewidth}
+\begin{verbatim} 
+class ServerCC : public Bot
+{
+private:
+	#ifdef THREAD_VERSION
+	boost::shared_ptr<boost::thread> 
+	m_servercc_thread;
+	#endif	 
+
+public:
+	ServerCC();
+	
+	response_code 
+	process_message(message_code message);
+	virtual response_code 
+	send_message(message_code message);
+	
+	virtual void init(bot_t& server, 
+	bots_t& plist, bots_t& rlist);
+
+	#ifdef THREAD_VERSION
+	virtual void execute();
+	virtual void start();
+	virtual void wait();
+	#endif
+
+};
+\end{verbatim}	
+\end{minipage} \hfill
+\begin{minipage}[c]{.46\linewidth}
+
+\end{minipage}
+\newpage
+
+\section{Classe Botnet}
+Cette classe implémente les fonctionnalitées du Botnet.\\
+
+\begin{minipage}[c]{.46\linewidth}
+\begin{verbatim} 
+class Botnet : 
+public boost::enable_shared_from_this< Botnet >
+{
+public:
+	Botnet(unsigned int repeaters_number, 
+	unsigned int protecters_number, 
+	unsigned int spammers_number, 
+	unsigned int attackers_number);
+		   
+	void init();
+	void start();
+	
+	#ifdef THREAD_VERSION
+	void wait();
+	#endif
+	
+	bots_t repeaters_list();
+	bots_t protecters_list();
+	bots_t spammers_list();
+	bots_t attackers_list();
+	bot_t server();
+	
+	
+private:	
+	bots_t repeaters;
+	bots_t protecters;
+	bots_t spammers;
+	bots_t attackers;
+	bot_t server_cc;
+};
+\end{verbatim}	
+\end{minipage} \hfill
+\begin{minipage}[c]{.46\linewidth}
+On crée un botnet via le constructeur, qui prend en paramètre un nombre de répéteurs, protecteurs, spammers, attaquants, il n'y aura qu'un seul command and conquer.\\\\On a accès à la liste des bots (bots\_t repeaters, bots\_t protecters, bots\_t spammers, bots\_t attackers, bot\_t server\_cc) via les fonctions repeaters\_list(),protecters\_list(), spammers\_list(), attackers\_list(), server().
+\end{minipage}
+\newpage
+
+
+\section{Visualisation}
+Le graphe du Botnet dérive de la classe vtkMutableDirectedGraph (il s'agit d'un graphe dirigé et modifiable). Dans la version avec threads, le rafraichissement du rendu graphique est effectué toutes les 300 millisecondes (par défaut), les bots peuvent avoir effectué plus d'une action chacun (réception, envoie d'un message par exemple), dans la version sans threads ce n'est que lors des rafraichissements du rendu graphique que les bots "vivent".
+\end{document} 
+
+
+
+
+
+
+
+
+
+
+
+
+
