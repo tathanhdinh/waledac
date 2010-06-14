@@ -24,6 +24,8 @@
 #include <boost/smart_ptr.hpp>
 #include <boost/random.hpp>
 
+#include <stdio.h>
+
 namespace waledac {
 	
 Bot::Bot()
@@ -165,6 +167,36 @@ bots_t remove_duplicate(bots_t& list)
 	tmplist.erase(std::unique(tmplist.begin(), tmplist.end()), tmplist.end());
         
 	return tmplist;
+}
+
+/*
+ * get the percentage of compromised bots
+ */
+double get_stats_compromised(bots_t list)
+{
+	unsigned int nb = 0;
+	
+	for(unsigned int i = 0; i < list.size(); i++)
+	{
+		if(list[i].get()->is_compromised())
+			nb ++;
+	}
+	 
+	return (double)nb/(double)list.size();
+}
+
+
+bool in_list(bots_t list, bot_t bot) 
+{
+	bool result = false;
+	
+	for (unsigned int i = 0; i < list.size(); ++i) {
+		if (list[i]->id() == bot->id()) {
+			result = true;
+		}
+	}
+	
+	return result;
 }
 
 }

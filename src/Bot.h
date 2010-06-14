@@ -99,6 +99,8 @@ public :
 	extern bool compare_bot(bot_t a, bot_t b);
 	extern bool unique_bot(bot_t a, bot_t b);
 	extern bots_t remove_duplicate(bots_t& list);
+	extern double get_stats_compromised(bots_t list);
+	bool in_list(bots_t list, bot_t bot);
 }
 
 

@@ -7,12 +7,15 @@
 #include "vtkPointPicker.h"
 #include "vtkTimerCallback.h"
 
+#include "vtkTextProperty.h"
 #include "vtkProperty.h"
 #include "vtkPointData.h"
 #include "vtkCellData.h"
 
 #include "Attacker.h"
 #include "Spammer.h"
+
+#include <QString>
 
 // DOIT DERIVER DE QVTKBOTNET... ET INTERACTOR DANS QVTK (pas de pointeur)
 // class message (il me faut la source et le destinateur si je veux colorer)
@@ -111,7 +114,6 @@ void vtkBotnetGraph::update_attackers(bots_t attackers)
 
 	for(unsigned int j = 0; j < attackers.size(); j++)
 	{
-		printf("attaquer %d\n",j);
 		vertex_attacker =  this->graph->AddVertex();
 		this->colors_vertex->InsertNextTuple3(0, 255, 0); // green
 		this->assoc_bot_vertex[attackers[j]] = vertex_attacker;
@@ -121,7 +123,6 @@ void vtkBotnetGraph::update_attackers(bots_t attackers)
 		/* les attaquants sont liés aux protécteurs */	
 		for(unsigned int k = 0; k < attacker->plist().size(); k++)
 		{
-			printf("attaquer fleche vers protecteur\n");
 			this->graph->AddEdge(this->assoc_bot_vertex[attacker->plist()[k]], vertex_attacker);
 			this->colors_edges->InsertNextTuple3(0, 255, 0); // green
 		}
@@ -135,13 +136,10 @@ void vtkBotnetGraph::update_attackers(bots_t attackers)
 	
 		for(unsigned int k = 0; k < attacker->rlist().size(); k++)
 		{	
-			printf("attaquer fleche vers autre attaquant\n");
 			this->graph->AddEdge(vertex_attacker, this->assoc_bot_vertex[attacker->rlist()[k]]);
 			this->colors_edges->InsertNextTuple3(0, 255, 0); // green
 		}
 	}
-	
-	printf("FIN UPDATE\n\n\n\n\n");
 }
 
 void vtkBotnetGraph::update_protecters(bots_t protecters)
@@ -169,7 +167,7 @@ void vtkBotnetGraph::update_repeaters(bots_t repeaters)
 	{
 		vertex_repeater =  this->graph->AddVertex();
 			
-		this->colors_vertex->InsertNextTuple3(238, 203, 173); // peachpuff 2
+		this->colors_vertex->InsertNextTuple3(255, 215, 0); // gold
 		this->assoc_bot_vertex[repeaters[j]] = vertex_repeater;
 		this->assoc_vertex_bot[vertex_repeater] = repeaters[j];
 		repeater = dynamic_cast<waledac::Repeater*>(repeaters[j].get());
@@ -177,10 +175,8 @@ void vtkBotnetGraph::update_repeaters(bots_t repeaters)
 		/* les répéteurs sont liés aux protécteurs */	
 		for(unsigned int k = 0; k < repeater->plist().size(); k++)
 		{
-			std::cout << "ap plist: " << typeid(repeater->plist()[k].get()).name() << std::endl;
-
 			this->graph->AddEdge(this->assoc_bot_vertex[repeater->plist()[k]], vertex_repeater);
-			this->colors_edges->InsertNextTuple3(238, 203, 173); // peachpuff 2
+			this->colors_edges->InsertNextTuple3(255, 215, 0); // gold
 		}
 	}
 
@@ -201,7 +197,6 @@ void vtkBotnetGraph::update_repeaters(bots_t repeaters)
 void vtkBotnetGraph::update_spammers(bots_t spammers)
 {
 	waledac::Spammer *spammer;
-	//waledac::Repeater *repeater;
 	boost::shared_ptr<waledac::Repeater> repeater;
 	
 	vtkIdType vertex_spammer;
@@ -222,12 +217,11 @@ void vtkBotnetGraph::update_spammers(bots_t spammers)
 		{
 			this->graph->AddEdge(vertex_spammer, this->assoc_bot_vertex[spammer->rlist()[k]]);
 			
-			//repeater = dynamic_cast<waledac::Repeater *>(spammer->rlist()[k]);
 			repeater = boost::dynamic_pointer_cast<waledac::Repeater>(spammer->rlist()[k]);
 			if(repeater->is_attacker())
-				this->colors_edges->InsertNextTuple3(113, 198, 113); // sgi chartreuse
-			else
 				this->colors_edges->InsertNextTuple3(0, 255, 0); // green
+			else
+				this->colors_edges->InsertNextTuple3(238, 203, 173); // peachpuff 2
 		}
 	}
 }
@@ -257,7 +251,35 @@ void vtkBotnetGraph::start_simulation()
 	this->iren->AddObserver(vtkCommand::TimerEvent, cb);
 	this->iren->CreateRepeatingTimer(300);	
 }
+
+void vtkBotnetGraph::build_corner_annotations()
+{
+	this->corner_annotation = vtkCornerAnnotation::New();
+	this->corner_annotation->SetLinearFontScaleFactor(2);
+	this->corner_annotation->SetNonlinearFontScaleFactor(1);
+	this->corner_annotation->SetMaximumFontSize(15);
+	this->corner_annotation->GetTextProperty()->SetColor(1,0,0);
+}
+
+void vtkBotnetGraph::show_annotations()
+{
+	if(botnet == NULL)
+		return;
+		
+	QString annotation("Server : ");
+	annotation.append(QString::number(1));
+	annotation.append("\nProtecters : ");
+	annotation.append(QString::number(this->botnet->protecters_list().size()));
+	annotation.append("\nRepeaters : ");
+	annotation.append(QString::number(this->botnet->repeaters_list().size()));
+	annotation.append("\nAttackers : ");
+	annotation.append(QString::number(this->botnet->attackers_list().size()));
+	annotation.append("\nSpammers : ");
+	annotation.append(QString::number(this->botnet->spammers_list().size()));
 	
+	this->corner_annotation->SetText(3, annotation.toStdString().c_str());
+}
+
 vtkBotnetGraph::vtkBotnetGraph(vtkRenderWindowInteractor *iren)
 {	
 	this->iren = iren;
@@ -298,6 +320,9 @@ vtkBotnetGraph::vtkBotnetGraph(vtkRenderWindowInteractor *iren)
 	
 	this->win->AddRenderer(this->ren);
 	this->iren->SetInteractorStyle(this->interactor_style);
+	
+	this->build_corner_annotations();
+	this->ren->AddViewProp(this->corner_annotation);
 }
 
 
@@ -322,6 +347,7 @@ void vtkBotnetGraph::construct_graph()
 	
 	this->graph = vtkMutableDirectedGraph::New();
 	
+	this->show_annotations();
 	this->graph_iscreate = true;
 }
 

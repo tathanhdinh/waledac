@@ -7,18 +7,20 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <stdint.h>
-class vtkBotnetInteractorStyle;
+class vtkBotnetGraph;
+#include "Bot.h"
+#include "botnet_types.h"
 
 class InfoVertexDialog : public QDialog
 {
 	Q_OBJECT
 
 	public :
-		InfoVertexDialog(vtkBotnetInteractorStyle *irenstyle);
+		InfoVertexDialog(vtkBotnetGraph *vtkgraph, bot_t bot);
 		~InfoVertexDialog();
 		void paintEvent(QPaintEvent * event);
 		
-		vtkBotnetInteractorStyle *ptrirenstyle;
+		vtkBotnetGraph *ptrbotnetgraph;
 		
 	private slots :
 		void click_flyto();

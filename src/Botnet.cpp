@@ -47,7 +47,6 @@ Botnet::Botnet(unsigned int repeaters_number, unsigned int protecters_number,
 	attackers.resize(attackers_number);
 	for (unsigned int i = 0; i < attackers.size(); ++i) {
 		attackers[i].reset(new Attacker());
-		repeaters.push_back(attackers[i]);
 	}
 
 	server_cc.reset(new ServerCC());
@@ -82,7 +81,6 @@ boost::shared_ptr< Bot > Botnet::server()
 {
 	return server_cc;
 }
-
 
 void Botnet::init()
 {
