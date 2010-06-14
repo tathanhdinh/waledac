@@ -64,7 +64,8 @@ enum bot_status
         UPDATE_PLIST = 10,
         
         STOPPED = 11,
-        IDLE = 12
+        COMPROMISED = 12,
+        IDLE = 13
 };
 
 class Bot : public boost::enable_shared_from_this< Bot >
