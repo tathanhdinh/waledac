@@ -67,7 +67,6 @@ enum bot_status
         IDLE = 12
 };
 
-
 class Bot : public boost::enable_shared_from_this< Bot >
 {
 private :

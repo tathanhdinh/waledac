@@ -24,7 +24,11 @@
 #include <boost/thread.hpp>
 #include "botnet_types.h"
 
-
+enum bot_type
+{
+	REPEATER_DEFENDER = 0,
+	REPEATER_ATTACKER = 1
+};
 
 namespace waledac {
 
@@ -36,9 +40,15 @@ private:
 	#ifdef THREAD_VERSION
 	boost::shared_ptr<boost::thread> m_repeater_thread;
 	#endif
-
+	
+protected :
+	bot_type type;
+	
 public:
 	Repeater();
+	
+	bool is_attacker();
+		
 	virtual void update_rlist();
 	virtual void update_plist();
 	

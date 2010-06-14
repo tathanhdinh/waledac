@@ -40,7 +40,9 @@ bots_t repeater_merge_list(bots_t &existing_rlist, bots_t &received_rlist)
 Repeater::Repeater() : Bot()
 {
 	m_rlist.clear();
-	m_plist.clear();	
+	m_plist.clear();
+	
+	type = REPEATER_DEFENDER;	
 }
 
 
@@ -176,6 +178,18 @@ bots_t Repeater::rlist()
 {
 	return m_rlist;
 }
+
+
+/*
+ * is_attacker ?
+ */
+bool Repeater::is_attacker()
+{
+	if(type == REPEATER_ATTACKER)
+		return true;
+		
+	return false;
+} 
 
 
 /*

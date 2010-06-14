@@ -9,7 +9,7 @@ FIND_PACKAGE(Qt4 REQUIRED)
 INCLUDE(${QT_USE_FILE})
 
 set(CMAKE_BUILD_TYPE Release)
-set (CMAKE_CXX_FLAGS "-Wall -W -Wno-deprecated")
+set (CMAKE_CXX_FLAGS "-Wall -W -Wno-deprecated -D THREAD_VERSION")
 
 include_directories(/usr/local/include/vtk-5.6/)
 link_directories(/usr/local/lib/vtk-5.6/)

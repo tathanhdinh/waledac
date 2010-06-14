@@ -26,6 +26,7 @@ namespace waledac
  */
 Attacker::Attacker() : Repeater()
 {
+	type = REPEATER_ATTACKER;
 }
 
 
@@ -85,8 +86,8 @@ response_code Attacker::send_message(message_code message)
  */
 void Attacker::execute()
 {
-        waledac::Repeater::execute();
-        return;
+	waledac::Repeater::execute();
+	return;
 }
 
 
@@ -95,9 +96,9 @@ void Attacker::execute()
  */
 void Attacker::start()
 {
-        //std::cout << "start attacker with id : " << Bot::id() << std::endl;
-        m_attacker_thread.reset(new boost::thread(boost::bind(&Attacker::execute, this)));
-        return;
+	//std::cout << "start attacker with id : " << Bot::id() << std::endl;
+	m_attacker_thread.reset(new boost::thread(boost::bind(&Attacker::execute, this)));
+	return;
 }
 
 
@@ -106,8 +107,8 @@ void Attacker::start()
  */
 void Attacker::wait()
 {
-        m_attacker_thread->join();
-        return;
+	m_attacker_thread->join();
+	return;
 }
 #endif
 
