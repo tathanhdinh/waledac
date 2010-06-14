@@ -17,6 +17,8 @@
 
 #include "Connection.h"
 
+#include <iostream>
+
 namespace waledac
 {
 
@@ -87,8 +89,9 @@ connection_t find_connection(connections_t& connections, bot_t& begin, bot_t& en
 
 	for (unsigned int i = 0; i < connections.size(); ++i) {
 		if ((connections[i]->beginning()->id() == begin->id()) && 
-			(connections[i]->beginning()->id() == end->id())) {
+			(connections[i]->end()->id() == end->id())) {
 			found_connection = connections[i];
+			//std::cout << "found connection" << std::endl;
 		}
 	}
 	

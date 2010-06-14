@@ -183,6 +183,7 @@ void update_connections(bot_t& bot, bots_t& connected_bots)
 	insert_connections(new_connections, bot, connected_bots);
 	
 	bot->connections() = new_connections;
+	//std::cout << "update connections : " << new_connections.size() << std::endl;
 	return;
 }
 
