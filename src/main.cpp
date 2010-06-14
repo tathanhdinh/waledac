@@ -7,7 +7,14 @@
 #include <vector>
 #include <boost/program_options.hpp>
 
+#include <QApplication>
+#include "mainwindow.h"
+
 int main(int argc, char **argv) {
+	
+	QApplication app(argc, argv);
+	
+	
 	unsigned int rlist_size;
 	unsigned int plist_size;
 	unsigned int spammers_number;
@@ -46,10 +53,11 @@ int main(int argc, char **argv) {
 		std::cout << "Waldac botnet simulation" << std::endl;
 		
 		waledac::Botnet *botnet = new waledac::Botnet(rlist_size, plist_size, spammers_number, attackers_number);
-		vtkBotnetGraph *botnetgraph = new vtkBotnetGraph(botnet);
-		
-		//botnet->init(botnetgraph);
-		//botnet->wait();
+
+		MainWindow *mainwin = new MainWindow;
+		mainwin->showMaximized();
+		mainwin->add_vtk_simulation(botnet);
 	}
-    return 0;
+	
+    return app.exec();
 }

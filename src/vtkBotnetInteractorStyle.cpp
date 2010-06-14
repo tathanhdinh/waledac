@@ -3,13 +3,14 @@
 #include "vtkActor.h"
 #include "vtkMapper.h"
 #include "vtkDataSet.h"
+#include "vtkPointData.h"
 #include "vtkRenderWindowInteractor.h"
 #include "vtkPointPicker.h"
 #include "Bot.h"
+#include "InfoVertexDialog.h"
 
 vtkBotnetInteractorStyle::vtkBotnetInteractorStyle(vtkBotnetGraph *ptrbotnetgraph)
 {
-	this->first_time = true;
 	this->ptrbotnetgraph = ptrbotnetgraph;
 }
 
@@ -17,28 +18,29 @@ vtkBotnetInteractorStyle::~vtkBotnetInteractorStyle()
 {
 }
 
+/* comment savoir si un Bot est de type Repeater / Spammer ? */
 bot_t vtkBotnetInteractorStyle::FindBot(int point)
 {
 	bot_t null_bot;
 	null_bot.reset();
 	 
 	/* sync avec l'ordre dans lequel on insère les points */
-	/*
-	if(point == 0)
+	if(point >= 0 && point < this->ptrbotnetgraph->graph->GetNumberOfVertices())
+		return this->ptrbotnetgraph->assoc_vertex_bot[point];
+	else
 	{
-		printf("command and conquer touché, retourne le premier protecter pour l'instant\n");
-		return this->ptrbotnetgraph->protecters[0];
+		bot_t null_bot;
+		null_bot.reset();
+		return null_bot;
 	}
-	else if(point > 0 && point < this->ptrbotnetgraph->protecters.size())
-		return this->ptrbotnetgraph->protecters[point-1];
+}
+
+void vtkBotnetInteractorStyle::FlyToLastClick()
+{	
+	if(pos == NULL)
+		return;
 		
-	else if(point >= this->ptrbotnetgraph->protecters.size() && point < (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()))
-		return this->ptrbotnetgraph->repeaters[point-this->ptrbotnetgraph->protecters.size()-1];
-		
-	else if(point >= (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()) && point < (this->ptrbotnetgraph->protecters.size()+this->ptrbotnetgraph->repeaters.size()+this->ptrbotnetgraph->spammers.size()))
-		return this->ptrbotnetgraph->spammers[point-this->ptrbotnetgraph->protecters.size()-this->ptrbotnetgraph->repeaters.size()-1];
-	else 
-		return null_bot;*/
+	this->ptrbotnetgraph->iren->FlyTo(this->ptrbotnetgraph->ren, this->pos[0],this->pos[1],this->pos[2]);
 }
 
 void vtkBotnetInteractorStyle::OnRightButtonDown()
@@ -47,15 +49,29 @@ void vtkBotnetInteractorStyle::OnRightButtonDown()
 	vtkPointPicker* picker = (vtkPointPicker *)this->GetInteractor()->GetPicker();
 	picker->Pick(clickPos[0], clickPos[1], 0, this->GetDefaultRenderer());
 
-	double* pos = picker->GetPickPosition();	
+	this->pos = picker->GetPickPosition();	
 	vtkActor* pickedObject = picker->GetActor();
 	
 	if(pickedObject != NULL)
 	{
-		printf("get actor fini\n");
-		int point = pickedObject->GetMapper()->GetInput()->FindPoint(pos[0],pos[1],pos[2]);
-		bot_t bot = this->FindBot(point);
-		printf("point = %d\n",point);
+		int point = pickedObject->GetMapper()->GetInput()->FindPoint(this->pos[0],this->pos[1],this->pos[2]);
+		vtkDataArray *arr = pickedObject->GetMapper()->GetInput()->GetPointData()->GetArray("InputPointIds");
+		if(arr != NULL && point >= 0 && point < arr->GetNumberOfTuples())
+		{
+			int ipid = (int)*(arr->GetTuple(point));
+				
+			if(ipid >= 0)
+     		{
+				bot_t bot = this->FindBot(ipid);
+				if(bot != NULL)
+				{
+					int *pw = this->ptrbotnetgraph->win->GetActualSize();
+					InfoVertexDialog info_vertex(this);
+					info_vertex.move(clickPos[0], pw[1]-clickPos[1]);
+					info_vertex.exec();
+				}
+			}
+		}
 	}
 
 	/* overwrite vtkInteractorStyleTrackballCamera::OnRightButtonDown */
