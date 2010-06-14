@@ -25,12 +25,7 @@ void vtkBotnetGraph::assign_points(bots_t repeaters, bots_t protecters, bots_t s
 	this->graph_points->InsertNextPoint(250+rand()%250, rand()%500, 100);
 	
 	unsigned int i;
-	/*
-	for(i = 0; i < attackers.size(); i++)
-	{
-		this->graph_points->InsertNextPoint(500+rand()%200, 500+rand()%200, 200);
-	}
-	*/
+	
 	for(i = 0; i < protecters.size(); i++)
 	{
 		this->graph_points->InsertNextPoint(rand()%500, rand()%500, 200);
@@ -39,6 +34,11 @@ void vtkBotnetGraph::assign_points(bots_t repeaters, bots_t protecters, bots_t s
 	for(i = 0; i < repeaters.size(); i++)
 	{
 		this->graph_points->InsertNextPoint(rand()%500, rand()%500, 400);
+	}
+	
+	for(i = 0; i < attackers.size(); i++)
+	{
+		this->graph_points->InsertNextPoint(500+rand()%200, 500+rand()%200, 200);
 	}
 	
 	for(i = 0; i < spammers.size(); i++)
@@ -55,9 +55,9 @@ void vtkBotnetGraph::update_graph(bots_t repeaters, bots_t protecters, bots_t sp
 	construct_graph();
 	
 	update_servercc(this->botnet->server());	
-	//update_attackers(attackers);
 	update_protecters(protecters);
 	update_repeaters(repeaters);
+	update_attackers(attackers); // après les répéteurs et les protecteurs
 	update_spammers(spammers);
 	
 	this->graph->Modified();
@@ -113,7 +113,7 @@ void vtkBotnetGraph::update_attackers(bots_t attackers)
 	{
 		printf("attaquer %d\n",j);
 		vertex_attacker =  this->graph->AddVertex();
-		this->colors_vertex->InsertNextTuple3(238, 203, 173); // peachpuff 2
+		this->colors_vertex->InsertNextTuple3(0, 255, 0); // green
 		this->assoc_bot_vertex[attackers[j]] = vertex_attacker;
 		this->assoc_vertex_bot[vertex_attacker] = attackers[j];
 		attacker = dynamic_cast<waledac::Attacker*>(attackers[j].get());
@@ -123,7 +123,7 @@ void vtkBotnetGraph::update_attackers(bots_t attackers)
 		{
 			printf("attaquer fleche vers protecteur\n");
 			this->graph->AddEdge(this->assoc_bot_vertex[attacker->plist()[k]], vertex_attacker);
-			this->colors_edges->InsertNextTuple3(238, 203, 173); // peachpuff 2
+			this->colors_edges->InsertNextTuple3(0, 255, 0); // green
 		}
 	}
 
@@ -137,7 +137,7 @@ void vtkBotnetGraph::update_attackers(bots_t attackers)
 		{	
 			printf("attaquer fleche vers autre attaquant\n");
 			this->graph->AddEdge(vertex_attacker, this->assoc_bot_vertex[attacker->rlist()[k]]);
-			this->colors_edges->InsertNextTuple3(139, 90, 43); // tan 4
+			this->colors_edges->InsertNextTuple3(0, 255, 0); // green
 		}
 	}
 	
@@ -168,6 +168,7 @@ void vtkBotnetGraph::update_repeaters(bots_t repeaters)
 	for(unsigned int j = 0; j < repeaters.size(); j++)
 	{
 		vertex_repeater =  this->graph->AddVertex();
+			
 		this->colors_vertex->InsertNextTuple3(238, 203, 173); // peachpuff 2
 		this->assoc_bot_vertex[repeaters[j]] = vertex_repeater;
 		this->assoc_vertex_bot[vertex_repeater] = repeaters[j];
@@ -176,6 +177,8 @@ void vtkBotnetGraph::update_repeaters(bots_t repeaters)
 		/* les répéteurs sont liés aux protécteurs */	
 		for(unsigned int k = 0; k < repeater->plist().size(); k++)
 		{
+			std::cout << "ap plist: " << typeid(repeater->plist()[k].get()).name() << std::endl;
+
 			this->graph->AddEdge(this->assoc_bot_vertex[repeater->plist()[k]], vertex_repeater);
 			this->colors_edges->InsertNextTuple3(238, 203, 173); // peachpuff 2
 		}
@@ -198,21 +201,33 @@ void vtkBotnetGraph::update_repeaters(bots_t repeaters)
 void vtkBotnetGraph::update_spammers(bots_t spammers)
 {
 	waledac::Spammer *spammer;
+	//waledac::Repeater *repeater;
+	boost::shared_ptr<waledac::Repeater> repeater;
+	
 	vtkIdType vertex_spammer;
 	
 	for(unsigned int j = 0; j < spammers.size(); j++)
 	{
 		vertex_spammer =  this->graph->AddVertex();
-		this->colors_vertex->InsertNextTuple3(142, 56, 142); // sgi beet
+		
 		this->assoc_bot_vertex[spammers[j]] = vertex_spammer;
 		this->assoc_vertex_bot[vertex_spammer] = spammers[j];
-		
 		spammer = dynamic_cast<waledac::Spammer*>(spammers[j].get());
-		
+		if(spammer->is_compromised())
+			this->colors_vertex->InsertNextTuple3(0, 255, 0); // green
+		else
+			this->colors_vertex->InsertNextTuple3(238, 203, 173); // peachpuff 2
+			
 		for(unsigned int k = 0; k < spammer->rlist().size(); k++)
 		{
 			this->graph->AddEdge(vertex_spammer, this->assoc_bot_vertex[spammer->rlist()[k]]);
-			this->colors_edges->InsertNextTuple3(113, 198, 113); // sgi chartreuse
+			
+			//repeater = dynamic_cast<waledac::Repeater *>(spammer->rlist()[k]);
+			repeater = boost::dynamic_pointer_cast<waledac::Repeater>(spammer->rlist()[k]);
+			if(repeater->is_attacker())
+				this->colors_edges->InsertNextTuple3(113, 198, 113); // sgi chartreuse
+			else
+				this->colors_edges->InsertNextTuple3(0, 255, 0); // green
 		}
 	}
 }
