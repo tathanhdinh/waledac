@@ -22,9 +22,8 @@
 #include <boost/smart_ptr.hpp>
 #include <boost/thread.hpp>
 #include "botnet_types.h"
-class vtkBotnetGraph;
 
-
+//class vtkBotnetGraph;
 
 namespace waledac {
 
