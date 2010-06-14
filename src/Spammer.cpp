@@ -73,6 +73,12 @@ static void update_rlist(bot_t& spammer)
 				connections_t connections;
 				connections = current_spammer->connections();
 				connection_t current_connection = find_connection(connections, spammer, destination_bot);
+				/*if (current_connection == 0) {
+					std::cout << "failed" << std::endl;
+				}
+				else {
+					std::cout << "found" << std::endl;
+				}*/
 				current_connection->type() = CONNECTION_UPDATE_RLIST;
 				
 				
@@ -102,6 +108,7 @@ static void update_rlist_connections(bot_t& spammer)
 	bots_t current_rlist;
 	current_rlist = current_spammer->rlist();
 	
+	//std::cout << "update rlist connections" << std::endl;
 	update_connections(spammer, current_rlist);
 	
 	return;
@@ -223,47 +230,47 @@ response_code Spammer::send_message(message_code message)
 		switch (message) {
 			case MESSAGE_GETKEY:
 				this->status() = SEND_MESSAGE_GETKEY;
-				//current_connection->type() = CONNECTION_GETKEY;
+				current_connection->type() = CONNECTION_GETKEY;
 				break;
 							
 			case MESSAGE_FIRST:
 				this->status() = SEND_MESSAGE_FIRST;
-				//current_connection->type() = CONNECTION_FIRST;
+				current_connection->type() = CONNECTION_FIRST;
 				break;
 							
 			case MESSAGE_NOTIFY:
 				this->status() = SEND_MESSAGE_NOTIFY;
-				//current_connection->type() = CONNECTION_NOTIFY;
+				current_connection->type() = CONNECTION_NOTIFY;
 				break;
 							
 			case MESSAGE_EMAILS:
 				this->status() = SEND_MESSAGE_EMAILS;
-				//current_connection->type() = CONNECTION_EMAILS;
+				current_connection->type() = CONNECTION_EMAILS;
 				break;
 							
 			case MESSAGE_TASKREQ:
 				this->status() = SEND_MESSAGE_TASKREQ;
-				//current_connection->type() = CONNECTION_TASKREQ;
+				current_connection->type() = CONNECTION_TASKREQ;
 				break;
 							
 			case MESSAGE_WORDS:
 				this->status() = SEND_MESSAGE_WORDS;
-				//current_connection->type() = CONNECTION_WORDS;
+				current_connection->type() = CONNECTION_WORDS;
 				break;
 							
 			case MESSAGE_TASKREP:
 				this->status() = SEND_MESSAGE_TASKREP;
-				//current_connection->type() = CONNECTION_TASKREP;
+				current_connection->type() = CONNECTION_TASKREP;
 				break;
 							
 			case MESSAGE_HTTPSTATS:
 				this->status() = SEND_MESSAGE_HTTPSTATS;
-				//current_connection->type() = CONNECTION_HTTPSTATS;
+				current_connection->type() = CONNECTION_HTTPSTATS;
 				break;
 							
 			case MESSAGE_CREDS:
 				this->status() = SEND_MESSAGE_CREDS;
-				//current_connection->type() = CONNECTION_CREDS;
+				current_connection->type() = CONNECTION_CREDS;
 				break;
 		}
 	}
@@ -286,11 +293,12 @@ void Spammer::init(bot_t& server, bots_t& plist, bots_t& rlist)
 	bot_t current_spammer;
 	current_spammer = Bot::shared_from_this();
 
-	//update_rlist_connections(current_spammer);
+	update_rlist_connections(current_spammer);
+	//std::cout << current_spammer->connections().size() << std::endl;
 
 #ifndef THREAD_VERSION
 	this->send_message(MESSAGE_GETKEY);
-	boost::this_thread::sleep(boost::posix_time::seconds(5));
+	boost::this_thread::sleep(boost::posix_time::seconds(1));
 	this->send_message(MESSAGE_FIRST);
 #endif
 	return;
@@ -308,22 +316,22 @@ void Spammer::execute()
 	current_bot = Bot::shared_from_this();
 	
 	send_message(MESSAGE_GETKEY);
-	boost::this_thread::sleep(boost::posix_time::seconds(7));
+	boost::this_thread::sleep(boost::posix_time::seconds(1));
 	
 	send_message(MESSAGE_FIRST);
-	boost::this_thread::sleep(boost::posix_time::seconds(7));
+	boost::this_thread::sleep(boost::posix_time::seconds(1));
 	
 	while (status() != STOPPED) {
-		//update_rlist(current_bot);
+		update_rlist(current_bot);
 		boost::this_thread::sleep(boost::posix_time::seconds(1));
 		
-		//update_rlist_connections(current_bot);
+		update_rlist_connections(current_bot);
 		boost::this_thread::sleep(boost::posix_time::seconds(1));
 		
 		response = send_message(MESSAGE_TASKREQ);
 		boost::this_thread::sleep(boost::posix_time::seconds(1));
 		
-		//refresh_connections(current_bot);
+		refresh_connections(current_bot);
 		
 		update_status(response);
 	}
