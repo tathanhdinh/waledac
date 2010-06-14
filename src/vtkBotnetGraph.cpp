@@ -347,7 +347,7 @@ void vtkBotnetGraph::construct_graph()
 	
 	this->graph = vtkMutableDirectedGraph::New();
 	
-	this->show_annotations();
+	//this->show_annotations();
 	this->graph_iscreate = true;
 }
 

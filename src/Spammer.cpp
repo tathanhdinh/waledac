@@ -130,7 +130,9 @@ response_code Spammer::send_message(message_code message)
                 /*std::cout << "spammer " << this->id() 
                                 << " send message to repeater " 
                                 << repeater_proxy->id() << std::endl;*/
+								std::cout << "proxy : " << repeater_proxy->id() << std::endl;
                 response = repeater_proxy->send_message(message);
+								std::cout << "response : " << response << std::endl;
                 
                 switch (message) {
                         case MESSAGE_GETKEY:
@@ -151,6 +153,7 @@ response_code Spammer::send_message(message_code message)
                                 
                         case MESSAGE_TASKREQ:
                                 this->status() = SEND_MESSAGE_TASKREQ;
+																//std::cout << "send taskreq" << std::endl;
                                 break;
                                 
                         case MESSAGE_WORDS:
@@ -202,10 +205,10 @@ void Spammer::execute()
 	response_code response;
 	
 	send_message(MESSAGE_GETKEY);
-	boost::this_thread::sleep(boost::posix_time::seconds(7));
+	boost::this_thread::sleep(boost::posix_time::seconds(1));
 	
 	send_message(MESSAGE_FIRST);
-	boost::this_thread::sleep(boost::posix_time::seconds(7));
+	boost::this_thread::sleep(boost::posix_time::seconds(1));
 	
 	while (status() != STOPPED) {
 		update_rlist();
@@ -214,6 +217,7 @@ void Spammer::execute()
 		response = send_message(MESSAGE_TASKREQ);
 		boost::this_thread::sleep(boost::posix_time::seconds(1));
 		
+		//std::cout << "response : " << response << std::endl;
 		update_status(response);
 	}
 	

@@ -203,7 +203,9 @@ response_code Repeater::send_message(message_code message)
 		boost::shared_ptr< Protecter > protecter_proxy;
 		protecter_proxy = boost::dynamic_pointer_cast<Protecter>(random_bot(m_plist));
 		
+		std::cout << "forward message to : " << protecter_proxy->id() << std::endl;
 		response = protecter_proxy->send_message(message);
+		std::cout << "response : " << response << std::endl;
 	}
 	
 	return response;

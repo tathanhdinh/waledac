@@ -108,7 +108,7 @@ public :
 \end{verbatim}	
 \end{minipage} \hfill
 \begin{minipage}[c]{.46\linewidth}
-Chaque bot à ainsi un identifiant (m\_id) et un status (m\_status) accessiblement respectivement par le biais des fonctions id() et status(). La fonction is\_compromised() permet de savoir si un bot est entre les mains de l'attaquant. Le bot est dit compromit par l'attaquant si et seulement si le statut du bot vaut STOPPED et a ce moment le fonctionnement du Bot est stoppé (il ne peut pas repasser à l'ennemi).\\\\Chaque Bot peut effectuer des "actions", pour l'instant seul l'envoi d'un message est possible (par le biais de la fonction send\_message()).
+Chaque bot à ainsi un identifiant (m\_id) et un status (m\_status) accessiblement respectivement par le biais des fonctions id() et status(). La fonction is\_compromised() permet de savoir si un bot est entre les mains de l'attaquant. Le bot est dit compromit par l'attaquant si et seulement si le statut du bot vaut COMPROMISED et a ce moment le fonctionnement du Bot est stoppé (il ne peut pas repasser à l'ennemi).\\\\Chaque Bot peut effectuer des "actions", pour l'instant seul l'envoi d'un message est possible (par le biais de la fonction send\_message()).
 \end{minipage}
 
 \newpage
@@ -149,7 +149,9 @@ public:
 \end{verbatim}	
 \end{minipage} \hfill
 \begin{minipage}[c]{.46\linewidth}
-Chaque spammer à une rlist (m\_rlist) accessible par le biais de la fonction rlist() et qui est mise à jour grace à la fonction update\_rlist(). status(). oppé (il ne peut pas repasser à l'ennemi).\\\\Chaque Bot peut effectuer des "actions", pour l'instant seul l'envoi d'un message est possible (par le biais de la fonction send\_message()).
+Chaque spammer à une rlist (m\_rlist) accessible par le biais de la fonction rlist() et qui est mise à jour grace à la fonction update\_rlist(). 
+Dans un botnet de type waledac c'est le spammer qui se connecte au répéteur, dans notre cas cette action est effectué en appellant la fonction 
+send\_message(MESSAGE\_TASKREQ) qui signifie qu'il demande une tache.
 \end{minipage}
 
 \newpage
@@ -194,7 +196,9 @@ public:
 \end{verbatim}	
 \end{minipage} \hfill
 \begin{minipage}[c]{.46\linewidth}
-Chaque bot à ainsi un identifiant (m\_id) et un status (m\_status) accessiblement respectivement par le biais des fonctions id() et status(). La fonction is\_compromised() permet de savoir si un bot est entre les mains de l'attaquant. Le bot est dit compromit par l'attaquant si et seulement si le statut du bot vaut STOPPED et a ce moment le fonctionnement du Bot est stoppé (il ne peut pas repasser à l'ennemi).\\\\Chaque Bot peut effectuer des "actions", pour l'instant seul l'envoi d'un message est possible (par le biais de la fonction send\_message()).
+Chaque bot à ainsi un identifiant (m\_id) et un status (m\_status) accessiblement respectivement par le biais des fonctions id() et status(). 
+La fonction is\_compromised() permet de savoir si un bot est entre les mains de l'attaquant. Le bot est dit compromit par l'attaquant si et 
+seulement si le statut du bot vaut COMPROMISED et a ce moment le fonctionnement du Bot est stoppé (il ne peut pas repasser à l'ennemi).\\\\Chaque Bot peut effectuer des "actions", pour l'instant seul l'envoi d'un message est possible (par le biais de la fonction send\_message()).
 \end{minipage}
 
 \newpage
