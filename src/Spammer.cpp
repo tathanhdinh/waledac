@@ -94,6 +94,7 @@ void Spammer::update_status(response_code code)
 {
 	switch (code) {
 		case RESPONSE_STOP:
+			printf("BOT IS COMPROMISED\n");
 			this->status() = STOPPED;
 			break;
 			

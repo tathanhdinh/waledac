@@ -44,7 +44,6 @@ public:
 	bots_t attackers_list();
 	bot_t server();
 	
-	
 private:	
 	bots_t repeaters;
 	bots_t protecters;

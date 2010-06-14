@@ -66,7 +66,7 @@ void vtkBotnetInteractorStyle::OnRightButtonDown()
 				if(bot != NULL)
 				{
 					int *pw = this->ptrbotnetgraph->win->GetActualSize();
-					InfoVertexDialog info_vertex(this);
+					InfoVertexDialog info_vertex(this->ptrbotnetgraph, bot);
 					info_vertex.move(clickPos[0], pw[1]-clickPos[1]);
 					info_vertex.exec();
 				}

@@ -10,13 +10,14 @@
 #include "vtkTubeFilter.h"
 #include "vtkCubeSource.h"
 #include "vtkGlyph3D.h"
+#include "vtkCornerAnnotation.h"
 
-#include "botnet_types.h"
 #include "vtkMutableDirectedGraph.h"
 #include "vtkBotnetInteractorStyle.h"
-#include <map>
-//class Bot;
+
+#include "botnet_types.h"
 #include "Botnet.h"
+#include <map>
 
 class vtkBotnetGraph
 {
@@ -45,6 +46,9 @@ class vtkBotnetGraph
 		void update_repeaters(bots_t repeaters);
 		void update_spammers(bots_t spammers);
 		
+		void build_corner_annotations();
+		void show_annotations();
+
 		void delete_graph();
 		void construct_graph();
 		void assign_points(bots_t repeaters, bots_t protecters, bots_t spammers, bots_t attackers);
@@ -69,6 +73,8 @@ class vtkBotnetGraph
 
 		vtkIdType vertex_command_and_conquer;
 		std::map< bot_t, vtkIdType > assoc_bot_vertex;
+		
+		vtkCornerAnnotation *corner_annotation;
 };
 
 #endif
