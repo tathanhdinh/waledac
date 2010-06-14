@@ -72,8 +72,7 @@ static void update_rlist(bot_t& spammer)
 				// update status of connection from current spammer to destination repeater
 				connections_t connections;
 				connections = current_spammer->connections();
-				connection_t current_connection = find_connection(connections, spammer, 
-																													destination_bot);
+				connection_t current_connection = find_connection(connections, spammer, destination_bot);
 				current_connection->type() = CONNECTION_RLIST;
 				
 				
