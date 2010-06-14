@@ -270,7 +270,6 @@ response_code Spammer::send_message(message_code message)
 }
 
 
-
 /*
  * initialise rlist before running
  */
