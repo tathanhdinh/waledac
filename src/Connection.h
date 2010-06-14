@@ -54,8 +54,16 @@ private:
 public:
 	Connection(bot_t& beginning, bot_t& end);
 	
+	bot_t beginning();
+	bot_t end();
 	connection_type& type();
 };
+
+
+extern void insert_connections(connections_t& connections, bot_t& beginning, 
+													bots_t& ends);
+													
+extern connection_t find_connection(connections_t& connections, bot_t& begin, bot_t& end);
 
 }
 
