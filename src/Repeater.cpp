@@ -28,9 +28,103 @@ namespace waledac
 {
 
 
+/*
+ * merge the lists of repeater
+ */
 bots_t repeater_merge_list(bots_t &existing_rlist, bots_t &received_rlist)
 {
 	return merge_list(existing_rlist, received_rlist);
+}
+
+
+/*
+ * update RList from other repeaters
+ */
+static void update_rlist(bot_t& repeater)
+{
+	repeater_t current_repeater;
+	current_repeater = boost::dynamic_pointer_cast<Repeater>(repeater);
+	
+	bots_t rlist;
+	rlist = current_repeater->rlist();
+	
+	if (rlist.size() > 0) {
+		// takes a random repeater from rlist
+		bot_t destination_bot;
+		repeater_t destination_repeater;
+		
+		destination_bot = random_bot(rlist);
+		destination_repeater = boost::dynamic_pointer_cast<Repeater>(destination_bot);
+		
+		/*
+		std::cout << "\033[01;31m" 
+					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
+					% "repeater" % Bot::id() % "updates RList from repeater" % repeater_target->id();
+		*/
+		// get subset of rlist from this repeater
+		bots_t received_rlist;
+		received_rlist = destination_repeater->sub_rlist();
+		//received_rlist = dynamic_cast<Repeater*>(destination_bot.get())->sub_rlist();
+		
+		if (received_rlist.size() > 0) {
+			connections_t connections;
+			connections = current_repeater->connections();
+			
+			connection_t current_connection;
+			current_connection = find_connection(connections, repeater, destination_bot);
+			
+			current_connection->type() = CONNECTION_UPDATE_RLIST;
+		
+			// merge new rlist and existing rlist
+			current_repeater->rlist() = repeater_merge_list(rlist, received_rlist);
+		}
+	}
+	
+	repeater->status() = UPDATE_RLIST;
+	
+	return;
+}
+
+
+/*
+ * update PList from other repeater
+ */
+static void update_plist(bot_t& repeater)
+{
+	repeater_t current_repeater;
+	current_repeater = boost::dynamic_pointer_cast<Repeater>(repeater);
+	
+	bots_t rlist;
+	rlist = current_repeater->rlist();
+	
+	if (rlist.size() > 0) {
+		// takes a random repeater from rlist
+		bot_t destination_bot;
+		repeater_t destination_repeater;
+		
+		destination_bot = random_bot(rlist);
+		destination_repeater = boost::dynamic_pointer_cast<Repeater>(destination_bot);
+		
+		/*
+		std::cout << "\033[01;34m" 
+					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
+					% "repeater" % Bot::id() % "updates PList from repeater" % repeater_target->id();
+		*/
+		
+		// get subset of plist from this repeater
+		bots_t received_plist;
+		received_plist = dynamic_cast<Repeater*>(destination_bot.get())->sub_plist();
+		
+		if (received_plist.size() > 0) {
+			
+			// merge new plist and existing plist
+			bots_t plist;
+			plist = current_repeater->plist();
+			current_repeater->plist() = repeater_merge_list(plist, received_plist);
+		}
+	}
+	
+	this->status() = UPDATE_PLIST;
 }
 
 
@@ -104,30 +198,30 @@ bots_t Repeater::sub_plist()
 /*
  * update rlist from other repeaters
  */
-void Repeater::update_rlist()
-{	
-	if (m_rlist.size() > 0) {
-		// takes a random repeater from rlist
-		bot_t repeater_target;
-		repeater_target = random_bot(m_rlist);
-		
-		/*
-		std::cout << "\033[01;31m" 
-					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
-					% "repeater" % Bot::id() % "updates RList from repeater" % repeater_target->id();
-		*/
-		// get subset of rlist from this repeater
-		bots_t received_rlist;
-		received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
-		
-		// merge new rlist and existing rlist
-		m_rlist = repeater_merge_list(m_rlist, received_rlist);
-	}
-	
-	this->status() = UPDATE_RLIST;
-
-	return;
-}
+// void Repeater::update_rlist()
+// {
+// 	if (m_rlist.size() > 0) {
+// 		// takes a random repeater from rlist
+// 		bot_t repeater_target;
+// 		repeater_target = random_bot(m_rlist);
+// 		
+// 		
+// // 		std::cout << "\033[01;31m" 
+// // 					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
+// // 					% "repeater" % Bot::id() % "updates RList from repeater" % repeater_target->id();
+// 		
+// 		// get subset of rlist from this repeater
+// 		bots_t received_rlist;
+// 		received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
+// 		
+// 		// merge new rlist and existing rlist
+// 		m_rlist = repeater_merge_list(m_rlist, received_rlist);
+// 	}
+// 	
+// 	this->status() = UPDATE_RLIST;
+// 
+// 	return;
+// }
 
 
 /*
@@ -205,6 +299,8 @@ void Repeater::init(bot_t& server, bots_t& plist, bots_t& rlist)
 	
 	std::vector< boost::shared_ptr<Bot>  > all_repeaters = rlist;
 	m_rlist = random_bots(all_repeaters, all_repeaters.size() / 2);
+	
+	return;
 }
 
 
@@ -214,15 +310,19 @@ void Repeater::init(bot_t& server, bots_t& plist, bots_t& rlist)
  */
 void Repeater::execute()
 {
-        while (true) {
-                update_rlist();
-				boost::this_thread::sleep(boost::posix_time::seconds(1));
-                
-                update_plist();
-                boost::this_thread::sleep(boost::posix_time::seconds(1));
-        }
-        
-        return;
+	bot_t current_bot;
+	current_bot = Bot::shared_from_this();
+	
+	while (true) {
+		//update_rlist();
+		update_rlist(current_bot);
+		boost::this_thread::sleep(boost::posix_time::seconds(1));
+		
+		update_plist();
+		boost::this_thread::sleep(boost::posix_time::seconds(1));
+	}
+	
+	return;
 }
 
 
@@ -231,9 +331,9 @@ void Repeater::execute()
  */
 void Repeater::start()
 {
-        std::cout << "start repeater with id : " << Bot::id() << std::endl;
-        m_repeater_thread.reset(new boost::thread(boost::bind(&Repeater::execute, this)));
-        return;
+	std::cout << "start repeater with id : " << Bot::id() << std::endl;
+	m_repeater_thread.reset(new boost::thread(boost::bind(&Repeater::execute, this)));
+	return;
 }
 
 
