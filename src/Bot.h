@@ -105,6 +105,7 @@ extern bool unique_bot(bot_t a, bot_t b);
 extern bots_t remove_duplicate(bots_t& list);
 
 extern void update_connections(bot_t& bot, bots_t& connected_bots);
+extern void refresh_connections(bot_t& bot);
 }
 
 

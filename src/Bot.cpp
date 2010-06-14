@@ -187,6 +187,17 @@ void update_connections(bot_t& bot, bots_t& connected_bots)
 }
 
 
+/*
+ * refrest status of all connections
+ */
+void refresh_connections(bot_t& bot)
+{
+	for (unsigned int i = 0; i < bot->connections().size(); ++i) {
+		bot->connections()[i]->type() = CONNECTION_NORMAL;
+	}
+	return;
+}
+
 
 }
 

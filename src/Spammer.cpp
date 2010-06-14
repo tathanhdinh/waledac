@@ -322,6 +322,8 @@ void Spammer::execute()
 		response = send_message(MESSAGE_TASKREQ);
 		boost::this_thread::sleep(boost::posix_time::seconds(1));
 		
+		refresh_connections(current_bot);
+		
 		update_status(response);
 	}
 	
