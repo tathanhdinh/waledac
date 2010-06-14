@@ -64,7 +64,7 @@
 
 \maketitle
 \section{Compilation}
-Deux versions du simulateur ont été programmés en C++, une qui utilise un thread pour chaque bot du botnet et l'autre sans. Dans le premier cas cela permet le calcul en parallèle, rendant la simulation plus proche de la réalité, chaque bot fonctionnant de manière indépendante, dans le deuxième cas, les actions des bots sont effectués séquentiellement, le ou les actions du bot numéroté 3 sont effectués après le ou les actions du bot 2, ce qui est moins réaliste.\\\\ Cette deuxième version est utile lorsque l'on souhaite lancer la simulation sur un seul processeur, puisqu'elle nécessite moins de ressources (on économise le changement de contexte effectué par l'OS lorsqu'il bascule d'un thread à l'autre). Dans le CMakeFile.txt on ajoutera ou pas la macro THREAD\_VERSION dans les options de gcc en fonction de la version du simulateur que l'on souhaite compiler.  
+Deux versions du simulateur ont été programmées en C++, une qui utilise un thread pour chaque bot du botnet et l'autre sans. Dans le premier cas cela permet le calcul en parallèle, rendant la simulation plus proche de la réalité, chaque bot fonctionnant de manière indépendante, dans le deuxième cas, les actions des bots sont effectuées séquentiellement, le ou les actions du bot numéroté 3 sont effectuées après le ou les actions du bot 2, ce qui est moins réaliste.\\\\ Cette deuxième version est utile lorsque l'on souhaite lancer la simulation sur un seul processeur, puisqu'elle nécessite moins de ressources (on économise le changement de contexte effectué par l'OS lorsqu'il bascule d'un thread à l'autre). Dans le CMakeFile.txt on ajoutera ou pas la macro THREAD\_VERSION dans les options de gcc en fonction de la version du simulateur que l'on souhaite compiler.  
 \begin{center}
 \begin{verbatim}
 set (CMAKE_CXX_FLAGS "-Wall -W -Wno-deprecated -D THREAD_VERSION")
@@ -99,16 +99,16 @@ public :
 	bots_t& plist, bots_t& rlist) = 0;
 	
 	#ifdef THREAD_VERSION
-		virtual void execute() = 0;
-		virtual void start() = 0;
-		virtual void wait() = 0;
+	virtual void execute() = 0;
+	virtual void start() = 0;
+	virtual void wait() = 0;
 	#endif
 	
 };
 \end{verbatim}	
 \end{minipage} \hfill
 \begin{minipage}[c]{.46\linewidth}
-Chaque bot à ainsi un identifiant (m\_id) et un status (m\_status) accessiblement respectivement par le biais des fonctions id() et status(). La fonction is\_compromised() permet de savoir si un bot est entre les mains de l'attaquant. Le bot est dit compromit par l'attaquant si et seulement si le statut du bot vaut COMPROMISED et a ce moment le fonctionnement du Bot est stoppé (il ne peut pas repasser à l'ennemi).\\\\Chaque Bot peut effectuer des "actions", pour l'instant seul l'envoi d'un message est possible (par le biais de la fonction send\_message()).
+Chaque bot à un identifiant (m\_id) et un statut (m\_status) accessibles respectivement par le biais des fonctions id() et status(). La fonction is\_compromised() permet de savoir si un bot est entre les mains de l'attaquant. Le bot est dit compromis par l'attaquant si et seulement si le statut du bot vaut COMPROMISED et à ce moment le fonctionnement du Bot est stoppé (il ne peut pas repasser à l'ennemi).\\\\Chaque Bot peut effectuer des "actions", comme par exemple l'envoi d'un message à un autre bot (par le biais de la fonction send\_message()).
 \end{minipage}
 
 \newpage
@@ -149,9 +149,14 @@ public:
 \end{verbatim}	
 \end{minipage} \hfill
 \begin{minipage}[c]{.46\linewidth}
-Chaque spammer à une rlist (m\_rlist) accessible par le biais de la fonction rlist() et qui est mise à jour grace à la fonction update\_rlist(). 
-Dans un botnet de type waledac c'est le spammer qui se connecte au répéteur, dans notre cas cette action est effectué en appellant la fonction 
-send\_message(MESSAGE\_TASKREQ) qui signifie qu'il demande une tache.
+Chaque spammer a une rlist (m\_rlist) accessible par le biais de la fonction rlist() et qui est mise à jour grâce à la fonction update\_rlist(). Cette RList a une taille égale au nombre de répéteurs + nombre d'attaquants dans le botnet divisé par 3.
+Dans un botnet de type waledac c'est le spammer qui se connecte au répéteur, dans notre cas cette action est effectuée en appellant la fonction 
+send\_message(MESSAGE\_TASKREQ) (le spammer demande une tache au répéteur).\\\\Le répéteur est choisi aléatoirement dans la RList du spammer, il peut ne pas répondre (nous avons donc 
+simulé "l'echec de connection", 1 chance sur 10 que cela arrive), si tout se passe bien le répéteur va choisir aléatoirement un sous-ensemble de sa RList et va l'envoyer au spammer, 
+cette sous-liste est de taille égale à la taille d'une RList divisé par 5.\\\\Le spammer qui recoit cette sous-liste va mettre à jour sa RList de la 
+manière suivante : il va creer une liste de répéteurs en concaténant la liste que lui envoie le répéteur avec sa RList actuelle, puis il 
+va effectuer une permutation aléatoire de cette liste et choisir un interval dans celle-ci de longueur égal à la taille d'une RList, les bots dans 
+cet interval sont la nouvelle RList.\\\\
 \end{minipage}
 
 \newpage
@@ -196,14 +201,14 @@ public:
 \end{verbatim}	
 \end{minipage} \hfill
 \begin{minipage}[c]{.46\linewidth}
-Chaque bot à ainsi un identifiant (m\_id) et un status (m\_status) accessiblement respectivement par le biais des fonctions id() et status(). 
-La fonction is\_compromised() permet de savoir si un bot est entre les mains de l'attaquant. Le bot est dit compromit par l'attaquant si et 
-seulement si le statut du bot vaut COMPROMISED et a ce moment le fonctionnement du Bot est stoppé (il ne peut pas repasser à l'ennemi).\\\\Chaque Bot peut effectuer des "actions", pour l'instant seul l'envoi d'un message est possible (par le biais de la fonction send\_message()).
+Le répéteur met à jour sa RList et sa PList de la même manière que précédemment en contactant un autre répéteur aléatoirement dans sa RList.
 \end{minipage}
+
 
 \newpage
 \section{Classe Attacker}
-Cette classe implémente les fonctionnalitées d'un Bot de type attaquant. Elle dérive de la class Repeater (la plupart des attaques sur le botnet waledac se font en introduisant des repeaters).\\
+Cette classe implémente les fonctionnalitées d'un Bot de type attaquant. Elle dérive de la class Repeater (la plupart des attaques sur le botnet 
+waledac se font en introduisant des repeaters). On a implémenté l'attaque suivante : chaque spammer qui se connecte à un de nos attaquants est compromis (on suppose que notre attaquant peut prendre complétement le contrôle du spammer : lui faire télécharger une nouvelle RList, le détruire ...).\\\\ 
 
 \begin{minipage}[c]{.46\linewidth}
 \begin{verbatim} 
@@ -234,12 +239,12 @@ public:
 \end{verbatim}	
 \end{minipage} \hfill
 \begin{minipage}[c]{.46\linewidth}
-
+Dans notre implémentation, l'attaquant envoie un message de type RESPONSE\_STOP (par le biais de la fonction send\_message()) au spammer qui l'a contacté, peu importe ce qu'il a reçu comme requête, ce message signifie que le Spammer passe entre les mains de l'attaquant. Si on souhaite implémenter une attaque différente on changera la fonction send\_message().\\L'attaquant met à jour sa RList et sa PList de la même manière que le répéteur. 
 \end{minipage}
 
 \newpage
 \section{Classe Protecter}
-Cette classe implémente les fonctionnalitées d'un Bot de type Protecter.\\
+Cette classe implémente les fonctionnalitées d'un Bot de type Protecteur.\\
 
 \begin{minipage}[c]{.46\linewidth}
 \begin{verbatim} 
@@ -262,14 +267,14 @@ class Protecter : public Bot
 		
 		#ifdef THREAD_VERSION
 		virtual void execute();
-        virtual void start();
-        virtual void wait();
+		virtual void start();
+		virtual void wait();
 		#endif
 };
 \end{verbatim}	
 \end{minipage} \hfill
 \begin{minipage}[c]{.46\linewidth}
-
+Tout les protecteurs sont connectés au Server, les protecteurs n'ont pas de RList ou de Plist, dans notre implémentation le répéteur transmet les ordres du serveur ou à destination du serveur.
 \end{minipage}
 
 \newpage
@@ -307,9 +312,22 @@ public:
 \end{verbatim}	
 \end{minipage} \hfill
 \begin{minipage}[c]{.46\linewidth}
-
+Le serveur reçoit des messages des protecteurs par le biais de la fonction process\_message() et leur répond. Le serveur ne prend jamais l'initiative de la communication.
 \end{minipage}
 \newpage
+
+\section{Routage de messages}
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.85\textwidth]{send_message_cut}
+  \caption{Routage de messages}
+\end{figure}
+
+\newpage
+
+% \begin{center}
+% \includegraphics[width=0.75\textwidth]{send_message_cut.png} 
+% \end{center}
 
 \section{Classe Botnet}
 Cette classe implémente les fonctionnalitées du Botnet.\\
@@ -349,14 +367,30 @@ private:
 \end{verbatim}	
 \end{minipage} \hfill
 \begin{minipage}[c]{.46\linewidth}
-On crée un botnet via le constructeur, qui prend en paramètre un nombre de répéteurs, protecteurs, spammers, attaquants, il n'y aura qu'un seul command and conquer.\\\\On a accès à la liste des bots (bots\_t repeaters, bots\_t protecters, bots\_t spammers, bots\_t attackers, bot\_t server\_cc) via les fonctions repeaters\_list(),protecters\_list(), spammers\_list(), attackers\_list(), server().
+On crée un botnet via le constructeur, qui prend en paramètre un nombre de répéteurs, protecteurs, spammers, attaquants, il n'y a qu'un seul command and control.\\\\On a accès à la liste des bots (bots\_t repeaters, bots\_t protecters, bots\_t spammers, bots\_t attackers, bot\_t server\_cc) via les fonctions repeaters\_list(),protecters\_list(), spammers\_list(), attackers\_list(), server().
 \end{minipage}
 \newpage
 
 
+\section{Exemple}
+Si on lance le simulateur avec 50 répéteurs, 50 spammers, 50 protecteurs, 10 attaquants et 1 serveur :
+\begin{itemize}
+ \item La RList des spammers et des répéteurs et des attaquants est de taille 60/3.
+ \item Initialement la RList est choisi aléatoirement parmis les 50 répéteurs + 10 attaquants pour chaque spammer, répéteur, attaquant.
+ \item Même chose pour la Plist des répéteurs.
+ \item Un spammer effectue une action toute les 2 secondes (cela peut être modifié).
+ \item La seule action possible du Spammer est de contacter un répéteur/attaquant.
+ \item Chaque spammer contacte un attaquant avec une probabilitée 10/50
+ \item La connection echoue avec une probabilitée 1/10
+ \item Le spammer recevra une liste de répéteurs de taille 60/(5*3) de la part du répéteur qu'il contacte.
+ \item Le spammer mettra à jour sa RList avec la liste précédente.
+\end{itemize}
+\newpage
+
 \section{Visualisation}
 Le graphe du Botnet dérive de la classe vtkMutableDirectedGraph (il s'agit d'un graphe dirigé et modifiable). Dans la version avec threads, le rafraichissement du rendu graphique est effectué toutes les 300 millisecondes (par défaut), les bots peuvent avoir effectué plus d'une action chacun (réception, envoie d'un message par exemple), dans la version sans threads ce n'est que lors des rafraichissements du rendu graphique que les bots "vivent".
 \end{document} 
+
 
 
 
