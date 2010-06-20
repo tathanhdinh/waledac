@@ -133,7 +133,9 @@ static void update_plist(bot_t& repeater)
  * constructor with parameters
  */
 Repeater::Repeater(unsigned int rlist_size, 
-									 unsigned int plist_size, 
+									 unsigned int plist_size,
+									 unsigned int sub_rlist_size,
+									 unsigned int sub_plist_size,
 									 unsigned int update_rlist_time, 
 									 unsigned int update_plist_time, 
 									 unsigned int receive_msg_time, 
@@ -142,13 +144,14 @@ Repeater::Repeater(unsigned int rlist_size,
 	m_rlist.resize(rlist_size);
 	m_plist.resize(plist_size);
 	
+	m_sub_rlist_size = sub_rlist_size;
+	m_sub_plist_size = sub_plist_size;
+	
 	m_upd_rlist_time = update_rlist_time;
 	m_upd_plist_time = update_plist_time;
 	m_rec_msg_time = receive_msg_time;
 	m_sed_msg_time = send_msg_time;
 }
-
-
 
 
 /*
@@ -166,25 +169,35 @@ Repeater::Repeater() : Bot()
  */
 bots_t Repeater::sub_rlist()
 {
-	const unsigned int max_try = 10;
+// 	const unsigned int max_try = 10;
+// 	bots_t sub_list;
+// 	
+// 	// take a dice
+// 	if (random_number(max_try) != 0) {
+// 		// create a random permutation of RList
+// 		bots_t tmp_list = m_rlist;
+// 		std::random_shuffle(tmp_list.begin(), tmp_list.end());
+// 		
+// 		// and insert itself to this permutation
+// 		tmp_list.insert(tmp_list.begin(), Bot::shared_from_this());
+// 		
+// 		// extract a sublist from this permutation
+// 		sub_list.resize(tmp_list.size() / 5);
+// 		std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), 
+// 				  sub_list.begin());
+// 	}
+// 	else {
+// 		sub_list.clear(); // send a empty sublist
+// 	}
+// 	
+// 	return sub_list;
+
 	bots_t sub_list;
-	
-	// take a dice
-	if (random_number(max_try) != 0) {
-		// create a random permutation of RList
-		bots_t tmp_list = m_rlist;
-		std::random_shuffle(tmp_list.begin(), tmp_list.end());
-		
-		// and insert itself to this permutation
-		tmp_list.insert(tmp_list.begin(), Bot::shared_from_this());
-		
-		// extract a sublist from this permutation
-		sub_list.resize(tmp_list.size() / 5);
-		std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), 
-				  sub_list.begin());
+	if (Bot::status() == RECEIVING_MESSAGE) {
+		sub_list = random_bots(m_rlist, m_sub_rlist_size);
 	}
 	else {
-		sub_list.clear(); // send a empty sublist
+		sub_list.clear();
 	}
 	
 	return sub_list;
@@ -196,24 +209,33 @@ bots_t Repeater::sub_rlist()
  */
 bots_t Repeater::sub_plist()
 {
-	const unsigned int max_try = 10;
+// 	const unsigned int max_try = 10;
+// 	bots_t sub_list;
+// 	
+// 	// take a dice
+// 	if (random_number(max_try) != 0) {
+// 		// create a random permutation of PList
+// 		bots_t tmp_list = m_plist;
+// 		std::random_shuffle(tmp_list.begin(), tmp_list.end());
+// 		
+// 		// extract a sublist from this permutation
+// 		sub_list.resize(tmp_list.size() / 5);
+// 		std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), 
+// 				  sub_list.begin());
+// 	}
+// 	else {
+// 		sub_list.clear(); // send a empty sublist
+// 	}
+// 		
+// 	return sub_list;
 	bots_t sub_list;
-	
-	// take a dice
-	if (random_number(max_try) != 0) {
-		// create a random permutation of PList
-		bots_t tmp_list = m_plist;
-		std::random_shuffle(tmp_list.begin(), tmp_list.end());
-		
-		// extract a sublist from this permutation
-		sub_list.resize(tmp_list.size() / 5);
-		std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), 
-				  sub_list.begin());
+	if (Bot::status() == RECEIVING_MESSAGE) {
+		sub_list = random_bots(m_plist, m_sub_plist_size);
 	}
 	else {
-		sub_list.clear(); // send a empty sublist
+		sub_list.clear();
 	}
-		
+	
 	return sub_list;
 }
 
