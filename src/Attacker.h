@@ -30,6 +30,11 @@ private:
 	#endif
 
 public:
+	Attacker(unsigned int rlist_size,
+					 unsigned int plist_size,
+					 unsigned int sub_rlist_size,
+					 unsigned int sub_plist_size);
+	
 	Attacker();
 	virtual void update_rlist();
 	virtual void update_plist();
