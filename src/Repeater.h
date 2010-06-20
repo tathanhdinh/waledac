@@ -69,6 +69,9 @@ public:
 	virtual bots_t sub_rlist();
 	virtual bots_t sub_plist();
 	
+	virtual unsigned int default_sub_rlist_size();
+	virtual unsigned int default_sub_plist_size();
+	
 	bots_t plist();
 	bots_t rlist();
 	
