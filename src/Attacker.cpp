@@ -64,7 +64,7 @@ void Attacker::update_plist()
 void Attacker::update_rlist()
 {
 	//std::cout << "\033[01;31m" << "fake ";
-	Repeater::update_rlist();
+	//Repeater::update_rlist();
 	return;
 }
 

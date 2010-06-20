@@ -21,8 +21,8 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <ossp/uuid++.hh>
-//#include <uuid++.hh>
+//#include <ossp/uuid++.hh>
+#include <uuid++.hh>
 #include <boost/smart_ptr.hpp>
 #include <boost/random.hpp>
 
@@ -33,7 +33,11 @@ Bot::Bot()
 	// generate random bot id
 	uuid bot_uuid;
 	bot_uuid.make(UUID_MAKE_V4);
-	m_id = bot_uuid.string();	
+	m_id = bot_uuid.string();
+	
+	// initialise timestamp
+	m_timestamp.reset(new boost::posix_time::ptime(
+										boost::posix_time::second_clock::local_time()));
 	
 	// bot in idle status
 	m_status = IDLE;
@@ -105,7 +109,8 @@ bots_t random_bots(bots_t& bot_list, unsigned int bot_number)
 	std::random_shuffle(tmplist.begin(), tmplist.end());
 
 	bots_t sublist;
-	for (unsigned int i = 0; i < std::min(bot_number, static_cast<unsigned int>(bot_list.size())); ++i) {
+	for (unsigned int i = 0; i < std::min(bot_number, static_cast<unsigned int>
+																			(bot_list.size())); ++i) {
 					sublist.push_back(tmplist[i]);
 	}
 

@@ -124,8 +124,20 @@ static void update_plist(bot_t& repeater)
 		}
 	}
 	
-	this->status() = UPDATE_PLIST;
+	current_repeater->status() = UPDATE_PLIST;
+	//this->status() = UPDATE_PLIST;
 }
+
+
+/*
+ * constructor with parameters
+ */
+Repeater::Repeater(unsigned int rlist_size, unsigned int plist_size): Bot()
+{
+	m_rlist.resize(rlist_size);
+	m_plist.resize(plist_size);
+}
+
 
 
 /*
@@ -295,10 +307,15 @@ response_code Repeater::send_message(message_code message)
  */
 void Repeater::init(bot_t& server, bots_t& plist, bots_t& rlist)
 {
-	this->m_plist = plist;
-	
-	std::vector< boost::shared_ptr<Bot>  > all_repeaters = rlist;
-	m_rlist = random_bots(all_repeaters, all_repeaters.size() / 2);
+	if ((m_plist.size() == 0) && (m_rlist.size() == 0)) {
+		this->m_plist = plist;
+		std::vector< boost::shared_ptr<Bot>  > all_repeaters = rlist;
+		m_rlist = random_bots(all_repeaters, all_repeaters.size() / 2);
+	}
+	else {
+		m_rlist = random_bots(rlist, m_rlist.size());
+		m_plist = random_bots(plist, m_plist.size());
+	}
 	
 	return;
 }

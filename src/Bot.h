@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <boost/smart_ptr.hpp>
+#include <boost/date_time.hpp>
 
 namespace waledac 
 {
@@ -64,23 +65,34 @@ enum bot_status
 	UPDATE_PLIST = 10,
 	
 	STOPPED = 11,
-	IDLE = 12
+	IDLE = 12,
+	
+	UPDATING_RLIST = 0,
+	UPDATING_PLIST = 1,
+	RECEIVING_MESSAGE = 2,
+	SENDING_MESSAGE = 3,
+	PROCESSING_TASK = 4
 };
 
 
 class Bot : public boost::enable_shared_from_this< Bot >
 {
 private :
-	std::string m_id;
-	bot_status m_status;
-	connections_t m_connections;
+	std::string m_id;                                             // Id - each bot has a unique indentifier
+	
+	boost::shared_ptr< boost::posix_time::ptime > m_timestamp;    // Timestamp - timestamp of system in which bot locates
+	
+	bot_status m_status;                                          // Status - in his life, each bot moves from one status to another one
+	
+	connections_t m_connections;                                  // Connections number - number of connection from bot to another ones
 
 public :
 	Bot();
-	const std::string& id() const;
+	virtual const std::string& id() const;
 	
 	virtual bot_status& status();
-	bool is_compromised();
+	
+	virtual bool is_compromised();
 	
 	virtual connections_t& connections();
 	
