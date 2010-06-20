@@ -31,13 +31,26 @@ namespace waledac {
 class Repeater : public Bot
 {
 private:
-	bots_t m_rlist;
-	bots_t m_plist;
+	bots_t m_rlist;                        // Rlist
+	
+	bots_t m_plist;                        // PList
+	
+	unsigned int m_upd_rlist_time;         // Time (in seconds) in which Bot has UPDATING_RLIST status
+	
+	unsigned int m_upd_plist_time;         // Time (in seconds) in which Bot has UPDATING_PLIST status
+	
+	unsigned int m_rec_msg_time;           // Time (in seconds) in which Bot has RECEIVING_MESSAGE status
+	
+	unsigned int m_sed_msg_time;           // Time (in seconds) in which Bot has SENDING_MESSAGE status
+	
+	
 	#ifdef THREAD_VERSION
 	boost::shared_ptr<boost::thread> m_repeater_thread;
 	#endif
 
 public:
+	Repeater(unsigned int rlist_size, unsigned int plist_size);
+	
 	Repeater();
 	//virtual void update_rlist();
 	virtual void update_plist();
