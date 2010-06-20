@@ -49,7 +49,12 @@ private:
 	#endif
 
 public:
-	Repeater(unsigned int rlist_size, unsigned int plist_size);
+	Repeater(unsigned int rlist_size, 
+					 unsigned int plist_size,
+					 unsigned int update_rlist_time = 1,
+					 unsigned int update_plist_time = 1,
+					 unsigned int receive_msg_time = 1,
+					 unsigned int send_msg_time = 1);
 	
 	Repeater();
 	//virtual void update_rlist();
