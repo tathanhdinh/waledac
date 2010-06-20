@@ -26,7 +26,10 @@ namespace waledac
 Attacker::Attacker(unsigned int rlist_size, 
 									 unsigned int plist_size, 
 									 unsigned int sub_rlist_size, 
-									 unsigned int sub_plist_size): Repeater(rlist_size, plist_size, sub_rlist_size, sub_plist_size)
+									 unsigned int sub_plist_size): Repeater(rlist_size, 
+																													plist_size, 
+																													sub_rlist_size, 
+																													sub_plist_size)
 {
 }
 
@@ -41,11 +44,19 @@ Attacker::Attacker() : Repeater()
 
 
 /*
- * extract a random subset of repeaters from rlist
+ * sybil attack
  */
 bots_t Attacker::sub_rlist()
 {
-	//return Repeater::sub_rlist();
+	bots_t sub_list;
+	unsigned int sub_list_size;
+	
+	sub_list_size = Repeater::default_sub_rlist_size();
+	for (unsigned int i = 0; i < sub_list_size; ++i) {
+		sub_list.push_back(Bot::shared_from_this());
+	}
+	
+	return sub_list;
 }
 
 
