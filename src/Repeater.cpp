@@ -79,7 +79,7 @@ static void update_rlist(bot_t& repeater)
 		}
 	}
 	
-	repeater->status() = UPDATE_RLIST;
+	current_repeater->status() = UPDATE_RLIST;
 	
 	return;
 }
@@ -115,7 +115,6 @@ static void update_plist(bot_t& repeater)
 		received_plist = dynamic_cast<Repeater*>(destination_bot.get())->sub_plist();
 		
 		if (received_plist.size() > 0) {
-			
 			// merge new plist and existing plist
 			bots_t plist;
 			plist = current_repeater->plist();
@@ -123,8 +122,8 @@ static void update_plist(bot_t& repeater)
 		}
 	}
 	
-	repeater->status() = UPDATE_PLIST;
-	//this->status() = UPDATE_PLIST;
+	current_repeater->status() = UPDATE_PLIST;
+	return;
 }
 
 
@@ -281,11 +280,13 @@ response_code Repeater::send_message(message_code message)
 {
 	response_code response = RESPONSE_FAILED;
 	
-	if (m_plist.size() > 0) {
-		boost::shared_ptr< Protecter > protecter_proxy;
-		protecter_proxy = boost::dynamic_pointer_cast<Protecter>(random_bot(m_plist));
-		
-		response = protecter_proxy->send_message(message);
+	if (Bot::status() == RECEIVING_MESSAGE) {
+		if (m_plist.size() > 0) {
+			boost::shared_ptr< Protecter > protecter_proxy;
+			protecter_proxy = boost::dynamic_pointer_cast<Protecter>(random_bot(m_plist));
+			
+			response = protecter_proxy->send_message(message);
+		}
 	}
 	
 	return response;
