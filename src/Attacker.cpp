@@ -20,7 +20,18 @@
 namespace waledac
 {
 
+/*
+ * constructor with parameters
+ */
+Attacker::Attacker(unsigned int rlist_size, 
+									 unsigned int plist_size, 
+									 unsigned int sub_rlist_size, 
+									 unsigned int sub_plist_size): Repeater(rlist_size, plist_size, sub_rlist_size, sub_plist_size)
+{
+}
 
+
+	
 /*
  * constructor
  */
@@ -34,7 +45,7 @@ Attacker::Attacker() : Repeater()
  */
 bots_t Attacker::sub_rlist()
 {
-	return Repeater::sub_rlist();
+	//return Repeater::sub_rlist();
 }
 
 
@@ -85,8 +96,8 @@ response_code Attacker::send_message(message_code message)
  */
 void Attacker::execute()
 {
-        waledac::Repeater::execute();
-        return;
+	waledac::Repeater::execute();
+	return;
 }
 
 
@@ -95,9 +106,9 @@ void Attacker::execute()
  */
 void Attacker::start()
 {
-        //std::cout << "start attacker with id : " << Bot::id() << std::endl;
-        m_attacker_thread.reset(new boost::thread(boost::bind(&Attacker::execute, this)));
-        return;
+	//std::cout << "start attacker with id : " << Bot::id() << std::endl;
+	m_attacker_thread.reset(new boost::thread(boost::bind(&Attacker::execute, this)));
+	return;
 }
 
 
@@ -106,8 +117,8 @@ void Attacker::start()
  */
 void Attacker::wait()
 {
-        m_attacker_thread->join();
-        return;
+	m_attacker_thread->join();
+	return;
 }
 #endif
 

@@ -79,8 +79,7 @@ static void update_rlist(bot_t& repeater)
 		}
 	}
 	
-	current_repeater->status() = UPDATE_RLIST;
-	
+	repeater->status() = UPDATE_RLIST;
 	return;
 }
 
@@ -122,7 +121,17 @@ static void update_plist(bot_t& repeater)
 		}
 	}
 	
-	current_repeater->status() = UPDATE_PLIST;
+	repeater->status() = UPDATE_PLIST;
+	return;
+}
+
+
+/*
+ * receive messages from other spammers
+ */
+static void receive_message(bot_t& repeater)
+{
+	repeater->status() = RECEIVING_MESSAGE;
 	return;
 }
 
@@ -322,12 +331,14 @@ void Repeater::execute()
 	current_bot = Bot::shared_from_this();
 	
 	while (true) {
-		//update_rlist();
 		update_rlist(current_bot);
-		boost::this_thread::sleep(boost::posix_time::seconds(1));
+		boost::this_thread::sleep(boost::posix_time::seconds(m_upd_rlist_time));
 		
 		update_plist(current_bot);
-		boost::this_thread::sleep(boost::posix_time::seconds(1));
+		boost::this_thread::sleep(boost::posix_time::seconds(m_upd_plist_time));
+		
+		receive_message(current_bot);
+		boost::this_thread::sleep(boost::posix_time::seconds(m_rec_msg_time));
 	}
 	
 	return;
