@@ -132,11 +132,22 @@ static void update_plist(bot_t& repeater)
 /*
  * constructor with parameters
  */
-Repeater::Repeater(unsigned int rlist_size, unsigned int plist_size): Bot()
+Repeater::Repeater(unsigned int rlist_size, 
+									 unsigned int plist_size, 
+									 unsigned int update_rlist_time, 
+									 unsigned int update_plist_time, 
+									 unsigned int receive_msg_time, 
+									 unsigned int send_msg_time): Bot()
 {
 	m_rlist.resize(rlist_size);
 	m_plist.resize(plist_size);
+	
+	m_upd_rlist_time = update_rlist_time;
+	m_upd_plist_time = update_plist_time;
+	m_rec_msg_time = receive_msg_time;
+	m_sed_msg_time = send_msg_time;
 }
+
 
 
 
