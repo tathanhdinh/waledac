@@ -35,6 +35,10 @@ private:
 	
 	bots_t m_plist;                        // PList
 	
+	unsigned int m_sub_rlist_size;         // Size of sub RList 
+	
+	unsigned int m_sub_plist_size;         // Size of sub PList
+	
 	unsigned int m_upd_rlist_time;         // Time (in seconds) in which Bot has UPDATING_RLIST status
 	
 	unsigned int m_upd_plist_time;         // Time (in seconds) in which Bot has UPDATING_PLIST status
@@ -51,6 +55,8 @@ private:
 public:
 	Repeater(unsigned int rlist_size, 
 					 unsigned int plist_size,
+					 unsigned int sub_rlist_size,
+					 unsigned int sub_plist_size,
 					 unsigned int update_rlist_time = 1,
 					 unsigned int update_plist_time = 1,
 					 unsigned int receive_msg_time = 1,
