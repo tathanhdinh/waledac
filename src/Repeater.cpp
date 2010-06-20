@@ -64,7 +64,6 @@ static void update_rlist(bot_t& repeater)
 		// get subset of rlist from this repeater
 		bots_t received_rlist;
 		received_rlist = destination_repeater->sub_rlist();
-		//received_rlist = dynamic_cast<Repeater*>(destination_bot.get())->sub_rlist();
 		
 		if (received_rlist.size() > 0) {
 			connections_t connections;
@@ -124,7 +123,7 @@ static void update_plist(bot_t& repeater)
 		}
 	}
 	
-	current_repeater->status() = UPDATE_PLIST;
+	repeater->status() = UPDATE_PLIST;
 	//this->status() = UPDATE_PLIST;
 }
 
@@ -169,29 +168,6 @@ Repeater::Repeater() : Bot()
  */
 bots_t Repeater::sub_rlist()
 {
-// 	const unsigned int max_try = 10;
-// 	bots_t sub_list;
-// 	
-// 	// take a dice
-// 	if (random_number(max_try) != 0) {
-// 		// create a random permutation of RList
-// 		bots_t tmp_list = m_rlist;
-// 		std::random_shuffle(tmp_list.begin(), tmp_list.end());
-// 		
-// 		// and insert itself to this permutation
-// 		tmp_list.insert(tmp_list.begin(), Bot::shared_from_this());
-// 		
-// 		// extract a sublist from this permutation
-// 		sub_list.resize(tmp_list.size() / 5);
-// 		std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), 
-// 				  sub_list.begin());
-// 	}
-// 	else {
-// 		sub_list.clear(); // send a empty sublist
-// 	}
-// 	
-// 	return sub_list;
-
 	bots_t sub_list;
 	if (Bot::status() == RECEIVING_MESSAGE) {
 		sub_list = random_bots(m_rlist, m_sub_rlist_size);
@@ -209,25 +185,6 @@ bots_t Repeater::sub_rlist()
  */
 bots_t Repeater::sub_plist()
 {
-// 	const unsigned int max_try = 10;
-// 	bots_t sub_list;
-// 	
-// 	// take a dice
-// 	if (random_number(max_try) != 0) {
-// 		// create a random permutation of PList
-// 		bots_t tmp_list = m_plist;
-// 		std::random_shuffle(tmp_list.begin(), tmp_list.end());
-// 		
-// 		// extract a sublist from this permutation
-// 		sub_list.resize(tmp_list.size() / 5);
-// 		std::copy(tmp_list.begin(), tmp_list.begin() + sub_list.size(), 
-// 				  sub_list.begin());
-// 	}
-// 	else {
-// 		sub_list.clear(); // send a empty sublist
-// 	}
-// 		
-// 	return sub_list;
 	bots_t sub_list;
 	if (Bot::status() == RECEIVING_MESSAGE) {
 		sub_list = random_bots(m_plist, m_sub_plist_size);
@@ -272,31 +229,31 @@ bots_t Repeater::sub_plist()
 /*
  * update plist from other repeaters
  */
-void Repeater::update_plist()
-{	
-	if (m_plist.size() > 0) {
-		// takes a random repeater from rlist
-		bot_t repeater_target;
-		repeater_target = random_bot(m_rlist);
-		
-		/*
-		std::cout << "\033[01;34m" 
-					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
-					% "repeater" % Bot::id() % "updates PList from repeater" % repeater_target->id();
-		*/
-		
-		// get subset of plist from this repeater
-		bots_t received_plist;
-		received_plist = dynamic_cast<Repeater*>(repeater_target.get())->sub_plist();
-		
-		// merge new plist and existing plist
-		m_plist = repeater_merge_list(m_plist, received_plist);
-	}
-	
-	this->status() = UPDATE_PLIST;
-	
-	return;
-}
+// void Repeater::update_plist()
+// {	
+// 	if (m_plist.size() > 0) {
+// 		// takes a random repeater from rlist
+// 		bot_t repeater_target;
+// 		repeater_target = random_bot(m_rlist);
+// 		
+// 		/*
+// 		std::cout << "\033[01;34m" 
+// 					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
+// 					% "repeater" % Bot::id() % "updates PList from repeater" % repeater_target->id();
+// 		*/
+// 		
+// 		// get subset of plist from this repeater
+// 		bots_t received_plist;
+// 		received_plist = dynamic_cast<Repeater*>(repeater_target.get())->sub_plist();
+// 		
+// 		// merge new plist and existing plist
+// 		m_plist = repeater_merge_list(m_plist, received_plist);
+// 	}
+// 	
+// 	this->status() = UPDATE_PLIST;
+// 	
+// 	return;
+// }
 
 
 /*
@@ -368,7 +325,7 @@ void Repeater::execute()
 		update_rlist(current_bot);
 		boost::this_thread::sleep(boost::posix_time::seconds(1));
 		
-		update_plist();
+		update_plist(current_bot);
 		boost::this_thread::sleep(boost::posix_time::seconds(1));
 	}
 	

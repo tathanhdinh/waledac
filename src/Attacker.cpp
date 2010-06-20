@@ -53,7 +53,7 @@ bots_t Attacker::sub_plist()
 void Attacker::update_plist()
 {
 	//std::cout << "\033[01;34m" << "fake ";
-	Repeater::update_plist();
+	//Repeater::update_plist();
 	return;
 }
 
