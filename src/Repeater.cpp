@@ -214,7 +214,6 @@ unsigned int Repeater::default_sub_rlist_size()
 }
 
 
-
 /*
  * return default size of sub PList
  */
@@ -222,66 +221,6 @@ unsigned int Repeater::default_sub_plist_size()
 {
 	return m_sub_plist_size;
 }
-
-
-
-/*
- * update rlist from other repeaters
- */
-// void Repeater::update_rlist()
-// {
-// 	if (m_rlist.size() > 0) {
-// 		// takes a random repeater from rlist
-// 		bot_t repeater_target;
-// 		repeater_target = random_bot(m_rlist);
-// 		
-// 		
-// // 		std::cout << "\033[01;31m" 
-// // 					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
-// // 					% "repeater" % Bot::id() % "updates RList from repeater" % repeater_target->id();
-// 		
-// 		// get subset of rlist from this repeater
-// 		bots_t received_rlist;
-// 		received_rlist = dynamic_cast<Repeater*>(repeater_target.get())->sub_rlist();
-// 		
-// 		// merge new rlist and existing rlist
-// 		m_rlist = repeater_merge_list(m_rlist, received_rlist);
-// 	}
-// 	
-// 	this->status() = UPDATE_RLIST;
-// 
-// 	return;
-// }
-
-
-/*
- * update plist from other repeaters
- */
-// void Repeater::update_plist()
-// {	
-// 	if (m_plist.size() > 0) {
-// 		// takes a random repeater from rlist
-// 		bot_t repeater_target;
-// 		repeater_target = random_bot(m_rlist);
-// 		
-// 		/*
-// 		std::cout << "\033[01;34m" 
-// 					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
-// 					% "repeater" % Bot::id() % "updates PList from repeater" % repeater_target->id();
-// 		*/
-// 		
-// 		// get subset of plist from this repeater
-// 		bots_t received_plist;
-// 		received_plist = dynamic_cast<Repeater*>(repeater_target.get())->sub_plist();
-// 		
-// 		// merge new plist and existing plist
-// 		m_plist = repeater_merge_list(m_plist, received_plist);
-// 	}
-// 	
-// 	this->status() = UPDATE_PLIST;
-// 	
-// 	return;
-// }
 
 
 /*
