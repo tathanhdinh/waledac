@@ -49,12 +49,6 @@ Attacker::Attacker() : Repeater()
 bots_t Attacker::sub_rlist()
 {
 	bots_t sub_list;
-// 	unsigned int sub_list_size;
-// 	
-// 	sub_list_size = Repeater::default_sub_rlist_size();
-// 	for (unsigned int i = 0; i < sub_list_size; ++i) {
-// 		sub_list.push_back(Bot::shared_from_this());
-// 	}
 	for (unsigned int i = 0; i < m_sub_rlist_size; ++i) {
 		sub_list.push_back(Bot::shared_from_this());;
 	}
@@ -73,38 +67,19 @@ bots_t Attacker::sub_plist()
 
 
 /*
- * update plist from other repeaters
- */
-// void Attacker::update_plist()
-// {
-// 	return;
-// }
-
-
-/*
- * update rlist from other repeaters
- */
-// void Attacker::update_rlist()
-// {
-// 	return;
-// }
-
-
-/*
  * depend on type of attack
  */
 response_code Attacker::send_message(message_code message)
 {
 	// always response stop when receive a message from spammer
 	//return RESPONSE_STOP;
-	
 	return Repeater::send_message(message);
 }
 
 
 #ifdef THREAD_VERSION
 /*
- * attacker always reponses requests from repeaters
+ * attacker always reponses requests (send_message, sub_rlist, sub_plist) from repeaters
  */
 void Attacker::execute()
 {
