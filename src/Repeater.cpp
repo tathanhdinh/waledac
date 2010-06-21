@@ -206,6 +206,12 @@ bots_t Repeater::sub_plist()
 
 
 /*
+ * extract a random subset of repeater with timestamp
+ */
+
+
+
+/*
  * return PList
  */
 bots_t Repeater::plist()
@@ -257,6 +263,8 @@ void Repeater::init(bot_t& server, bots_t& plist, bots_t& rlist)
 		m_rlist = random_bots(rlist, m_rlist.size());
 		m_plist = random_bots(plist, m_plist.size());
 	}
+	
+	// new implement for PList
 	
 	return;
 }

@@ -39,6 +39,10 @@ private:
 	
 	bots_t m_plist;                        // PList
 	
+	updatingbotlist_t m_bot_rlist;         // New version of RList
+	
+	updatingbotlist_t m_bot_plist;         // New version of PList
+	
 	unsigned int m_sub_rlist_size;         // Size of sub RList 
 	
 	unsigned int m_sub_plist_size;         // Size of sub PList
@@ -73,7 +77,8 @@ public:
 	virtual bots_t sub_rlist();
 	virtual bots_t sub_plist();
 	
-	virtual 
+	virtual updatingbotlist_t sub_rlist();
+	virtual updatingbotlist_t sub_plist();
 	
 // 	virtual unsigned int default_sub_rlist_size();
 // 	virtual unsigned int default_sub_plist_size();
