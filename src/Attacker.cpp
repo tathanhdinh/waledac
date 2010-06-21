@@ -97,7 +97,9 @@ void Attacker::update_rlist()
 response_code Attacker::send_message(message_code message)
 {
 	// always response stop when receive a message from spammer
-	return RESPONSE_STOP;
+	//return RESPONSE_STOP;
+	
+	return Repeater::send_message(message);
 }
 
 
@@ -107,7 +109,11 @@ response_code Attacker::send_message(message_code message)
  */
 void Attacker::execute()
 {
-	waledac::Repeater::execute();
+	while (true) {
+		Bot::status() = RECEIVING_MESSAGE;
+		boost::this_thread::sleep(boost::posix_time::hours(boost::posix_time::pos_infin));
+	}
+	
 	return;
 }
 
