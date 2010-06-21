@@ -107,24 +107,37 @@ void Botnet::init()
 	return;
 }
 
+
+/*
+ * add an attacker (repeater) into botnet
+ */
+void Botnet::add_attacker(bot_t attacker)
+{
+	bot_t target_repeater;
+	target_repeater = random_bot(repeaters);
+}
+
+
+
+
 #ifdef THREAD_VERSION
 void Botnet::start()
 {
-        server_cc->start();
-        
-        for (unsigned int i = 0; i < protecters.size(); ++i) {
-                protecters[i]->start();
-        }
-        
-        for (unsigned int i = 0; i < repeaters.size(); ++i) {
-                repeaters[i]->start();
-        }
-        
-        for (unsigned int i = 0; i < spammers.size(); ++i) {
-                spammers[i]->start();
-        }
-        
-        return;
+	server_cc->start();
+	
+	for (unsigned int i = 0; i < protecters.size(); ++i) {
+		protecters[i]->start();
+	}
+	
+	for (unsigned int i = 0; i < repeaters.size(); ++i) {
+		repeaters[i]->start();
+	}
+	
+	for (unsigned int i = 0; i < spammers.size(); ++i) {
+		spammers[i]->start();
+	}
+	
+	return;
 }
 
 

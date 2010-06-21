@@ -111,7 +111,8 @@ void Attacker::execute()
 {
 	while (true) {
 		Bot::status() = RECEIVING_MESSAGE;
-		boost::this_thread::sleep(boost::posix_time::hours(boost::posix_time::pos_infin));
+		boost::this_thread::sleep(boost::posix_time::hours(
+																				boost::posix_time::pos_infin));
 	}
 	
 	return;
@@ -123,7 +124,7 @@ void Attacker::execute()
  */
 void Attacker::start()
 {
-	//std::cout << "start attacker with id : " << Bot::id() << std::endl;
+	std::cout << "start attacker with id : " << Bot::id() << std::endl;
 	m_attacker_thread.reset(new boost::thread(boost::bind(&Attacker::execute, this)));
 	return;
 }
