@@ -36,8 +36,6 @@ public:
 					 unsigned int sub_plist_size);
 	
 	Attacker();
-// 	virtual void update_rlist();
-// 	virtual void update_plist();
 	
 	virtual bots_t sub_rlist();
 	
