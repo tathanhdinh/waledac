@@ -205,5 +205,11 @@ void refresh_connections(bot_t& bot)
 }
 
 
+bool compare_bot_class::operator()(const bot_t& bot_a, const bot_t& bot_b)
+{
+	return compare_bot(bot_a, bot_b);
+}
+
+
 }
 

@@ -118,6 +118,14 @@ extern bots_t remove_duplicate(bots_t& list);
 
 extern void update_connections(bot_t& bot, bots_t& connected_bots);
 extern void refresh_connections(bot_t& bot);
+
+
+class compare_bot_class
+{
+public:
+	bool operator()(const bot_t& bot_a, const bot_t& bot_b);
+};
+
 }
 
 
