@@ -90,6 +90,8 @@ public :
 	Bot();
 	virtual const std::string& id() const;
 	
+	virtual boost::shared_ptr< boost::posix_time::ptime > timestamp;
+	
 	virtual bot_status& status();
 	
 	virtual bool is_compromised();
