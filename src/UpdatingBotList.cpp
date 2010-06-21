@@ -17,3 +17,35 @@
 
 #include "UpdatingBotList.h"
 
+namespace waledac
+{
+
+
+/*
+ * constructor
+ */
+UpdatingBotList::UpdatingBotList()
+{
+
+}
+
+
+/*
+ * return entry list
+ */
+entries_t& UpdatingBotList::bot_list()
+{
+	return m_bot_list;
+}
+
+
+/*
+ * return update timestamp;
+ */
+boost::posix_time::ptime& UpdatingBotList::update_timestamp()
+{
+	return m_update_timestamp;
+}
+
+
+}

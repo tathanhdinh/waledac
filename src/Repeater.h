@@ -18,6 +18,8 @@
 #define REPEATER_H
 
 #include "Bot.h"
+#include "UpdatingBotList.h"
+
 #include <vector>
 #include <string>
 #include <boost/smart_ptr.hpp>
@@ -70,6 +72,8 @@ public:
 	
 	virtual bots_t sub_rlist();
 	virtual bots_t sub_plist();
+	
+	virtual 
 	
 // 	virtual unsigned int default_sub_rlist_size();
 // 	virtual unsigned int default_sub_plist_size();
