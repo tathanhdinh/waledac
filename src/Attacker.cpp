@@ -49,11 +49,13 @@ Attacker::Attacker() : Repeater()
 bots_t Attacker::sub_rlist()
 {
 	bots_t sub_list;
-	unsigned int sub_list_size;
-	
-	sub_list_size = Repeater::default_sub_rlist_size();
-	for (unsigned int i = 0; i < sub_list_size; ++i) {
-		sub_list.push_back(Bot::shared_from_this());
+// 	unsigned int sub_list_size;
+// 	
+// 	sub_list_size = Repeater::default_sub_rlist_size();
+// 	for (unsigned int i = 0; i < sub_list_size; ++i) {
+// 		sub_list.push_back(Bot::shared_from_this());
+// 	}
+	for (unsigned int i = 0; i < m_sub_rlist_size; ++i) {
 	}
 	
 	return sub_list;
