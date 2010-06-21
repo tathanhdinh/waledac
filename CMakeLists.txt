@@ -14,7 +14,7 @@ set (CMAKE_CXX_FLAGS "-Wall -W -Wno-deprecated -D THREAD_VERSION")
 include_directories(/usr/local/include/vtk-5.6/)
 link_directories(/usr/local/lib/vtk-5.6/)
 
-set(waledac_botnet_src src/Connection.cpp src/Connection.cpp
+set(waledac_botnet_src src/UpdatingBotList.cpp src/Connection.cpp src/Connection.cpp
 	src/Bot.cpp src/Spammer.cpp src/Repeater.cpp src/Protecter.cpp
 	src/ServerCC.cpp src/Attacker.cpp src/Botnet.cpp
 	src/OptionsDialog.cpp src/vtkTimerCallback.cpp src/vtkBotnetGraph.cpp src/vtkBotnetInteractorStyle.cpp src/main.cpp
