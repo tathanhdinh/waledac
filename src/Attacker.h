@@ -43,6 +43,8 @@ public:
 	
 	virtual response_code send_message(message_code message);
 	
+	virtual void attack(bot_t& target);
+	
 	#ifdef THREAD_VERSION
 	virtual void execute();
 	virtual void start();

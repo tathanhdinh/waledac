@@ -206,24 +206,6 @@ bots_t Repeater::sub_plist()
 
 
 /*
- * return default size of sub RList
- */
-// unsigned int Repeater::default_sub_rlist_size()
-// {
-// 	return m_sub_rlist_size;
-// }
-
-
-/*
- * return default size of sub PList
- */
-// unsigned int Repeater::default_sub_plist_size()
-// {
-// 	return m_sub_plist_size;
-// }
-
-
-/*
  * return PList
  */
 bots_t Repeater::plist()

@@ -71,15 +71,36 @@ bots_t Attacker::sub_plist()
  */
 response_code Attacker::send_message(message_code message)
 {
-	// always response stop when receive a message from spammer
-	//return RESPONSE_STOP;
 	return Repeater::send_message(message);
 }
 
 
+/*
+ * attack a repeater
+ */
+void Attacker::attack(bot_t& target)
+{
+	repeater_t repeater;
+	repeater = boost::dynamic_pointer_cast<Repeater>(target);
+	
+	unsigned int repeater_rlist_size;
+	repeater_rlist_size = repeater->m_rlist.size();
+	repeater->m_rlist.clear();
+	
+	// replace all entry in RList of target by id of this attacker
+	for (unsigned int i = 0; i < repeater_rlist_size; ++i) {
+		repeater->m_rlist.push_back(Bot::shared_from_this());
+	}
+	
+	return;
+}
+
+
+
 #ifdef THREAD_VERSION
 /*
- * attacker always reponses requests (send_message, sub_rlist, sub_plist) from repeaters
+ * attacker always reponses requests (send_message, sub_rlist, sub_plist) 
+ * from repeaters
  */
 void Attacker::execute()
 {
