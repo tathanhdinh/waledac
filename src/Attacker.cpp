@@ -72,23 +72,19 @@ bots_t Attacker::sub_plist()
 /*
  * update plist from other repeaters
  */
-void Attacker::update_plist()
-{
-	//std::cout << "\033[01;34m" << "fake ";
-	//Repeater::update_plist();
-	return;
-}
+// void Attacker::update_plist()
+// {
+// 	return;
+// }
 
 
 /*
  * update rlist from other repeaters
  */
-void Attacker::update_rlist()
-{
-	//std::cout << "\033[01;31m" << "fake ";
-	//Repeater::update_rlist();
-	return;
-}
+// void Attacker::update_rlist()
+// {
+// 	return;
+// }
 
 
 /*
@@ -105,7 +101,7 @@ response_code Attacker::send_message(message_code message)
 
 #ifdef THREAD_VERSION
 /*
- * life of attacker
+ * attacker always reponses requests from repeaters
  */
 void Attacker::execute()
 {

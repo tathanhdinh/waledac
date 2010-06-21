@@ -30,6 +30,8 @@ namespace waledac {
 
 class Repeater : public Bot
 {
+friend class Attacker;
+
 private:
 	bots_t m_rlist;                        // Rlist
 	
