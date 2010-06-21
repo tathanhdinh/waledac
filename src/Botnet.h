@@ -34,6 +34,8 @@ public:
 	void init();
 	void start();
 	
+	void add_attacker(bot_t attacker);
+	
 	#ifdef THREAD_VERSION
 	void wait();
 	#endif
