@@ -56,6 +56,7 @@ bots_t Attacker::sub_rlist()
 // 		sub_list.push_back(Bot::shared_from_this());
 // 	}
 	for (unsigned int i = 0; i < m_sub_rlist_size; ++i) {
+		sub_list.push_back(Bot::shared_from_this());;
 	}
 	
 	return sub_list;
