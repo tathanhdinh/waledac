@@ -137,8 +137,11 @@ Repeater::Repeater(unsigned int rlist_size,
 									 unsigned int receive_msg_time, 
 									 unsigned int send_msg_time): Bot()
 {
-	m_rlist.resize(rlist_size);
-	m_plist.resize(plist_size);
+	//m_rlist.resize(rlist_size);
+	//m_plist.resize(plist_size);
+	
+	m_bot_rlist->bot_list().resize(rlist_size);
+	m_bot_plist->bot_list().resize(plist_size);
 	
 	m_sub_rlist_size = sub_rlist_size;
 	m_sub_plist_size = sub_plist_size;
@@ -155,8 +158,8 @@ Repeater::Repeater(unsigned int rlist_size,
  */
 Repeater::Repeater() : Bot()
 {
-	m_rlist.clear();
-	m_plist.clear();	
+	m_bot_rlist->bot_list().clear();
+	m_bot_plist->bot_list().clear();
 }
 
 
@@ -205,19 +208,20 @@ updatingbotlist_t Repeater::sub_rlist()
 /*
  * return PList
  */
-// bots_t Repeater::plist()
-// {
-// 	return m_plist;
-// }
+bots_t Repeater::plist()
+{
+	//return m_plist;
+	
+}
 
 
 /*
  * return RList
  */
-// bots_t Repeater::rlist()
-// {
-// 	return m_rlist;
-// }
+bots_t Repeater::rlist()
+{
+	return m_rlist;
+}
 
 
 /*
