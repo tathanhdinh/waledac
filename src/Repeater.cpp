@@ -265,6 +265,8 @@ void Repeater::init(bot_t& server, bots_t& plist, bots_t& rlist)
 	}
 	
 	// new implement for PList
+	bots_t rlist_init;
+	rlist_init = random_bots(rlist, m_rlist.size());
 	
 	return;
 }
