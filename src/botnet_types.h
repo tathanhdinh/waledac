@@ -27,7 +27,7 @@ typedef boost::shared_ptr< waledac::Connection > connection_t;
 
 typedef boost::shared_ptr< waledac::Botnet > botnet_t;
 
-typedef std::map< boost::posix_time::ptime, bot_t > entry_t;
+typedef std::pair< std::string, bot_t > entry_t;
 typedef std::vector< entry_t > entries_t;
 
 typedef boost::shared_ptr< waledac::UpdatingBotList > updatingbotlist_t;
