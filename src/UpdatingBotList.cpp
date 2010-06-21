@@ -24,9 +24,18 @@ namespace waledac
 /*
  * constructor
  */
-UpdatingBotList::UpdatingBotList()
+UpdatingBotList::UpdatingBotList() : m_update_timestamp()
 {
+	m_bot_list.clear();
+}
 
+
+/*
+ * constructor with parameters
+ */
+UpdatingBotList::UpdatingBotList(entries_t& bot_list, boost::posix_time::ptime& timestamp) : 
+																m_bot_list(bot_list), m_update_timestamp(timestamp)
+{
 }
 
 

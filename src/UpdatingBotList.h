@@ -31,6 +31,7 @@ private:
 	
 public:
 	UpdatingBotList();
+	UpdatingBotList(entries_t& bot_list, boost::posix_time::ptime& timestamp);
 	
 	entries_t& bot_list();
 	boost::posix_time::ptime& update_timestamp();

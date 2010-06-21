@@ -37,9 +37,8 @@ public:
 	
 	Attacker();
 	
-	virtual bots_t sub_rlist();
-	
-	virtual bots_t sub_plist();
+// 	virtual bots_t sub_rlist();
+// 	virtual bots_t sub_plist();
 	
 	virtual response_code send_message(message_code message);
 	

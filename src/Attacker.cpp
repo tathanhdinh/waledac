@@ -46,24 +46,24 @@ Attacker::Attacker() : Repeater()
 /*
  * sybil attack
  */
-bots_t Attacker::sub_rlist()
-{
-	bots_t sub_list;
-	for (unsigned int i = 0; i < m_sub_rlist_size; ++i) {
-		sub_list.push_back(Bot::shared_from_this());;
-	}
-	
-	return sub_list;
-}
+// bots_t Attacker::sub_rlist()
+// {
+// 	bots_t sub_list;
+// 	for (unsigned int i = 0; i < m_sub_rlist_size; ++i) {
+// 		sub_list.push_back(Bot::shared_from_this());;
+// 	}
+// 	
+// 	return sub_list;
+// }
 
 
 /*
  * extract a random subset of repeaters from plist
  */
-bots_t Attacker::sub_plist()
-{
-	return Repeater::sub_plist();
-}
+// bots_t Attacker::sub_plist()
+// {
+// 	return Repeater::sub_plist();
+// }
 
 
 /*

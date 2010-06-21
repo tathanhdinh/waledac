@@ -74,8 +74,8 @@ public:
 	//virtual void update_rlist();
 	//virtual void update_plist();
 	
-	virtual bots_t sub_rlist();
-	virtual bots_t sub_plist();
+// 	virtual bots_t sub_rlist();
+// 	virtual bots_t sub_plist();
 	
 	virtual updatingbotlist_t sub_rlist();
 	virtual updatingbotlist_t sub_plist();
