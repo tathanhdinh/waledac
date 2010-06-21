@@ -27,14 +27,14 @@ class UpdatingBotList
 {
 private:
 	entries_t m_bot_list;
-	boost::posix_time::ptime m_update_timestamp;
+	std::string m_update_timestamp;
 	
 public:
 	UpdatingBotList();
-	UpdatingBotList(entries_t& bot_list, boost::posix_time::ptime& timestamp);
+	UpdatingBotList(entries_t& bot_list, std::string& timestamp);
 	
 	entries_t& bot_list();
-	boost::posix_time::ptime& update_timestamp();
+	std::string& update_timestamp();
 };
 
 }

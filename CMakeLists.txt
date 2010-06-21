@@ -21,7 +21,7 @@ set(waledac_botnet_src src/UpdatingBotList.cpp src/Connection.cpp src/Connection
 )
 
 set(waledac_botnet_libraries
-	boost_system-mt boost_thread-mt boost_program_options-mt ossp-uuid++
+	boost_system-mt boost_thread-mt boost_program_options-mt boost_date_time-mt ossp-uuid++
 )
 
 set(waledac_botnet_vtk_libraries

@@ -161,20 +161,8 @@ Repeater::Repeater() : Bot()
 
 
 /*
- * extract a random subset of repeaters from rlist
+ * extract a random subset of repeater with timestamp from PList
  */
-// bots_t Repeater::sub_rlist()
-// {
-// 	bots_t sub_list;
-// 	if (Bot::status() == RECEIVING_MESSAGE) {
-// 		sub_list = random_bots(m_rlist, m_sub_rlist_size);
-// 	}
-// 	else {
-// 		sub_list.clear();
-// 	}
-// 	
-// 	return sub_list;
-// }
 updatingbotlist_t Repeater::sub_plist()
 {
 	entries_t current_plist = m_bot_plist->bot_list();
@@ -185,53 +173,51 @@ updatingbotlist_t Repeater::sub_plist()
 		new_plist.push_back(current_plist[i]);
 	}
 	
-	boost::posix_time::ptime current_time = boost::posix_time::second_clock::local_time();
+	std::string current_time = boost::posix_time::to_simple_string(
+																		boost::posix_time::second_clock::local_time());
 	
 	updatingbotlist_t upd_sub_plist(new UpdatingBotList(current_plist, current_time));
 	return upd_sub_plist;
 }
 
 
-
 /*
- * extract a subset of protecter from plist
+ * extract a random subset of repeater with timestamp from RList
  */
-// bots_t Repeater::sub_plist()
-// {
-// 	bots_t sub_list;
-// 	if (Bot::status() == RECEIVING_MESSAGE) {
-// 		sub_list = random_bots(m_plist, m_sub_plist_size);
-// 	}
-// 	else {
-// 		sub_list.clear();
-// 	}
-// 	
-// 	return sub_list;
-// }
-
-
-/*
- * extract a random subset of repeater with timestamp
- */
-
+updatingbotlist_t Repeater::sub_rlist()
+{
+	entries_t current_rlist = m_bot_rlist->bot_list();
+	std::random_shuffle(current_rlist.begin(), current_rlist.end());
+	
+	entries_t new_rlist;
+	for (unsigned int i = 0; i < m_sub_rlist_size; ++i) {
+		new_rlist.push_back(current_rlist[i]);
+	}
+	
+	std::string current_time = boost::posix_time::to_simple_string(
+																		boost::posix_time::second_clock::local_time());
+	
+	updatingbotlist_t upd_sub_rlist(new UpdatingBotList(current_rlist, current_time));
+	return upd_sub_rlist;
+}
 
 
 /*
  * return PList
  */
-bots_t Repeater::plist()
-{
-	return m_plist;
-}
+// bots_t Repeater::plist()
+// {
+// 	return m_plist;
+// }
 
 
 /*
  * return RList
  */
-bots_t Repeater::rlist()
-{
-	return m_rlist;
-}
+// bots_t Repeater::rlist()
+// {
+// 	return m_rlist;
+// }
 
 
 /*
@@ -255,26 +241,19 @@ response_code Repeater::send_message(message_code message)
 
 
 /*
- * initialise rlist and plist of repeater before running
+ * initialise m_bot_rlist and m_bot_plist of repeater before running
  */
 void Repeater::init(bot_t& server, bots_t& plist, bots_t& rlist)
 {
-	if ((m_plist.size() == 0) && (m_rlist.size() == 0)) {
-		this->m_plist = plist;
-		std::vector< boost::shared_ptr<Bot>  > all_repeaters = rlist;
-		m_rlist = random_bots(all_repeaters, all_repeaters.size() / 2);
-	}
-	else {
-		m_rlist = random_bots(rlist, m_rlist.size());
-		m_plist = random_bots(plist, m_plist.size());
-	}
-	
-	// new implement for PList
 	bots_t rlist_init;
 	rlist_init = random_bots(rlist, m_rlist.size());
-	for (unsigned int i = 0; i < rlist_init.size(); ++i) {
-		//m_bot_rlist->bot_list().push_back(rlist_init[i], rlist_init[i]->timestamp);
+	
+	for (unsigned int i = 0; i < rlist_init.size(); ++i) {		
+		m_bot_rlist->bot_list().push_back(entry_t(rlist_init[i]->timestamp(), rlist_init[i]));
 	}
+	
+	m_bot_rlist->update_timestamp() = boost::posix_time::to_simple_string(
+																						boost::posix_time::second_clock::local_time());
 	
 	return;
 }

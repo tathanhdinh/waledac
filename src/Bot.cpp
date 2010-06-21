@@ -28,12 +28,16 @@
 
 namespace waledac {
 	
-Bot::Bot() : m_timestamp(boost::posix_time::second_clock::local_time())
+Bot::Bot()
 {
 	// generate random bot id
 	uuid bot_uuid;
 	bot_uuid.make(UUID_MAKE_V4);
 	m_id = bot_uuid.string();
+	
+	// initialise timestamp
+	m_timestamp = boost::posix_time::to_simple_string(
+												boost::posix_time::second_clock::local_time());
 	
 	// bot in idle status
 	m_status = IDLE;
@@ -55,7 +59,7 @@ const std::string& Bot::id() const
 /*
  * get timestamp of bot
  */
-const boost::posix_time::ptime& Bot::timestamp() const
+const std::string& Bot::timestamp() const
 {
 	return m_timestamp;
 }

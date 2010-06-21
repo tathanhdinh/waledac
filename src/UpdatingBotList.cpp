@@ -24,18 +24,20 @@ namespace waledac
 /*
  * constructor
  */
-UpdatingBotList::UpdatingBotList() : m_update_timestamp()
+UpdatingBotList::UpdatingBotList()
 {
 	m_bot_list.clear();
+	m_update_timestamp = boost::posix_time::to_simple_string(boost::posix_time::ptime());
 }
 
 
 /*
  * constructor with parameters
  */
-UpdatingBotList::UpdatingBotList(entries_t& bot_list, boost::posix_time::ptime& timestamp) : 
-																m_bot_list(bot_list), m_update_timestamp(timestamp)
+UpdatingBotList::UpdatingBotList(entries_t& bot_list, std::string& timestamp)
 {
+	m_bot_list = bot_list;
+	m_update_timestamp = timestamp;
 }
 
 
@@ -51,7 +53,7 @@ entries_t& UpdatingBotList::bot_list()
 /*
  * return update timestamp;
  */
-boost::posix_time::ptime& UpdatingBotList::update_timestamp()
+std::string& UpdatingBotList::update_timestamp()
 {
 	return m_update_timestamp;
 }
