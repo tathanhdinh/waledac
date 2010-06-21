@@ -78,19 +78,19 @@ enum bot_status
 class Bot : public boost::enable_shared_from_this< Bot >
 {
 private :
-	std::string m_id;                                             // Id - each bot has a unique indentifier
+	std::string m_id;                          // Id - each bot has a unique indentifier
 	
-	boost::shared_ptr< boost::posix_time::ptime > m_timestamp;    // Timestamp - timestamp of system in which bot locates
+	boost::posix_time::ptime m_timestamp;      // Timestamp - timestamp of system in which bot locates
 	
-	bot_status m_status;                                          // Status - in his life, each bot moves from one status to another one
+	bot_status m_status;                       // Status - in his life, each bot moves from one status to another one
 	
-	connections_t m_connections;                                  // Connections number - number of connection from bot to another ones
+	connections_t m_connections;               // Connections number - number of connection from bot to another ones
 
 public :
 	Bot();
 	virtual const std::string& id() const;
 	
-	virtual boost::shared_ptr< boost::posix_time::ptime > timestamp;
+	virtual const boost::posix_time::ptime& timestamp() const;
 	
 	virtual bot_status& status();
 	

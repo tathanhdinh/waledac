@@ -42,44 +42,39 @@ bots_t repeater_merge_list(bots_t &existing_rlist, bots_t &received_rlist)
  */
 static void update_rlist(bot_t& repeater)
 {
-	repeater_t current_repeater;
-	current_repeater = boost::dynamic_pointer_cast<Repeater>(repeater);
-	
-	bots_t rlist;
-	rlist = current_repeater->rlist();
-	
-	if (rlist.size() > 0) {
-		// takes a random repeater from rlist
-		bot_t destination_bot;
-		repeater_t destination_repeater;
-		
-		destination_bot = random_bot(rlist);
-		destination_repeater = boost::dynamic_pointer_cast<Repeater>(destination_bot);
-		
-		/*
-		std::cout << "\033[01;31m" 
-					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
-					% "repeater" % Bot::id() % "updates RList from repeater" % repeater_target->id();
-		*/
-		// get subset of rlist from this repeater
-		bots_t received_rlist;
-		received_rlist = destination_repeater->sub_rlist();
-		
-		if (received_rlist.size() > 0) {
-			connections_t connections;
-			connections = current_repeater->connections();
-			
-			connection_t current_connection;
-			current_connection = find_connection(connections, repeater, destination_bot);
-			
-			current_connection->type() = CONNECTION_UPDATE_RLIST;
-		
-			// merge new rlist and existing rlist
-			current_repeater->rlist() = repeater_merge_list(rlist, received_rlist);
-		}
-	}
-	
-	repeater->status() = UPDATE_RLIST;
+// 	repeater_t current_repeater;
+// 	current_repeater = boost::dynamic_pointer_cast<Repeater>(repeater);
+// 	
+// 	bots_t rlist;
+// 	rlist = current_repeater->rlist();
+// 	
+// 	if (rlist.size() > 0) {
+// 		// takes a random repeater from rlist
+// 		bot_t destination_bot;
+// 		repeater_t destination_repeater;
+// 		
+// 		destination_bot = random_bot(rlist);
+// 		destination_repeater = boost::dynamic_pointer_cast<Repeater>(destination_bot);
+// 		
+// 		// get subset of rlist from this repeater
+// 		bots_t received_rlist;
+// 		received_rlist = destination_repeater->sub_rlist();
+// 		
+// 		if (received_rlist.size() > 0) {
+// 			connections_t connections;
+// 			connections = current_repeater->connections();
+// 			
+// 			connection_t current_connection;
+// 			current_connection = find_connection(connections, repeater, destination_bot);
+// 			
+// 			current_connection->type() = CONNECTION_UPDATE_RLIST;
+// 		
+// 			// merge new rlist and existing rlist
+// 			current_repeater->rlist() = repeater_merge_list(rlist, received_rlist);
+// 		}
+// 	}
+// 	
+// 	repeater->status() = UPDATE_RLIST;
 	return;
 }
 
@@ -89,39 +84,33 @@ static void update_rlist(bot_t& repeater)
  */
 static void update_plist(bot_t& repeater)
 {
-	repeater_t current_repeater;
-	current_repeater = boost::dynamic_pointer_cast<Repeater>(repeater);
-	
-	bots_t rlist;
-	rlist = current_repeater->rlist();
-	
-	if (rlist.size() > 0) {
-		// takes a random repeater from rlist
-		bot_t destination_bot;
-		repeater_t destination_repeater;
-		
-		destination_bot = random_bot(rlist);
-		destination_repeater = boost::dynamic_pointer_cast<Repeater>(destination_bot);
-		
-		/*
-		std::cout << "\033[01;34m" 
-					<< boost::format("%1$'-'8s %2$'-'36s %3$'-'27s %4$'-'36s\n") 
-					% "repeater" % Bot::id() % "updates PList from repeater" % repeater_target->id();
-		*/
-		
-		// get subset of plist from this repeater
-		bots_t received_plist;
-		received_plist = dynamic_cast<Repeater*>(destination_bot.get())->sub_plist();
-		
-		if (received_plist.size() > 0) {
-			// merge new plist and existing plist
-			bots_t plist;
-			plist = current_repeater->plist();
-			current_repeater->plist() = repeater_merge_list(plist, received_plist);
-		}
-	}
-	
-	repeater->status() = UPDATE_PLIST;
+// 	repeater_t current_repeater;
+// 	current_repeater = boost::dynamic_pointer_cast<Repeater>(repeater);
+// 	
+// 	bots_t rlist;
+// 	rlist = current_repeater->rlist();
+// 	
+// 	if (rlist.size() > 0) {
+// 		// takes a random repeater from rlist
+// 		bot_t destination_bot;
+// 		repeater_t destination_repeater;
+// 		
+// 		destination_bot = random_bot(rlist);
+// 		destination_repeater = boost::dynamic_pointer_cast<Repeater>(destination_bot);
+// 		
+// 		// get subset of plist from this repeater
+// 		bots_t received_plist;
+// 		received_plist = dynamic_cast<Repeater*>(destination_bot.get())->sub_plist();
+// 		
+// 		if (received_plist.size() > 0) {
+// 			// merge new plist and existing plist
+// 			bots_t plist;
+// 			plist = current_repeater->plist();
+// 			current_repeater->plist() = repeater_merge_list(plist, received_plist);
+// 		}
+// 	}
+// 	
+// 	repeater->status() = UPDATE_PLIST;
 	return;
 }
 
@@ -174,35 +163,51 @@ Repeater::Repeater() : Bot()
 /*
  * extract a random subset of repeaters from rlist
  */
-bots_t Repeater::sub_rlist()
+// bots_t Repeater::sub_rlist()
+// {
+// 	bots_t sub_list;
+// 	if (Bot::status() == RECEIVING_MESSAGE) {
+// 		sub_list = random_bots(m_rlist, m_sub_rlist_size);
+// 	}
+// 	else {
+// 		sub_list.clear();
+// 	}
+// 	
+// 	return sub_list;
+// }
+updatingbotlist_t Repeater::sub_plist()
 {
-	bots_t sub_list;
-	if (Bot::status() == RECEIVING_MESSAGE) {
-		sub_list = random_bots(m_rlist, m_sub_rlist_size);
-	}
-	else {
-		sub_list.clear();
+	entries_t current_plist = m_bot_plist->bot_list();
+	std::random_shuffle(current_plist.begin(), current_plist.end());
+	
+	entries_t new_plist;
+	for (unsigned int i = 0; i < m_sub_plist_size; ++i) {
+		new_plist.push_back(current_plist[i]);
 	}
 	
-	return sub_list;
+	boost::posix_time::ptime current_time = boost::posix_time::second_clock::local_time();
+	
+	updatingbotlist_t upd_sub_plist(new UpdatingBotList(current_plist, current_time));
+	return upd_sub_plist;
 }
+
 
 
 /*
  * extract a subset of protecter from plist
  */
-bots_t Repeater::sub_plist()
-{
-	bots_t sub_list;
-	if (Bot::status() == RECEIVING_MESSAGE) {
-		sub_list = random_bots(m_plist, m_sub_plist_size);
-	}
-	else {
-		sub_list.clear();
-	}
-	
-	return sub_list;
-}
+// bots_t Repeater::sub_plist()
+// {
+// 	bots_t sub_list;
+// 	if (Bot::status() == RECEIVING_MESSAGE) {
+// 		sub_list = random_bots(m_plist, m_sub_plist_size);
+// 	}
+// 	else {
+// 		sub_list.clear();
+// 	}
+// 	
+// 	return sub_list;
+// }
 
 
 /*
@@ -267,6 +272,9 @@ void Repeater::init(bot_t& server, bots_t& plist, bots_t& rlist)
 	// new implement for PList
 	bots_t rlist_init;
 	rlist_init = random_bots(rlist, m_rlist.size());
+	for (unsigned int i = 0; i < rlist_init.size(); ++i) {
+		//m_bot_rlist->bot_list().push_back(rlist_init[i], rlist_init[i]->timestamp);
+	}
 	
 	return;
 }
