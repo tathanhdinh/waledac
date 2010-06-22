@@ -38,45 +38,17 @@ bots_t repeater_merge_list(bots_t &existing_rlist, bots_t &received_rlist)
 
 
 /*
+ * compare two entries by their timestamps
+ */
+bool compare_entry(const entry_t& entry_a, const entry_t& entry_b)
+{
+	return (entry_a.first > entry_b.first);
+}
+
+
+/*
  * update RList from other repeaters
  */
-//static void update_rlist(bot_t& repeater)
-//{
-// 	repeater_t current_repeater;
-// 	current_repeater = boost::dynamic_pointer_cast<Repeater>(repeater);
-// 	
-// 	bots_t rlist;
-// 	rlist = current_repeater->rlist();
-// 	
-// 	if (rlist.size() > 0) {
-// 		// takes a random repeater from rlist
-// 		bot_t destination_bot;
-// 		repeater_t destination_repeater;
-// 		
-// 		destination_bot = random_bot(rlist);
-// 		destination_repeater = boost::dynamic_pointer_cast<Repeater>(destination_bot);
-// 		
-// 		// get subset of rlist from this repeater
-// 		bots_t received_rlist;
-// 		received_rlist = destination_repeater->sub_rlist();
-// 		
-// 		if (received_rlist.size() > 0) {
-// 			connections_t connections;
-// 			connections = current_repeater->connections();
-// 			
-// 			connection_t current_connection;
-// 			current_connection = find_connection(connections, repeater, destination_bot);
-// 			
-// 			current_connection->type() = CONNECTION_UPDATE_RLIST;
-// 		
-// 			// merge new rlist and existing rlist
-// 			current_repeater->rlist() = repeater_merge_list(rlist, received_rlist);
-// 		}
-// 	}
-// 	
-// 	repeater->status() = UPDATE_RLIST;
-//	return;
-//}
 void Repeater::update_rlist()
 {
 	// select random repeater
@@ -107,8 +79,17 @@ void Repeater::update_rlist()
 	}
 	
 	// sort all entries in concated list
+	std::sort(concated_entries.begin(), concated_entries.end(), compare_entry);
 	
+	// update RList
+	unsigned int rlist_size;
+	rlist_size = m_bot_rlist->bot_list().size();
 	
+	m_bot_rlist->bot_list().clear();
+	for (unsigned int i = 0; i < rlist_size; ++i) {
+		m_bot_rlist->bot_list().push_back(concated_entries[i]);
+	}
+	m_bot_rlist->update_timestamp() = boost::posix_time::to_iso_string(boost::posix_time::second_clock::local_time());
 	
 	return;
 }
