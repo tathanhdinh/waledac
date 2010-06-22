@@ -98,37 +98,6 @@ void Repeater::update_rlist()
 /*
  * update PList from other repeater
  */
-//static void update_plist(bot_t& repeater)
-//{
-// 	repeater_t current_repeater;
-// 	current_repeater = boost::dynamic_pointer_cast<Repeater>(repeater);
-// 	
-// 	bots_t rlist;
-// 	rlist = current_repeater->rlist();
-// 	
-// 	if (rlist.size() > 0) {
-// 		// takes a random repeater from rlist
-// 		bot_t destination_bot;
-// 		repeater_t destination_repeater;
-// 		
-// 		destination_bot = random_bot(rlist);
-// 		destination_repeater = boost::dynamic_pointer_cast<Repeater>(destination_bot);
-// 		
-// 		// get subset of plist from this repeater
-// 		bots_t received_plist;
-// 		received_plist = dynamic_cast<Repeater*>(destination_bot.get())->sub_plist();
-// 		
-// 		if (received_plist.size() > 0) {
-// 			// merge new plist and existing plist
-// 			bots_t plist;
-// 			plist = current_repeater->plist();
-// 			current_repeater->plist() = repeater_merge_list(plist, received_plist);
-// 		}
-// 	}
-// 	
-// 	repeater->status() = UPDATE_PLIST;
-//	return;
-//}
 void Repeater::update_plist()
 {
 	// select random repeater
