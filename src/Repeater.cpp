@@ -211,7 +211,13 @@ updatingbotlist_t Repeater::sub_rlist()
 bots_t Repeater::plist()
 {
 	//return m_plist;
+	bots_t bots_in_plist;
+	entries_t current_plist = m_bot_plist->bot_list();
 	
+	for (unsigned int i = 0; i < current_plist.size(); ++i) {
+		bots_in_plist.push_back(current_plist[i].second);
+	}
+	return bots_in_plist;
 }
 
 
