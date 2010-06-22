@@ -55,6 +55,9 @@ private:
 	
 	unsigned int m_sed_msg_time;           // Time (in seconds) in which Bot has SENDING_MESSAGE status
 	
+	virtual void update_rlist();
+	virtual void update_plist();
+	
 	
 	#ifdef THREAD_VERSION
 	boost::shared_ptr<boost::thread> m_repeater_thread;
