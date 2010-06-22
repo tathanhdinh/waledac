@@ -131,6 +131,45 @@ void Repeater::update_rlist()
 //}
 void Repeater::update_plist()
 {
+	// select random repeater
+	bots_t current_plist = this->plist();
+	bot_t selected_bot = random_bot(current_plist);
+	repeater_t selected_repeater = boost::dynamic_pointer_cast<Repeater>(selected_bot);
+	
+	// get sub_rlist from this repeater
+	updatingbotlist_t requested_plist = selected_repeater->sub_plist();
+	
+	// get UpdateTS
+	boost::posix_time::ptime update_ts = boost::posix_time::from_iso_string(requested_plist->update_timestamp());
+	
+	// get CurrentTS
+	boost::posix_time::ptime current_ts = boost::posix_time::second_clock::local_time();
+	
+	// concat two requested bot entries and current bot entries
+	entries_t concated_entries = m_bot_plist->bot_list();
+	concated_entries.insert(concated_entries.end(), requested_plist->bot_list().begin(), requested_plist->bot_list().end());
+	
+	// update all timestamp in concated list
+	boost::posix_time::ptime ts_i;
+	boost::posix_time::ptime new_ts;
+	for (unsigned int i = 0; i < concated_entries.size(); ++i) {
+		ts_i = boost::posix_time::from_iso_string(concated_entries[i].first);
+		new_ts = current_ts - (update_ts - ts_i);
+		concated_entries[i].first = boost::posix_time::to_iso_string(new_ts);
+	}
+	
+	// sort all entries in concated list
+	std::sort(concated_entries.begin(), concated_entries.end(), compare_entry);
+	
+	// update RList
+	unsigned int rlist_size;
+	rlist_size = m_bot_plist->bot_list().size();
+	
+	m_bot_plist->bot_list().clear();
+	for (unsigned int i = 0; i < rlist_size; ++i) {
+		m_bot_plist->bot_list().push_back(concated_entries[i]);
+	}
+	m_bot_plist->update_timestamp() = boost::posix_time::to_iso_string(boost::posix_time::second_clock::local_time());
 }
 
 
