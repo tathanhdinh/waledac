@@ -40,8 +40,8 @@ bots_t repeater_merge_list(bots_t &existing_rlist, bots_t &received_rlist)
 /*
  * update RList from other repeaters
  */
-static void update_rlist(bot_t& repeater)
-{
+//static void update_rlist(bot_t& repeater)
+//{
 // 	repeater_t current_repeater;
 // 	current_repeater = boost::dynamic_pointer_cast<Repeater>(repeater);
 // 	
@@ -75,6 +75,41 @@ static void update_rlist(bot_t& repeater)
 // 	}
 // 	
 // 	repeater->status() = UPDATE_RLIST;
+//	return;
+//}
+void Repeater::update_rlist()
+{
+	// select random repeater
+	bots_t current_rlist = this->rlist();
+	bot_t selected_bot = random_bot(current_rlist);
+	repeater_t selected_repeater = boost::dynamic_pointer_cast<Repeater>(selected_bot);
+	
+	// get sub_rlist from this repeater
+	updatingbotlist_t requested_rlist = selected_repeater->sub_rlist();
+	
+	// get UpdateTS
+	boost::posix_time::ptime update_ts = boost::posix_time::from_iso_string(requested_rlist->update_timestamp());
+	
+	// get CurrentTS
+	boost::posix_time::ptime current_ts = boost::posix_time::second_clock::local_time();
+	
+	// concat two requested bot entries and current bot entries
+	entries_t concated_entries = m_bot_rlist->bot_list();
+	concated_entries.insert(concated_entries.end(), requested_rlist->bot_list().begin(), requested_rlist->bot_list().end());
+	
+	// update all timestamp in concated list
+	boost::posix_time::ptime ts_i;
+	boost::posix_time::ptime new_ts;
+	for (unsigned int i = 0; i < concated_entries.size(); ++i) {
+		ts_i = boost::posix_time::from_iso_string(concated_entries[i].first);
+		new_ts = current_ts - (update_ts - ts_i);
+		concated_entries[i].first = boost::posix_time::to_iso_string(new_ts);
+	}
+	
+	// sort all entries in concated list
+	
+	
+	
 	return;
 }
 
@@ -82,8 +117,8 @@ static void update_rlist(bot_t& repeater)
 /*
  * update PList from other repeater
  */
-static void update_plist(bot_t& repeater)
-{
+//static void update_plist(bot_t& repeater)
+//{
 // 	repeater_t current_repeater;
 // 	current_repeater = boost::dynamic_pointer_cast<Repeater>(repeater);
 // 	
@@ -111,7 +146,10 @@ static void update_plist(bot_t& repeater)
 // 	}
 // 	
 // 	repeater->status() = UPDATE_PLIST;
-	return;
+//	return;
+//}
+void Repeater::update_plist()
+{
 }
 
 
@@ -176,9 +214,11 @@ updatingbotlist_t Repeater::sub_plist()
 		new_plist.push_back(current_plist[i]);
 	}
 	
-	std::string current_time = boost::posix_time::to_simple_string(
+	// get current time in seconds
+	std::string current_time = boost::posix_time::to_iso_string(
 																		boost::posix_time::second_clock::local_time());
 	
+	// create a sublist
 	updatingbotlist_t upd_sub_plist(new UpdatingBotList(current_plist, current_time));
 	return upd_sub_plist;
 }
@@ -197,9 +237,11 @@ updatingbotlist_t Repeater::sub_rlist()
 		new_rlist.push_back(current_rlist[i]);
 	}
 	
-	std::string current_time = boost::posix_time::to_simple_string(
+	// get current time in seconds
+	std::string current_time = boost::posix_time::to_iso_string(
 																		boost::posix_time::second_clock::local_time());
 	
+	// create a sublist
 	updatingbotlist_t upd_sub_rlist(new UpdatingBotList(current_rlist, current_time));
 	return upd_sub_rlist;
 }
@@ -271,7 +313,8 @@ void Repeater::init(bot_t& server, bots_t& plist, bots_t& rlist)
 		m_bot_rlist->bot_list().push_back(entry_t(rlist_init[i]->timestamp(), rlist_init[i]));
 	}
 	
-	m_bot_rlist->update_timestamp() = boost::posix_time::to_simple_string(
+	// get current time in seconds
+	m_bot_rlist->update_timestamp() = boost::posix_time::to_iso_string(
 																						boost::posix_time::second_clock::local_time());
 	
 	return;
@@ -288,10 +331,10 @@ void Repeater::execute()
 	current_bot = Bot::shared_from_this();
 	
 	while (true) {
-		update_rlist(current_bot);
+		//update_rlist(current_bot);
 		boost::this_thread::sleep(boost::posix_time::seconds(m_upd_rlist_time));
 		
-		update_plist(current_bot);
+		//update_plist(current_bot);
 		boost::this_thread::sleep(boost::posix_time::seconds(m_upd_plist_time));
 		
 		receive_message(current_bot);
