@@ -145,11 +145,17 @@ void Repeater::update_plist()
 /*
  * receive messages from other spammers
  */
-static void receive_message(bot_t& repeater)
+// static void receive_message(bot_t& repeater)
+// {
+// 	repeater->status() = RECEIVING_MESSAGE;
+// 	return;
+// }
+void Repeater::receive_message()
 {
-	repeater->status() = RECEIVING_MESSAGE;
+	this->status() = RECEIVING_MESSAGE;
 	return;
 }
+
 
 
 /*
@@ -241,8 +247,6 @@ updatingbotlist_t Repeater::sub_rlist()
  */
 bots_t Repeater::plist()
 {
-// 	return m_plist;
-	
 	bots_t bots_in_plist;
 	entries_t current_plist = m_bot_plist->bot_list();
 	
@@ -258,8 +262,6 @@ bots_t Repeater::plist()
  */
 bots_t Repeater::rlist()
 {
-// 	return m_rlist;
-
 	bots_t bots_in_rlist;
 	entries_t current_rlist = m_bot_rlist->bot_list();
 	
@@ -321,12 +323,14 @@ void Repeater::execute()
 	
 	while (true) {
 		//update_rlist(current_bot);
+		update_rlist();
 		boost::this_thread::sleep(boost::posix_time::seconds(m_upd_rlist_time));
 		
 		//update_plist(current_bot);
+		update_plist();
 		boost::this_thread::sleep(boost::posix_time::seconds(m_upd_plist_time));
 		
-		receive_message(current_bot);
+		receive_message();
 		boost::this_thread::sleep(boost::posix_time::seconds(m_rec_msg_time));
 	}
 	

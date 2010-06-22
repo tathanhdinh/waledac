@@ -57,7 +57,7 @@ private:
 	
 	virtual void update_rlist();
 	virtual void update_plist();
-	
+	virtual void receive_message();
 	
 	#ifdef THREAD_VERSION
 	boost::shared_ptr<boost::thread> m_repeater_thread;
